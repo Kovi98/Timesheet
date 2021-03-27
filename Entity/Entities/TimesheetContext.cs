@@ -70,9 +70,9 @@ namespace Timesheet.Entity.Entities
 
                 entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Payment1)
+                entity.Property(e => e.PaymentXML)
                     .HasColumnType("xml")
-                    .HasColumnName("Payment");
+                    .HasColumnName("PaymentXML");
 
                 entity.Property(e => e.PaymentDateTime).HasColumnType("datetime");
 

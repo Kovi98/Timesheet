@@ -7,6 +7,7 @@ namespace Timesheet.Entity.Entities
 {
     public partial class Timesheet
     {
+        #region EF generated
         public int Id { get; set; }
         public decimal? Hours { get; set; }
         public int PersonId { get; set; }
@@ -23,5 +24,17 @@ namespace Timesheet.Entity.Entities
         public virtual Job Job { get; set; }
         public virtual Payment Payment { get; set; }
         public virtual Person Person { get; set; }
+        #endregion
+
+        public Timesheet(Person who, DateTime from, DateTime to, Job job, string nameText)
+        {
+            CreateDateTime = DateTime.Now;
+
+            DateTimeFrom = from;
+            DateTimeTo = to;
+            Person = who;
+            Job = job;
+            Name = nameText;
+        }
     }
 }

@@ -7,11 +7,20 @@ namespace Timesheet.Entity.Entities
 {
     public partial class Person
     {
-        public Person()
+        public Person(string name, string surname, DateTime dateBirth, bool hasTax)
         {
+            CreateTime = DateTime.Now;
+            IsActive = true;
+
+            Name = name;
+            Surname = surname;
+            DateBirth = dateBirth;
+            HasTax = hasTax;
+
+            //Vygenerováno EF
             Timesheets = new HashSet<Timesheet>();
         }
-
+        #region EF DB first
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
@@ -37,5 +46,8 @@ namespace Timesheet.Entity.Entities
         public virtual Finance PayedFrom { get; set; }
         public virtual Section Section { get; set; }
         public virtual ICollection<Timesheet> Timesheets { get; set; }
+        #endregion
+
+
     }
 }
