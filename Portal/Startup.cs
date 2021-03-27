@@ -102,7 +102,7 @@ namespace Portal
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapRazorPages().RequireAuthorization();
             });
         }
     }
