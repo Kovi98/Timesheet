@@ -15,6 +15,10 @@ namespace Timesheet.Entity.Entities
         }
 
         #region EF generated
+        public Finance()
+        {
+            People = new HashSet<Person>();
+        }
         public int Id { get; set; }
         public string Name { get; set; }
 

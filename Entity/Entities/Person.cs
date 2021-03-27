@@ -7,6 +7,10 @@ namespace Timesheet.Entity.Entities
 {
     public partial class Person
     {
+        public Person()
+        {
+            Timesheets = new HashSet<Timesheet>();
+        }
         public Person(string name, string surname, DateTime dateBirth, bool hasTax)
         {
             CreateTime = DateTime.Now;
@@ -16,9 +20,6 @@ namespace Timesheet.Entity.Entities
             Surname = surname;
             DateBirth = dateBirth;
             HasTax = hasTax;
-
-            //Vygenerováno EF
-            Timesheets = new HashSet<Timesheet>();
         }
         #region EF DB first
         public int Id { get; set; }

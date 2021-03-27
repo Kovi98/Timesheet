@@ -7,12 +7,11 @@ namespace Timesheet.Entity.Entities
 {
     public partial class Payment
     {
+        #region EF DB first
         public Payment()
         {
             Timesheets = new HashSet<Timesheet>();
         }
-
-        #region EF DB first
         public int Id { get; set; }
         public DateTime CreateDateTime { get; set; }
         public DateTime? PaymentDateTime { get; set; }

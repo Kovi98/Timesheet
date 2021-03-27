@@ -9,7 +9,6 @@ namespace Timesheet.Entity.Entities
     {
         public Job(string name, decimal hourReward)
         {
-            People = new HashSet<Person>();
             Timesheets = new HashSet<Timesheet>();
             CreateTime = DateTime.Now;
 
@@ -18,6 +17,10 @@ namespace Timesheet.Entity.Entities
         }
 
         #region EF generated
+        public Job()
+        {
+            People = new HashSet<Person>();
+        }
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal? HourReward { get; set; }

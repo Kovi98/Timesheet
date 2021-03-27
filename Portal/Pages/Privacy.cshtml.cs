@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Portal.Pages
 {
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public class PrivacyModel : PageModel
     {
         private readonly ILogger<PrivacyModel> _logger;

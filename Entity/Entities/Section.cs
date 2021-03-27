@@ -14,6 +14,10 @@ namespace Timesheet.Entity.Entities
             Name = name;
         }
         #region EF generated
+        public Section()
+        {
+            People = new HashSet<Person>();
+        }
         public int Id { get; set; }
         public string Name { get; set; }
 
