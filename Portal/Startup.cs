@@ -102,7 +102,8 @@ namespace Portal
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages().RequireAuthorization();
+                //RequireAuthorization() = globální autorizace
+                endpoints.MapRazorPages();//.RequireAuthorization();
             });
         }
     }
