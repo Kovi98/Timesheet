@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Portal.Areas.Identity;
 using Portal.Data;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Portal
                     Configuration.GetConnectionString("Timesheet")));
             #endregion
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
 
@@ -56,12 +57,15 @@ namespace Portal
                 // Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.AllowedForNewUsers = false;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
+
+                //Potvrzování e-mailu
+                //options.SignIn.RequireConfirmedEmail = false;
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -103,7 +107,7 @@ namespace Portal
             app.UseEndpoints(endpoints =>
             {
                 //RequireAuthorization() = globální autorizace
-                endpoints.MapRazorPages();//.RequireAuthorization();
+                endpoints.MapRazorPages().RequireAuthorization();
             });
         }
     }
