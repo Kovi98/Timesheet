@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Portal.Areas.Identity;
+using Portal.Validation;
 
 namespace Portal.Areas.Identity.Pages.Account
 {
@@ -43,15 +44,14 @@ namespace Portal.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
         }
 

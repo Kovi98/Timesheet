@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Portal.Validation;
 
 namespace Portal.Areas.Identity.Pages.Account
 {
@@ -41,12 +42,12 @@ namespace Portal.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [EmailAddress]
             [Display(Name = "E-mail")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [StringLength(100, ErrorMessage = "{0} musí být alespoň {2} a nejvíce {1} znaků dlouhé.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Heslo")]
@@ -57,12 +58,12 @@ namespace Portal.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Hesla se neshodují.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
+            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [Display(Name = "Jméno")]
             [StringLength(50, ErrorMessage = "{0} může být maximálně 50 znaků.")]
             public string Name { get; set; }
 
-            [Required]
+            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [Display(Name = "Příjmení")]
             [StringLength(50, ErrorMessage = "{0} může být maximálně 50 znaků.")]
             public string Surname { get; set; }

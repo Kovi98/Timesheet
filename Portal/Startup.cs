@@ -41,7 +41,8 @@ namespace Portal
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddRazorPages();
+            // AddDataAnnotationsLocalization() - lokalizace hlášek
+            services.AddRazorPages().AddDataAnnotationsLocalization();
 
             //Konfigurace IDENTITY - TODO dodìlat
             services.Configure<IdentityOptions>(options =>

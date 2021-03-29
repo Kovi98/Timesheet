@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    //For alerts
+    ViewData["Error"] = new List<string>();
+    ViewData["Warning"] = new List<string>();
+    ViewData["Success"] = new List<string>();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -59,5 +65,28 @@
     <!-- js skripty -->
     <partial name="_Scripts" />
     @RenderSection("Scripts", required: false)
+    @{
+        if (((List<string>)ViewData["Error"]).Count > 0)
+        {
+            foreach (var message in ((List<string>)ViewData["Error"]))
+            {
+                <script>createError(@message)</script>
+            }
+        }
+        if (((List<string>)ViewData["Warning"]).Count > 0)
+        {
+            foreach (var message in ((List<string>)ViewData["Warning"]))
+            {
+                <script>createWarning(@message)</script>
+            }
+        }
+        if (((List<string>)ViewData["Success"]).Count > 0)
+        {
+            foreach (var message in ((List<string>)ViewData["Success"]))
+            {
+                <script>createSuccess(@message)</script>
+            }
+        }
+    }
 </body>
 </html>
