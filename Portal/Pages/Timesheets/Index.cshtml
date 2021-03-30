@@ -80,7 +80,7 @@
                                 </td>
                                 <td class="project-state">
                                     @{
-                                        if (item.Payment.PaymentDateTime is null)
+                                        if (item.Payment.IsPayed)
                                         {
                                             <a href="#" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
