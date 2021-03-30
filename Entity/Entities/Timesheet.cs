@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
+// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
+// If you have enabled NRTs for your project, then un-comment the following line:
+// #nullable disable
 
 namespace Timesheet.Entity.Entities
 {
     public partial class Timesheet
     {
-        #region EF generated
-        public Timesheet()
-        {
-
-        }
         public int Id { get; set; }
         public decimal? Hours { get; set; }
         public int PersonId { get; set; }
@@ -28,17 +25,5 @@ namespace Timesheet.Entity.Entities
         public virtual Job Job { get; set; }
         public virtual Payment Payment { get; set; }
         public virtual Person Person { get; set; }
-        #endregion
-
-        public Timesheet(Person person, DateTime dateTimeFrom, DateTime dateTimeTo, Job job, string name)
-        {
-            CreateDateTime = DateTime.Now;
-
-            DateTimeFrom = dateTimeFrom;
-            DateTimeTo = dateTimeTo;
-            Person = person;
-            Job = job;
-            Name = name;
-        }
     }
 }

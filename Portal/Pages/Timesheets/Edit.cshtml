@@ -1,0 +1,77 @@
+﻿@page
+@model Portal.Pages.Timesheets.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Timesheet</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Timesheet.Id" />
+            <div class="form-group">
+                <label asp-for="Timesheet.Hours" class="control-label"></label>
+                <input asp-for="Timesheet.Hours" class="form-control" />
+                <span asp-validation-for="Timesheet.Hours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.PersonId" class="control-label"></label>
+                <select asp-for="Timesheet.PersonId" class="form-control" asp-items="ViewBag.PersonId"></select>
+                <span asp-validation-for="Timesheet.PersonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.JobId" class="control-label"></label>
+                <select asp-for="Timesheet.JobId" class="form-control" asp-items="ViewBag.JobId"></select>
+                <span asp-validation-for="Timesheet.JobId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.CreateDateTime" class="control-label"></label>
+                <input asp-for="Timesheet.CreateDateTime" class="form-control" />
+                <span asp-validation-for="Timesheet.CreateDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.DateTimeFrom" class="control-label"></label>
+                <input asp-for="Timesheet.DateTimeFrom" class="form-control" />
+                <span asp-validation-for="Timesheet.DateTimeFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.DateTimeTo" class="control-label"></label>
+                <input asp-for="Timesheet.DateTimeTo" class="form-control" />
+                <span asp-validation-for="Timesheet.DateTimeTo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.Name" class="control-label"></label>
+                <input asp-for="Timesheet.Name" class="form-control" />
+                <span asp-validation-for="Timesheet.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.PaymentId" class="control-label"></label>
+                <select asp-for="Timesheet.PaymentId" class="form-control" asp-items="ViewBag.PaymentId"></select>
+                <span asp-validation-for="Timesheet.PaymentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.Reward" class="control-label"></label>
+                <input asp-for="Timesheet.Reward" class="form-control" />
+                <span asp-validation-for="Timesheet.Reward" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Timesheet.Tax" class="control-label"></label>
+                <input asp-for="Timesheet.Tax" class="form-control" />
+                <span asp-validation-for="Timesheet.Tax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+

@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-#nullable disable
+// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
+// If you have enabled NRTs for your project, then un-comment the following line:
+// #nullable disable
 
 namespace Timesheet.Entity.Entities
 {
@@ -17,13 +19,13 @@ namespace Timesheet.Entity.Entities
         {
         }
 
-        public virtual DbSet<Finance> Finances { get; set; }
-        public virtual DbSet<Job> Jobs { get; set; }
-        public virtual DbSet<Payment> Payments { get; set; }
-        public virtual DbSet<Person> People { get; set; }
-        public virtual DbSet<RewardSummary> RewardSummaries { get; set; }
-        public virtual DbSet<Section> Sections { get; set; }
-        public virtual DbSet<Timesheet> Timesheets { get; set; }
+        public virtual DbSet<Finance> Finance { get; set; }
+        public virtual DbSet<Job> Job { get; set; }
+        public virtual DbSet<Payment> Payment { get; set; }
+        public virtual DbSet<Person> Person { get; set; }
+        public virtual DbSet<RewardSummary> RewardSummary { get; set; }
+        public virtual DbSet<Section> Section { get; set; }
+        public virtual DbSet<Timesheet> Timesheet { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,21 +37,22 @@ namespace Timesheet.Entity.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Czech_CI_AS");
-
             modelBuilder.Entity<Finance>(entity =>
             {
-                entity.ToTable("Finance");
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.Property(e => e.RowVersion)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
             });
 
             modelBuilder.Entity<Job>(entity =>
             {
-                entity.ToTable("Job");
-
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.HourReward).HasColumnType("decimal(19, 2)");
@@ -66,15 +69,13 @@ namespace Timesheet.Entity.Entities
 
             modelBuilder.Entity<Payment>(entity =>
             {
-                entity.ToTable("Payment");
-
                 entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
 
-                entity.Property(e => e.PaymentXML)
-                    .HasColumnType("xml")
-                    .HasColumnName("PaymentXML");
-
                 entity.Property(e => e.PaymentDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.PaymentXml)
+                    .HasColumnName("PaymentXML")
+                    .HasColumnType("xml");
 
                 entity.Property(e => e.RowVersion)
                     .IsRequired()
@@ -84,8 +85,6 @@ namespace Timesheet.Entity.Entities
 
             modelBuilder.Entity<Person>(entity =>
             {
-                entity.ToTable("Person");
-
                 entity.Property(e => e.BankAccount).HasMaxLength(50);
 
                 entity.Property(e => e.BankCode).HasMaxLength(50);
@@ -108,7 +107,7 @@ namespace Timesheet.Entity.Entities
 
                 entity.Property(e => e.PostalCode)
                     .HasMaxLength(5)
-                    .IsFixedLength(true);
+                    .IsFixedLength();
 
                 entity.Property(e => e.RowVersion)
                     .IsRequired()
@@ -124,19 +123,19 @@ namespace Timesheet.Entity.Entities
                     .HasMaxLength(50);
 
                 entity.HasOne(d => d.Job)
-                    .WithMany(p => p.People)
+                    .WithMany(p => p.Person)
                     .HasForeignKey(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Person_Job");
 
                 entity.HasOne(d => d.PayedFrom)
-                    .WithMany(p => p.People)
+                    .WithMany(p => p.Person)
                     .HasForeignKey(d => d.PayedFromId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Person_Finance");
 
                 entity.HasOne(d => d.Section)
-                    .WithMany(p => p.People)
+                    .WithMany(p => p.Person)
                     .HasForeignKey(d => d.SectionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Person_Section");
@@ -159,17 +158,20 @@ namespace Timesheet.Entity.Entities
 
             modelBuilder.Entity<Section>(entity =>
             {
-                entity.ToTable("Section");
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.Property(e => e.RowVersion)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
             });
 
             modelBuilder.Entity<Timesheet>(entity =>
             {
-                entity.ToTable("Timesheet");
-
                 entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DateTimeFrom).HasColumnType("datetime");
@@ -192,18 +194,18 @@ namespace Timesheet.Entity.Entities
                 entity.Property(e => e.Tax).HasColumnType("decimal(19, 2)");
 
                 entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Timesheets)
+                    .WithMany(p => p.Timesheet)
                     .HasForeignKey(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Timesheet_Job");
 
                 entity.HasOne(d => d.Payment)
-                    .WithMany(p => p.Timesheets)
+                    .WithMany(p => p.Timesheet)
                     .HasForeignKey(d => d.PaymentId)
                     .HasConstraintName("FK_Timesheet_Payment");
 
                 entity.HasOne(d => d.Person)
-                    .WithMany(p => p.Timesheets)
+                    .WithMany(p => p.Timesheet)
                     .HasForeignKey(d => d.PersonId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Timesheet_Person");

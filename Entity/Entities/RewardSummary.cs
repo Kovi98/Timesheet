@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
+// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
+// If you have enabled NRTs for your project, then un-comment the following line:
+// #nullable disable
 
 namespace Timesheet.Entity.Entities
 {
-    /// <summary>
-    /// Přehledové view pro zobrazení přehledu výkazů/plateb
-    /// </summary>
     public partial class RewardSummary
     {
-        #region EF generated
         public int Person { get; set; }
         public decimal? Hours { get; set; }
         public decimal? Reward { get; set; }
@@ -20,14 +18,5 @@ namespace Timesheet.Entity.Entities
         public int? CreateDateTimeMonth { get; set; }
         public int? Payment { get; set; }
         public DateTime? PaymentDateTime { get; set; }
-        #endregion
-
-        public Person PersonObj { get; private set; }
-        public Payment PaymentObj { get; private set; }
-        public void FillObjects(TimesheetContext context)
-        {
-            PersonObj = context.People.Find(Person);
-            PaymentObj = context.Payments.Find(Payment);
-        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
+// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
+// If you have enabled NRTs for your project, then un-comment the following line:
+// #nullable disable
 
 namespace Timesheet.Entity.Entities
 {
@@ -9,19 +11,9 @@ namespace Timesheet.Entity.Entities
     {
         public Person()
         {
-            Timesheets = new HashSet<Timesheet>();
+            Timesheet = new HashSet<Timesheet>();
         }
-        public Person(string name, string surname, DateTime dateBirth, bool hasTax)
-        {
-            CreateTime = DateTime.Now;
-            IsActive = true;
 
-            Name = name;
-            Surname = surname;
-            DateBirth = dateBirth;
-            HasTax = hasTax;
-        }
-        #region EF DB first
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
@@ -46,9 +38,6 @@ namespace Timesheet.Entity.Entities
         public virtual Job Job { get; set; }
         public virtual Finance PayedFrom { get; set; }
         public virtual Section Section { get; set; }
-        public virtual ICollection<Timesheet> Timesheets { get; set; }
-        #endregion
-
-
+        public virtual ICollection<Timesheet> Timesheet { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+Ôªøusing Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
@@ -41,10 +41,10 @@ namespace Portal
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            // AddDataAnnotationsLocalization() - lokalizace hl·öek
+            // AddDataAnnotationsLocalization() - lokalizace hl√°≈°ek
             services.AddRazorPages().AddDataAnnotationsLocalization();
 
-            //Konfigurace IDENTITY - TODO dodÏlat
+            //Konfigurace IDENTITY - TODO dod√¨lat
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -65,7 +65,7 @@ namespace Portal
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
 
-                //Potvrzov·nÌ e-mailu
+                //Potvrzov√°n√≠ e-mailu
                 //options.SignIn.RequireConfirmedEmail = false;
             });
 
@@ -107,7 +107,7 @@ namespace Portal
 
             app.UseEndpoints(endpoints =>
             {
-                //RequireAuthorization() = glob·lnÌ autorizace
+                //RequireAuthorization() = glob√°ln√≠ autorizace
                 endpoints.MapRazorPages().RequireAuthorization();
             });
         }

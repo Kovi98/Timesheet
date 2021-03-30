@@ -14,7 +14,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
 
     <title>@ViewData["Title"] - Portál</title>
 
@@ -23,6 +22,8 @@
     <partial name="_Styles" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
+    <!-- js skripty -->
+    <partial name="_Scripts" />
     <div class="wrapper">
         <!-- Top navigace -->
         <partial name="_TopNavigation" />
@@ -70,9 +71,6 @@
         </aside>
         <!-- /.control-sidebar -->
     </div>
-
-    <!-- js skripty -->
-    <partial name="_Scripts" />
     @RenderSection("Scripts", required: false)
     @{
         if (((List<string>)ViewData["Error"]).Count > 0)
