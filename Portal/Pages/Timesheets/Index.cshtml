@@ -241,11 +241,23 @@
                                 <div class="text-muted">
                                     <p class="text-sm">
                                         Vytvořeno
-                                        <b class="d-block">@Html.DisplayFor(model => model.TimesheetDetail.CreateDateTime)</b>
+                                        <b class="d-block">@Html.DisplayFor(model => model.TimesheetDetail.CreateTime)</b>
                                     </p>
                                     <p class="text-sm">
                                         Zaplaceno
-                                        <b class="d-block">Tony Chicken</b>
+                                        <b class="d-block">
+                                            @{
+                                                if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPayed)
+                                                {
+                                                    <a href="#" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
+
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-warning">Nezaplaceno</span>
+                                                }
+                                                                                }
+                                                                            </b>
                                     </p>
                                 </div>
 
@@ -461,7 +473,6 @@
     var objects = JSON.parse(json);
     $(function () {
         const dataTable = dataTableTimesheets = $("#dataTable").DataTable({
-                            //"data": objects,
                             "language": {
                                 "url": '/plugins/datatables-language/cs.json'
                             },

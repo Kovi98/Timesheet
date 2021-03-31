@@ -69,7 +69,7 @@ namespace Timesheet.Entity.Entities
 
             modelBuilder.Entity<Payment>(entity =>
             {
-                entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.PaymentDateTime).HasColumnType("datetime");
 
@@ -172,7 +172,7 @@ namespace Timesheet.Entity.Entities
 
             modelBuilder.Entity<Timesheet>(entity =>
             {
-                entity.Property(e => e.CreateDateTime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.DateTimeFrom).HasColumnType("datetime");
 

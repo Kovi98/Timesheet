@@ -15,7 +15,7 @@ namespace Timesheet.Entity.Entities
         }
 
         public int Id { get; set; }
-        public DateTime CreateDateTime { get; set; }
+        public DateTime CreateTime { get; set; }
         public DateTime? PaymentDateTime { get; set; }
         public bool ToPay { get; set; }
         public string PaymentXml { get; set; }
