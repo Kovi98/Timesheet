@@ -58,7 +58,7 @@
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Person.Name)
+                                    @Html.DisplayFor(modelItem => item.Person.FullName)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.DateTimeFrom)
@@ -107,6 +107,14 @@
                                         </i>
                                         Smazat
                                     </a>
+                                    <form method="post">
+                                        <input type="hidden" asp-for="@item.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash">
+                                            </i>
+                                            Smazat
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         }
