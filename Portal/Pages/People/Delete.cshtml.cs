@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
 
-namespace Portal.Pages.Timesheets
+namespace Portal.Pages.People
 {
     public class DeleteModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace Portal.Pages.Timesheets
         }
 
         [BindProperty]
-        public Timesheet.Entity.Entities.Timesheet Timesheet { get; set; }
+        public Person Person { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,12 +28,12 @@ namespace Portal.Pages.Timesheets
                 return NotFound();
             }
 
-            Timesheet = await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person).FirstOrDefaultAsync(m => m.Id == id);
+            Person = await _context.Person
+                .Include(p => p.Job)
+                .Include(p => p.PayedFrom)
+                .Include(p => p.Section).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Timesheet == null)
+            if (Person == null)
             {
                 return NotFound();
             }
@@ -47,11 +47,11 @@ namespace Portal.Pages.Timesheets
                 return NotFound();
             }
 
-            Timesheet = await _context.Timesheet.FindAsync(id);
+            Person = await _context.Person.FindAsync(id);
 
-            if (Timesheet != null)
+            if (Person != null)
             {
-                _context.Timesheet.Remove(Timesheet);
+                _context.Person.Remove(Person);
                 await _context.SaveChangesAsync();
             }
 

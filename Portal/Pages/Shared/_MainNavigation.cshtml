@@ -5,7 +5,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="./Index" class="brand-link">
+    <a asp-page="/Index" class="brand-link">
         <img src="~/img/logo.png" alt="Timesheet" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Portál Timesheet</span>
     </a>
@@ -16,7 +16,7 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
                 <div class="col-lg-10">
-                    <a href="./Identity/Account/Manage" class="d-block">
+                    <a asp-page="/Identity/Account/Manage/Index" class="d-block">
                         @{
                             string userName = "Nepřihlášený uživatel";
                             if (SignInManager.IsSignedIn(User))
@@ -29,7 +29,7 @@
                     </a>
                 </div>
                 <!--
-    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="//Url.Page("./Index", new { area = "" })" method="post">
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="//Url.Page("/Index", new { area = "" })" method="post">
             <button type="submit" class="nav-link btn"><i class="nav-icon fas fa-sign-out-alt"></i></button>
         </form>
     -->
@@ -43,7 +43,7 @@
                 <!-- Add icons to the links using the .nav-icon class
             with font-awesome or any other icon font library -->
                 <li class="nav-item menu-open">
-                    <a href="#" class="nav-link active">
+                    <a asp-page="#" class="nav-link active">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -52,19 +52,19 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.html" class="nav-link active">
+                            <a asp-page="/Index" class="nav-link active">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Dashboard v1</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
+                            <a asp-page="/Index" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Dashboard v2</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
+                            <a asp-page="/Index" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Dashboard v3</p>
                             </a>
@@ -72,31 +72,31 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="./Timesheets" class="nav-link">
+                    <a asp-page="/Timesheets/Index" class="nav-link">
                         <i class="nav-icon fas fa-edit"></i>
                         <p>Výkazy</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="./RewardSummary" class="nav-link">
+                    <a asp-page="/RewardSummary/Index" class="nav-link">
                         <i class="nav-icon fas fa-coins"></i>
                         <p>Odměny</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="./People" class="nav-link">
+                    <a asp-page="/People/Index" class="nav-link">
                         <i class="nav-icon fas fa-running"></i>
                         <p>Trenéři</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="./Payments" class="nav-link">
+                    <a asp-page="/Payments/Index" class="nav-link">
                         <i class="nav-icon fas fa-hand-holding-usd"></i>
                         <p>Platby</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a asp-page="#" class="nav-link">
                         <i class="nav-icon fas fa-tree"></i>
                         <p>
                             UI Elements
@@ -105,49 +105,49 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
+                            <a asp-page="pages/UI/general.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>General</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/icons.html" class="nav-link">
+                            <a asp-page="pages/UI/icons.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Icons</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/buttons.html" class="nav-link">
+                            <a asp-page="pages/UI/buttons.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Buttons</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/sliders.html" class="nav-link">
+                            <a asp-page="pages/UI/sliders.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Sliders</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/modals.html" class="nav-link">
+                            <a asp-page="pages/UI/modals.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Modals & Alerts</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/navbar.html" class="nav-link">
+                            <a asp-page="pages/UI/navbar.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Navbar & Tabs</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/timeline.html" class="nav-link">
+                            <a asp-page="pages/UI/timeline.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Timeline</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/ribbons.html" class="nav-link">
+                            <a asp-page="pages/UI/ribbons.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Ribbons</p>
                             </a>
@@ -155,7 +155,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a asp-page="#" class="nav-link">
                         <i class="nav-icon fas fa-edit"></i>
                         <p>
                             Forms
@@ -164,25 +164,25 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="pages/forms/general.html" class="nav-link">
+                            <a asp-page="pages/forms/general.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>General Elements</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/forms/advanced.html" class="nav-link">
+                            <a asp-page="pages/forms/advanced.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Advanced Elements</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/forms/editors.html" class="nav-link">
+                            <a asp-page="pages/forms/editors.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Editors</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/forms/validation.html" class="nav-link">
+                            <a asp-page="pages/forms/validation.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Validation</p>
                             </a>
@@ -190,7 +190,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a asp-page="#" class="nav-link">
                         <i class="nav-icon fas fa-table"></i>
                         <p>
                             Tables
@@ -199,19 +199,19 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="pages/tables/simple.html" class="nav-link">
+                            <a asp-page="pages/tables/simple.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Simple Tables</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/tables/data.html" class="nav-link">
+                            <a asp-page="pages/tables/data.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>DataTables</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/tables/jsgrid.html" class="nav-link">
+                            <a asp-page="pages/tables/jsgrid.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>jsGrid</p>
                             </a>
@@ -220,13 +220,13 @@
                 </li>
                 <li class="nav-header">Nastavení</li>
                 <li class="nav-item">
-                    <a href="Identity/Account/Manage" class="nav-link">
+                    <a asp-page="Identity/Account/Manage" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Uživatelé</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="pages/calendar.html" class="nav-link">
+                    <a asp-page="pages/calendar.html" class="nav-link">
                         <i class="nav-icon far fa-handshake"></i>
                         <p>Smlouvy</p>
                     </a>

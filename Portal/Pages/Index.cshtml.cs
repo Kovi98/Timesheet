@@ -5,21 +5,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Portal.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, Timesheet.Entity.Entities.TimesheetContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public void OnGet()
-        {
+        [BindProperty]
+        public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get; set; }
+        [BindProperty]
+        public IList<Timesheet.Entity.Entities.Person> Person { get; set; }
 
+        public async Task OnGetAsync()
+        {
+            Timesheet = await _context.Timesheet
+                .Include(t => t.Job)
+                .Include(t => t.Payment)
+                .Include(t => t.Person).ToListAsync();
+            Person = await _context.Person
+                .Include(p => p.Job)
+                .Include(p => p.PayedFrom)
+                .Include(p => p.Section).ToListAsync();
         }
     }
 }

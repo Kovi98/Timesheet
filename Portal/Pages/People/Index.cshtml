@@ -1,0 +1,144 @@
+﻿@page
+@model Portal.Pages.People.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].DateBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].RowVersion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].CreateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].HouseNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].PostalCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].HourReward)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].BankAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].BankCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].HasTax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].IdentityDocument)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].Job)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].PayedFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Person[0].Section)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Person) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RowVersion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Street)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HouseNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostalCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HourReward)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BankAccount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BankCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasTax)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdentityDocument)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayedFrom.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section.Name)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -39,14 +39,14 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>44</h3>
+                <h3>@Model.Person.Where(p => p.IsActive).Count()</h3>
 
-                <p>User Registrations</p>
+                <p>Aktivních trenérů</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person-add"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a asp-page="./People" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -54,14 +54,14 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>65</h3>
+                <h3>@Model.Timesheet.Where(t => t.Payment is null || !t.Payment.IsPayed).Count()</h3>
 
-                <p>Unique Visitors</p>
+                <p>Výkazů práce bez zaplacené odměny</p>
             </div>
             <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="ion ion-card"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a asp-page="./Timesheets" asp-page-handler="NotPayed" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
