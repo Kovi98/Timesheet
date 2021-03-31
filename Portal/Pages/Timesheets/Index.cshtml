@@ -470,8 +470,8 @@
 
 <script>
     var json = JSON.stringify(@Html.Raw(Model.TimesheetJson));
-    var objects = JSON.parse(json);
-    $(function () {
+    //var objects = JSON.parse(json);
+    $(function() {
         const dataTable = dataTableTimesheets = $("#dataTable").DataTable({
                             "language": {
                                 "url": '/plugins/datatables-language/cs.json'

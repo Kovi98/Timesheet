@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Úvodní stránka";
 }
 
 <div class="row">
@@ -11,7 +11,7 @@
             <div class="inner">
                 <h3>150</h3>
 
-                <p>New Orders</p>
+                <p>Vykázaných hodin v aktuálním měsíci</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -24,9 +24,9 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>@Html.DisplayFor(model => model.Payment.Where(p => p.IsPayed && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Year == DateTime.Now.Month).Select(p => p.RewardToPay).Sum())<sup style="font-size: 20px">,- Kč</sup></h3>
 
-                <p>Bounce Rate</p>
+                <p>Vyplacených odměn v aktuálním měsíci</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>

@@ -24,6 +24,10 @@ namespace Portal.Pages
         public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get; set; }
         [BindProperty]
         public IList<Timesheet.Entity.Entities.Person> Person { get; set; }
+        [BindProperty]
+        public IList<Timesheet.Entity.Entities.RewardSummary> RewardSummary { get; set; }
+        [BindProperty]
+        public IList<Timesheet.Entity.Entities.Payment> Payment { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -35,6 +39,9 @@ namespace Portal.Pages
                 .Include(p => p.Job)
                 .Include(p => p.PayedFrom)
                 .Include(p => p.Section).ToListAsync();
+            Payment = await _context.Payment
+                .Include(p => p.Timesheet).ToListAsync();
+            RewardSummary = await _context.RewardSummary.ToListAsync();
         }
     }
 }
