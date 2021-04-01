@@ -110,7 +110,7 @@
                                         </i>
                                         Upravit
                                     </a>
-                                    <a class="btn btn-danger btn-sm" onclick="deleteTimesheetDetail(@Html.DisplayFor(modelItem => item.Id))">
+                                    <a class="btn btn-danger btn-sm" onclick="deleteTimesheetDetail(@item.Id)">
                                         <i class="fas fa-trash">
                                         </i>
                                         Smazat
@@ -471,41 +471,44 @@
 <script>
     var json = JSON.stringify(@Html.Raw(Model.TimesheetJson));
     //var objects = JSON.parse(json);
-    $(function() {
-        const dataTable = dataTableTimesheets = $("#dataTable").DataTable({
-                            "language": {
-                                "url": '/plugins/datatables-language/cs.json'
-                            },
-                            "ordering": true,
-                            "searching": true,
-                            "paging": true,
-                            "info": true,
-                            "responsive": true,
-                            "lengthChange": false,
-                            "responsive": true,
-                            "lengthChange": false,
-                            "autoWidth": false,
-                            "stateSave": true,
-                            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                            "order": [[3, "desc"]],
-                            "columnDefs": [
-                                {
-                                "targets": [0],
-                                "visible": false,
-                                "searchable": false
-                                },
-                                {
-                                    "targets": [9],
-                                    "orderable": false,
-                                    "searchable": false
-                                }]
-                        });
-                    });
+    $(document).ready(function () {
+        const dataTable = dataTableTimesheets = $('#dataTable').DataTable({
+            "language": {
+                "url": '/plugins/datatables-language/cs.json'
+            },
+            "ordering": true,
+            "searching": true,
+            "paging": true,
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "info": false,
+            "stateSave": true,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "order": [[3, "desc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [9],
+                    "orderable": false,
+                    "searchable": false
+                }],
+            "dom": '<"toolbar">frtip',
+            "initComplete": function (settings, json) {
+                $("div.toolbar").html('<a href="#" class="btn btn-sm btn-info float-left">Založit nový výkaz</a>');
+            }
+        });
+    });
 </script>
+
 <script>
     function deleteTimesheetDetail(id) {
-        debugger;
         $('#delete-confirm').unbind('click').on('click', function (id) {
+            debugger;
             $.ajax({
                 type: "POST",
                 url: "Timesheets/Index?handler=Delete",
@@ -513,12 +516,17 @@
                 headers: {
                     "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
                 },
-                success: function (response) {
-                    alert(response);
+                statusCode: {
+                    404: function () {
+                        toastr.error("Záznam nebyl nalezen.");
+                    }
                 },
-                failure: function (response) {
-                    alert(response);
-                }
+                success: function (response) {
+                    var inputText = "#rowId-" + String(id);
+                    var row = $(inputText);
+                    dataTable.row(row).remove().draw();
+                    toastr.success('Výkaz byl úspěšně odstraněn.');
+                },
             });
         });
         $('#delete-modal').modal('show');

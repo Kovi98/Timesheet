@@ -66,28 +66,5 @@
         <!-- /.control-sidebar -->
     </div>
     @RenderSection("Scripts", required: false)
-    @{
-        if (((List<string>)ViewData["Error"]).Count > 0)
-        {
-            foreach (var message in ((List<string>)ViewData["Error"]))
-            {
-                <script>createError(@message)</script>
-            }
-        }
-        if (((List<string>)ViewData["Warning"]).Count > 0)
-        {
-            foreach (var message in ((List<string>)ViewData["Warning"]))
-            {
-                <script>createWarning(@message)</script>
-            }
-        }
-        if (((List<string>)ViewData["Success"]).Count > 0)
-        {
-            foreach (var message in ((List<string>)ViewData["Success"]))
-            {
-                <script>createSuccess(@message)</script>
-            }
-        }
-    }
 </body>
 </html>
