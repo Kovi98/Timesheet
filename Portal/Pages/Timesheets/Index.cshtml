@@ -90,7 +90,7 @@
                                     @{
                                         if (item.Payment != null && item.Payment.IsPayed)
                                         {
-                                            <a href="#" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
+                                            <a asp-page="./Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
                                         }
                                         else

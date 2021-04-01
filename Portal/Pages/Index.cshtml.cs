@@ -41,7 +41,7 @@ namespace Portal.Pages
                 .Include(p => p.Section).ToListAsync();
             Payment = await _context.Payment
                 .Include(p => p.Timesheet).ToListAsync();
-            RewardSummary = await _context.RewardSummary.ToListAsync();
+            //RewardSummary = await _context.RewardSummary.ToListAsync();
         }
     }
 }
