@@ -486,9 +486,10 @@
 
 <script>
     var json = JSON.stringify(@Html.Raw(Model.TimesheetJson));
+    var dataTableTimesheets;
     //var objects = JSON.parse(json);
     $(document).ready(function () {
-        const dataTable = dataTableTimesheets = $('#dataTable').DataTable({
+        dataTableTimesheets = $('#dataTable').DataTable({
             "language": {
                 "url": '/plugins/datatables-language/cs.json'
             },
@@ -515,7 +516,7 @@
                 }],
             "dom": '<"toolbar">frtip',
             "initComplete": function (settings, json) {
-                $("div.toolbar").html('<a href="#" class="btn btn-sm btn-info float-left">Založit nový výkaz</a>');
+                $("div.toolbar").html('<a href="#" class="btn btn-sm btn-info float-left">Založit nový výkaz</a><button class="btn btn-sm btn-secondary float-left ml-2" onclick="resetTable()">Obnovit výchozí filtrování</button>');
             }
         });
     });
@@ -524,7 +525,6 @@
 <script>
     function deleteTimesheetDetail(id) {
         $('#delete-confirm').unbind('click').on('click', function (id) {
-            debugger;
             $.ajax({
                 type: "POST",
                 url: "Timesheets/Index?handler=Delete",
@@ -539,11 +539,15 @@
                 },
                 success: function (response) {
                     var inputText = "#rowId-" + String(id);
-                    dataTable.row(inputText).remove().draw();
+                    dataTableTimesheets.row(inputText).remove().draw();
                     toastr.success('Výkaz byl úspěšně odstraněn.');
                 },
             });
         });
         $('#delete-modal').modal('show');
+    }
+    function resetTable() {
+        dataTableTimesheets.state.clear();
+        window.location.reload();
     }
 </script>
