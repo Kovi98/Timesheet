@@ -249,15 +249,15 @@
                                             @{
                                                 if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPayed)
                                                 {
-                                                    <a href="#" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
+                                                    <a asp-page="./Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
 
                                                 }
                                                 else
                                                 {
                                                     <span class="badge badge-warning">Nezaplaceno</span>
                                                 }
-                                                                                }
-                                                                            </b>
+                                            }
+                                        </b>
                                     </p>
                                 </div>
 
@@ -283,6 +283,15 @@
                                     <a href="#" class="btn btn-sm btn-primary">Add files</a>
                                     <a href="#" class="btn btn-sm btn-warning">Report contact</a>
                                 </div>
+                            </div>
+                        </div>
+                        <!--Tlačítka dole-->
+                        <div class="row">
+                            <div class="col-12">
+                                <a asp-page="./Print" asp-route-id="@Model.TimesheetDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
+                                    <i class="fas fa-print"></i> Tisk</a>
+                                <a asp-page="./Edit" asp-route-id="@Model.TimesheetDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
+                                    <i class="fas fa-pencil-alt"></i> Upravit </a>
                             </div>
                         </div>
                     </div>
@@ -523,8 +532,7 @@
                 },
                 success: function (response) {
                     var inputText = "#rowId-" + String(id);
-                    var row = $(inputText);
-                    dataTable.row(row).remove().draw();
+                    dataTable.row(inputText).remove().draw();
                     toastr.success('Výkaz byl úspěšně odstraněn.');
                 },
             });

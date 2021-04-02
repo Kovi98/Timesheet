@@ -110,6 +110,8 @@ namespace Portal
                 //RequireAuthorization() = globální autorizace
                 endpoints.MapRazorPages().RequireAuthorization();
             });
+
+            app.UseStatusCodePagesWithRedirects("/Errors/{0}");
         }
     }
 }
