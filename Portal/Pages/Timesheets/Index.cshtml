@@ -100,12 +100,12 @@
                                     }
                                 </td>
                                 <td class="project-actions text-right">
-                                    <a class="btn btn-primary btn-sm" asp-page="" asp-route-id="@item.Id">
+                                    <a class="btn btn-primary btn-sm" asp-page="" asp-route-id="@item.Id" asp-fragment="card-detail">
                                         <i class="fas fa-folder">
                                         </i>
                                         Zobrazit
                                     </a>
-                                    <a class="btn btn-info btn-sm" asp-page="./Edit" asp-route-id="@item.Id">
+                                    <a class="btn btn-info btn-sm" asp-page="./Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
                                         <i class="fas fa-pencil-alt">
                                         </i>
                                         Upravit
@@ -244,12 +244,19 @@
                                         <b class="d-block">@Html.DisplayFor(model => model.TimesheetDetail.CreateTime)</b>
                                     </p>
                                     <p class="text-sm">
-                                        Zaplaceno
+                                        @{ 
+                                            string paymentInfo = "Platna";
+                                            if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPayed)
+                                            {
+                                                paymentInfo = "Zaplaceno";
+                                            }
+                                        }
+                                        @paymentInfo
                                         <b class="d-block">
                                             @{
                                                 if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPayed)
                                                 {
-                                                    <a asp-page="./Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
+                                                    <a asp-page="./Payment/Index" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
 
                                                 }
                                                 else
