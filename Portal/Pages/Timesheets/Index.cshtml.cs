@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Portal.Pages.Timesheets
 {
@@ -24,7 +25,6 @@ namespace Portal.Pages.Timesheets
         public Timesheet.Entity.Entities.Timesheet TimesheetDetail { get; set; }
         [BindProperty]
         public bool IsEditable { get; set; }
-        public string TimesheetJson { get; set; }
 
 
         public async Task OnGetNotPayedAsync()
@@ -33,12 +33,10 @@ namespace Portal.Pages.Timesheets
                 .Include(t => t.Job)
                 .Include(t => t.Payment)
                 .Include(t => t.Person)
-                .Where(t => t.Payment != null && !t.Payment.IsPayed).ToListAsync();
-            TimesheetJson = Newtonsoft.Json.JsonConvert.SerializeObject(Timesheet.ToArray(), Newtonsoft.Json.Formatting.None,
-                new Newtonsoft.Json.JsonSerializerSettings()
-                {
-                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                });
+                .Include(t => t.Person.Section)
+                .Include(t => t.Person.PayedFrom)
+                .ToListAsync();
+            Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPayed).ToList();
             IsEditable = false;
         }
 
@@ -47,7 +45,10 @@ namespace Portal.Pages.Timesheets
             Timesheet = await _context.Timesheet
                 .Include(t => t.Job)
                 .Include(t => t.Payment)
-                .Include(t => t.Person).ToListAsync();
+                .Include(t => t.Person)
+                .Include(t => t.Person.Section)
+                .Include(t => t.Person.PayedFrom)
+                .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
             if (id > 0 && timesheet != null)
             {
@@ -61,13 +62,59 @@ namespace Portal.Pages.Timesheets
             Timesheet = await _context.Timesheet
                 .Include(t => t.Job)
                 .Include(t => t.Payment)
-                .Include(t => t.Person).ToListAsync();
+                .Include(t => t.Person)
+                .Include(t => t.Person.Section)
+                .Include(t => t.Person.PayedFrom)
+                .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
-            if (id > 0 && timesheet != null)
+            if (id > 0)
             {
                 TimesheetDetail = timesheet;
-                IsEditable = true;
             }
+            else
+            {
+                TimesheetDetail = null;
+            }
+            ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
+            ViewData["PaymentId"] = new SelectList(_context.Payment, "Id", "PaymentDateTime");
+            ViewData["PersonId"] = new SelectList(_context.Person, "Id", "FullName");
+            IsEditable = true;
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            if (TimesheetDetail.Id > 0)
+            {
+                _context.Attach(TimesheetDetail).State = EntityState.Modified;
+            }
+            else
+            {
+                TimesheetDetail.CreateTime = DateTime.Now;
+                _context.Timesheet.Add(TimesheetDetail);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TimesheetExists(TimesheetDetail.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToPage("./Index", new { id = TimesheetDetail.Id });
         }
 
         /// <summary>
@@ -75,9 +122,9 @@ namespace Portal.Pages.Timesheets
         /// </summary>
         /// <param name="id">Id objektu</param>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostDeleteAsync(int? id)
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
@@ -95,6 +142,10 @@ namespace Portal.Pages.Timesheets
             }
 
             return new OkResult();
+        }
+        private bool TimesheetExists(int id)
+        {
+            return _context.Timesheet.Any(e => e.Id == id);
         }
     }
 }
