@@ -272,35 +272,39 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card card-info">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Obecné</h3>
+                        <form method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card card-info">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Obecné</h3>
 
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <form method="post">
+                                        <div class="card-body">
                                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                             @{
-                                                if (Model.TimesheetDetail is null)
+                                                if (Model.TimesheetDetail != null)
                                                 {
                                                     <input type="hidden" asp-for="TimesheetDetail.Id" />
+                                                    <input type="hidden" asp-for="TimesheetDetail.CreateTime" />
+                                                    <input type="hidden" asp-for="TimesheetDetail.RowVersion" />
+                                                    <input type="hidden" asp-for="TimesheetDetail.PaymentId" />
+                                                    <input type="hidden" asp-for="TimesheetDetail.Tax" />
                                                 }
                                             }
                                             <div class="form-group">
                                                 <label asp-for="TimesheetDetail.PersonId" class="control-label"></label>
-                                                <select asp-for="TimesheetDetail.PersonId" class="form-control" asp-items="ViewBag.PersonId"></select>
+                                                <select asp-for="TimesheetDetail.PersonId" class="form-control select2bs4" asp-items="ViewBag.PersonId"></select>
                                                 <span asp-validation-for="TimesheetDetail.PersonId" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
                                                 <label asp-for="TimesheetDetail.JobId" class="control-label"></label>
-                                                <select asp-for="TimesheetDetail.JobId" class="form-control" asp-items="ViewBag.JobId"></select>
+                                                <select asp-for="TimesheetDetail.JobId" class="form-control select2bs4" asp-items="ViewBag.JobId"></select>
                                                 <span asp-validation-for="TimesheetDetail.JobId" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
@@ -318,46 +322,46 @@
                                                 <input asp-for="TimesheetDetail.DateTimeTo" class="form-control" />
                                                 <span asp-validation-for="TimesheetDetail.DateTimeTo" class="text-danger"></span>
                                             </div>
-                                        </form>
+                                        </div>
+                                        <!-- /.card-body -->
                                     </div>
-                                    <!-- /.card-body -->
+                                    <!-- /.card -->
                                 </div>
-                                <!-- /.card -->
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card card-secondary">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Odměna</h3>
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
+                                <div class="col-md-6">
+                                    <div class="card card-secondary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Odměna</h3>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
                                         </div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label asp-for="TimesheetDetail.Hours" class="control-label"></label>
+                                                <input id="editHours" asp-for="TimesheetDetail.Hours" class="form-control" />
+                                                <span asp-validation-for="TimesheetDetail.Hours" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="TimesheetDetail.Reward" class="control-label"></label>
+                                                <input id="editReward" asp-for="TimesheetDetail.Reward" class="form-control" />
+                                                <span asp-validation-for="TimesheetDetail.Reward" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
                                     </div>
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label asp-for="TimesheetDetail.Hours" class="control-label"></label>
-                                            <input id="editHours" asp-for="TimesheetDetail.Hours" class="form-control" />
-                                            <span asp-validation-for="TimesheetDetail.Hours" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="TimesheetDetail.Reward" class="control-label"></label>
-                                            <input id="editReward" asp-for="TimesheetDetail.Reward" class="form-control" />
-                                            <span asp-validation-for="TimesheetDetail.Reward" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-body -->
-                                </div>
-                            </div>
-                        </div>
-                        <!--Tlačítka dole-->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
                                 </div>
                             </div>
-                        </div>
+                            <!--Tlačítka dole-->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -463,3 +467,15 @@
                 </script>
             }
 }
+
+<script>
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+    })
+</script>
