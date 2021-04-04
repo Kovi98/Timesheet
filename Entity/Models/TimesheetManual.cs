@@ -6,7 +6,7 @@ namespace Timesheet.Entity.Entities
 {
     public partial class Timesheet
     {
-        public decimal ToPay { get { return Reward ?? 0 - Tax; } }
+        public decimal ToPay { get { return (Reward ?? 0) - Tax; } }
         public TimeSpan HoursTime
         {
             get

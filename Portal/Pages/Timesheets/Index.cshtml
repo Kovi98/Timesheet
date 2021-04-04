@@ -429,12 +429,12 @@
 </script>
 
 <script>
-    function deleteTimesheetDetail(id) {
+    function deleteTimesheetDetail(deleteId) {
         $('#delete-confirm').unbind('click').on('click', function (id) {
             $.ajax({
                 type: "POST",
                 url: "Timesheets/Index?handler=Delete",
-                data: "id=" + id,
+                data: { id: deleteId },
                 headers: {
                     "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
                 },
@@ -444,6 +444,7 @@
                     }
                 },
                 success: function (response) {
+                    debugger;
                     var inputText = "#rowId-" + String(id);
                     dataTableTimesheets.row(inputText).remove().draw();
                     toastr.success('Výkaz byl úspěšně odstraněn.');

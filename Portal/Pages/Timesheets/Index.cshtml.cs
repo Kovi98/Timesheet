@@ -88,6 +88,19 @@ namespace Portal.Pages.Timesheets
                 return Page();
             }
 
+            if (!TimesheetDetail.Hours.HasValue)
+                TimesheetDetail.Hours = (decimal)(TimesheetDetail.DateTimeTo - TimesheetDetail.DateTimeFrom)?.TotalHours;
+            if (!TimesheetDetail.Reward.HasValue)
+                TimesheetDetail.Reward = TimesheetDetail.Hours * (_context.Job.Find(TimesheetDetail.JobId).HourReward);
+            if (_context.Person.Find(TimesheetDetail.PersonId).HasTax)
+            {
+                TimesheetDetail.Tax = (TimesheetDetail.Reward ?? 0) * (decimal)0.15;
+            }
+            else
+            {
+                TimesheetDetail.Tax = 0;
+            }
+
             if (TimesheetDetail.Id > 0)
             {
                 _context.Attach(TimesheetDetail).State = EntityState.Modified;
@@ -121,7 +134,7 @@ namespace Portal.Pages.Timesheets
         /// Smazání objektu Timesheet
         /// </summary>
         /// <param name="id">Id objektu</param>
-        /// <returns></returns>
+        /// <returns>404 - NotFound / OkResult</returns>
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             if (id == 0)
@@ -133,8 +146,8 @@ namespace Portal.Pages.Timesheets
 
             if (Timesheet != null)
             {
-                //_context.Timesheet.Remove(timesheetToDelete);
-                //await _context.SaveChangesAsync();
+                _context.Timesheet.Remove(timesheetToDelete);
+                await _context.SaveChangesAsync();
             }
             else
             {
