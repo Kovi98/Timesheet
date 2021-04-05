@@ -436,14 +436,14 @@
                     "searchable": false
                 }],
             "dom": '<"toolbar">frtip',
-            "initComplete": function onTableInitComplete(settings, json) {
+            "initComplete": function(settings, json) {
                 $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Založit nový výkaz</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
                 $('#dataTable').on('click', '#select_all', function () {
                     if ($('#select_all:checked').val() === 'on')
                         dataTableTimesheets.rows().select();
                     else
                         dataTableTimesheets.rows().deselect();
-                });	
+                });
             }
         });
     });
@@ -466,18 +466,18 @@
                 },
                 success: function (response) {
                     debugger;
-                    var inputText = "#rowId-" + String(id);
+                    var inputText = "#rowId-".concat(String(deleteId));
                     dataTableTimesheets.row(inputText).remove().draw();
                     toastr.success('Výkaz byl úspěšně odstraněn.');
                 },
             });
         });
         $('#delete-modal').modal('show');
-    }
+    };
     function resetTable() {
         dataTableTimesheets.state.clear();
         window.location.reload();
-    }
+    };
 </script>
 
 @{ 
