@@ -36,7 +36,7 @@ namespace Portal.Pages.Timesheets
                 .Include(t => t.Person.Section)
                 .Include(t => t.Person.PayedFrom)
                 .ToListAsync();
-            Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPayed).ToList();
+            Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).ToList();
             IsEditable = false;
         }
 

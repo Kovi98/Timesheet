@@ -24,7 +24,7 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>@Model.Payment.Where(p => p.IsPayed && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Year == DateTime.Now.Month).Select(p => p.RewardToPay).Sum() <sup style="font-size: 20px"> Kč</sup></h3>
+                <h3>@Model.Payment.Where(p => p.IsPaid && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Year == DateTime.Now.Month).Select(p => p.RewardToPay).Sum() <sup style="font-size: 20px"> Kč</sup></h3>
 
                 <p>Vyplacených odměn v aktuálním měsíci</p>
             </div>
@@ -54,7 +54,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>@Model.Timesheet.Where(t => t.Payment == null || !t.Payment.IsPayed).Count()</h3>
+                <h3>@Model.Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).Count()</h3>
 
                 <p>Výkazů práce bez zaplacené odměny</p>
             </div>
@@ -102,18 +102,18 @@
                                 foreach (var item in Model.Timesheet.Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5))
                                 {
                                     <tr>
-                                        <th>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.Person.FullName)
-                                        </th>
-                                        <th>
+                                        </td>
+                                        <td>
                                             @item.DateTimeTo.Value.ToString("dd. MM. yyyy")
-                                        </th>
-                                        <th>
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.Hours)
-                                        </th>
-                                        <th>
+                                        </td>
+                                        <td>
                                             @{
-                                                if (item.Payment != null && item.Payment.IsPayed)
+                                                if (item.Payment != null && item.Payment.IsPaid)
                                                 {
                                                     <a asp-page="./Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
@@ -123,7 +123,7 @@
                                                     <span class="badge badge-warning">Nezaplaceno</span>
                                                 }
                                             }
-                                        </th>
+                                        </td>
                                     </tr>
                                 }
                             }

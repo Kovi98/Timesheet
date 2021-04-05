@@ -6,7 +6,7 @@ namespace Timesheet.Entity.Entities
 {
     public partial class Payment
     {
-        public bool IsPayed { get { return !(PaymentDateTime is null); } }
+        public bool IsPaid { get { return !(PaymentDateTime is null); } }
         public decimal RewardToPay 
         {
             get
