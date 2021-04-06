@@ -19,11 +19,8 @@ namespace Portal.Pages.Timesheets
             _context = context;
         }
 
-        [BindProperty]
         public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get;set; }
-        [BindProperty]
         public Timesheet.Entity.Entities.Timesheet TimesheetDetail { get; set; }
-        [BindProperty]
         public bool IsEditable { get; set; }
 
 
@@ -34,7 +31,7 @@ namespace Portal.Pages.Timesheets
                 .Include(t => t.Payment)
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
-                .Include(t => t.Person.PayedFrom)
+                .Include(t => t.Person.PaidFrom)
                 .ToListAsync();
             Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).ToList();
             IsEditable = false;
@@ -47,7 +44,7 @@ namespace Portal.Pages.Timesheets
                 .Include(t => t.Payment)
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
-                .Include(t => t.Person.PayedFrom)
+                .Include(t => t.Person.PaidFrom)
                 .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
             if (id > 0 && timesheet != null)
@@ -64,7 +61,7 @@ namespace Portal.Pages.Timesheets
                 .Include(t => t.Payment)
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
-                .Include(t => t.Person.PayedFrom)
+                .Include(t => t.Person.PaidFrom)
                 .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
             if (id > 0)

@@ -37,7 +37,7 @@ namespace Portal.Pages
                 .Include(t => t.Person).ToListAsync();
             Person = await _context.Person
                 .Include(p => p.Job)
-                .Include(p => p.PayedFrom)
+                .Include(p => p.PaidFrom)
                 .Include(p => p.Section).ToListAsync();
             Payment = await _context.Payment
                 .Include(p => p.Timesheet).ToListAsync();

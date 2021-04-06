@@ -31,7 +31,7 @@ namespace Portal.Pages.People
 
             Person = await _context.Person
                 .Include(p => p.Job)
-                .Include(p => p.PayedFrom)
+                .Include(p => p.PaidFrom)
                 .Include(p => p.Section).FirstOrDefaultAsync(m => m.Id == id);
 
             if (Person == null)
@@ -39,7 +39,7 @@ namespace Portal.Pages.People
                 return NotFound();
             }
            ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
-           ViewData["PayedFromId"] = new SelectList(_context.Finance, "Id", "Name");
+           ViewData["PaidFromId"] = new SelectList(_context.Finance, "Id", "Name");
            ViewData["SectionId"] = new SelectList(_context.Section, "Id", "Name");
             return Page();
         }

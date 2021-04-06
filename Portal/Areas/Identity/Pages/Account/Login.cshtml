@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="~/css/adminlte.min.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="~/plugins/toastr/toastr.min.css">
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
@@ -24,7 +26,6 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Pro přístup k Portálu je nutné být přihlášen.</p>
-
                 <form id="account" method="post">
                     <span asp-validation-for="Input.Email" class="text-danger small"></span>
                     <div class="input-group mb-3">
@@ -66,6 +67,19 @@
     <script src="~/js/adminlte.min.js"></script>
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />
+    }
+    <!-- Toastr -->
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+    @{
+        if (ViewData.ModelState["Error"] != null)
+        {
+            foreach (var item in ViewData.ModelState["Error"].Errors)
+            {
+                <script>
+                toastr.error("@item.ErrorMessage");
+                </script>
+            }
+        }
     }
 </body>
 </html>

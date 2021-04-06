@@ -46,12 +46,15 @@ namespace Portal.Areas.Identity.Pages.Account
         {
             [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [EmailAddress]
+            [Display(Name ="E-mail")]
             public string Email { get; set; }
 
             [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
             [DataType(DataType.Password)]
+            [Display(Name = "Heslo")]
             public string Password { get; set; }
 
+            [Display(Name = "Pamatovat")]
             public bool RememberMe { get; set; }
         }
 
@@ -97,7 +100,7 @@ namespace Portal.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError("Error", "Přihlášení bylo neúspěšné!");
                     return Page();
                 }
             }

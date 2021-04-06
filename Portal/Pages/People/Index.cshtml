@@ -4,139 +4,6 @@
 @{
     ViewData["Title"] = "Trenéři";
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].Surname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].DateBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].RowVersion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].CreateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].Street)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].HouseNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].PostalCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].HourReward)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].BankAccount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].BankCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].IsActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].HasTax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].IdentityDocument)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].Job)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].PayedFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Person[0].Section)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Person)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RowVersion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Street)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HouseNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PostalCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HourReward)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BankAccount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BankCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HasTax)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdentityDocument)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Job.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PayedFrom.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Section.Name)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 <div class="row">
     <div class="col-12">
@@ -156,7 +23,7 @@
                             <th>
                                 #
                             </th>
-                            <th>
+                            <th style="text-align: center">
                                 Aktivní
                             </th>
                             <th>
@@ -165,64 +32,48 @@
                             <th>
                                 Datum narození
                             </th>
-                            <th>
-                                Délka
+                            <th style="text-align: center">
+                                Daň
                             </th>
                             <th>
-                                Odměna
-                            </th>
-                            <th>
-                                Sazba
+                                Funkce
                             </th>
                             <th>
                                 Sekce
-                            </th>
-                            <th>
-                                Platba
                             </th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model.Timesheet)
+                        @foreach (var item in Model.Person)
                         {
                             <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Person.FullName)
+                                <td style="text-align: center">
+                                    <div class="icheck-primary">
+                                        @Html.CheckBoxFor(modelItem => item.IsActive, new { id = "activeCheckbox", disabled = "" })
+                                        <label for="activeCheckbox"></label>
+                                    </div>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.DateTimeFrom)
+                                    @Html.DisplayFor(modelItem => item.FullName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.DateTimeTo)
+                                    @Html.DisplayFor(modelItem => item.DateBirth)
+                                </td>
+                                <td style="text-align: center">
+                                    <div class="icheck-primary">
+                                        @Html.CheckBoxFor(modelItem => item.HasTax, new { id = "taxCheckbox", disabled="" })
+                                        <label for="taxCheckbox"></label>
+                                    </div>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Hours)
+                                    @Html.DisplayFor(modelItem => item.Job.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Reward)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Job.HourReward)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Person.Section.Name)
-                                </td>
-                                <td class="project-state">
-                                    @{
-                                        if (item.Payment != null && item.Payment.IsPaid)
-                                        {
-                                            <a asp-page="/Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
-
-                                        }
-                                        else
-                                        {
-                                            <span class="badge badge-warning">Nezaplaceno</span>
-                                        }
-                                    }
+                                    @Html.DisplayFor(modelItem => item.Section.Name)
                                 </td>
                                 <td class="project-actions text-right">
                                     <a class="btn btn-primary btn-sm" asp-page="" asp-route-id="@item.Id" asp-fragment="card-detail">
@@ -235,7 +86,7 @@
                                         </i>
                                         Upravit
                                     </a>
-                                    <a class="btn btn-danger btn-sm" onclick="deleteTimesheetDetail(@item.Id)">
+                                    <a class="btn btn-danger btn-sm" onclick="deletePersonDetail(@item.Id)">
                                         <i class="fas fa-trash">
                                         </i>
                                         Smazat
@@ -250,253 +101,7 @@
     </div>
 </div>
 
-@{
-    //Detail karta
-    if (!Model.IsEditable && Model.TimesheetDetail != null)
-    {
-        <div id="row-detail" class="row">
-            <div class="col-12">
-                <div id="card-detail" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detail výkazu práce</h3>
 
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
-                                <div class="row">
-                                    <div class="col-12 col-sm-4">
-                                        <div class="info-box bg-light">
-                                            <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">Vykázaných hodin</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.Hours)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-4">
-                                        <div class="info-box bg-light">
-                                            <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">Odměna</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.Reward)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-4">
-                                        <div class="info-box bg-light">
-                                            <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">K výplatě</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.ToPay)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <h4 class="ml-1"><i class="far fa-clock mr-2"></i> Čas</h4>
-                                        <strong>Začátek</strong> @Html.DisplayFor(model => model.TimesheetDetail.DateTimeFrom) <br />
-                                        <strong>Konec</strong> @Html.DisplayFor(model => model.TimesheetDetail.DateTimeTo) <br />
-                                        <strong>Vykázaný čas</strong> @Html.DisplayFor(model => model.TimesheetDetail.HoursTime) <br />
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <h4 class="ml-1"><i class="fas fa-coins mr-2"></i> Finance</h4>
-                                        <strong>Sazba</strong> @Html.DisplayFor(model => model.TimesheetDetail.Job.HourReward) <br />
-                                        <strong>Danit</strong>
-                                        @{
-                                            if (Model.TimesheetDetail.Person.HasTax)
-                                            {
-                                                <i class="far fa-check-circle ml-1 text-green"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="far fa-times-circle ml-1 text-red"></i>
-                                            }
-                                        }
-                                        <br />
-                                        <strong>Odměna</strong> @Html.DisplayFor(model => model.TimesheetDetail.Reward) <br />
-                                        <strong>Daň</strong> @Html.DisplayFor(model => model.TimesheetDetail.Tax) <br />
-                                        <strong>Výplata</strong> @Html.DisplayFor(model => model.TimesheetDetail.ToPay) <br />
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <h4 class="ml-1"><i class="fas fa-align-left mr-2"></i> Ostatní</h4>
-                                        <strong>Práce</strong> @Html.DisplayFor(model => model.TimesheetDetail.Job.Name) <br />
-                                        <strong>Sekce</strong> @Html.DisplayFor(model => model.TimesheetDetail.Person.Section.Name) <br />
-                                        <strong>Dotace</strong> @Html.DisplayFor(model => model.TimesheetDetail.Person.PayedFrom.Name) <br />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                                <h3 class="text-info"><i class="fas fa-user mr-2"></i> <a class="text-info" asp-page="./People/Index" asp-router-id="@Model.TimesheetDetail.Person.Id">@Html.DisplayFor(model => model.TimesheetDetail.Person.FullName)</a></h3>
-                                <p class="text-muted">@Html.DisplayFor(model => model.TimesheetDetail.Name)</p>
-                                <br>
-                                <div class="text-muted">
-                                    <p class="text-sm">
-                                        Vytvořeno
-                                        <b class="d-block">@Html.DisplayFor(model => model.TimesheetDetail.CreateTime)</b>
-                                    </p>
-                                    <p class="text-sm">
-                                        @{
-                                            string paymentInfo = "Platba";
-                                            if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
-                                            {
-                                                paymentInfo = "Zaplaceno";
-                                            }
-                                        }
-                                        @paymentInfo
-                                        <b class="d-block">
-                                            @{
-                                                if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
-                                                {
-                                                    <a asp-page="/Payment/Index" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
-
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge badge-warning">Nezaplaceno</span>
-                                                }
-                                            }
-                                        </b>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--Tlačítka dole-->
-                        <div class="row">
-                            <div class="col-12">
-                                <a asp-page="./Print" asp-route-id="@Model.TimesheetDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
-                                    <i class="fas fa-print"></i> Tisk
-                                </a>
-                                <a asp-page="" asp-page-handler="Edit" asp-route-id="@Model.TimesheetDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
-                                    <i class="fas fa-pencil-alt"></i> Upravit
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-        </div>
-    }
-    //Edit karta
-    if (Model.IsEditable)
-    {
-        <div id="row-edit" class="row">
-            <div class="col-12">
-                <div id="card-edit" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Editace výkazu práce</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form method="post">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card card-info">
-                                        <div class="card-header">
-                                            <h3 class="card-title">Obecné</h3>
-
-                                            <div class="card-tools">
-                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                            @{
-                                                if (Model.TimesheetDetail != null)
-                                                {
-                                                    <input type="hidden" asp-for="TimesheetDetail.Id" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.CreateTime" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.RowVersion" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.PaymentId" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.Tax" />
-                                                }
-                                            }
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.PersonId" class="control-label"></label>
-                                                <select asp-for="TimesheetDetail.PersonId" class="form-control select2bs4" asp-items="ViewBag.PersonId"></select>
-                                                <span asp-validation-for="TimesheetDetail.PersonId" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.JobId" class="control-label"></label>
-                                                <select asp-for="TimesheetDetail.JobId" class="form-control select2bs4" asp-items="ViewBag.JobId"></select>
-                                                <span asp-validation-for="TimesheetDetail.JobId" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.Name" class="control-label"></label>
-                                                <input asp-for="TimesheetDetail.Name" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.Name" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.DateTimeFrom" class="control-label"></label>
-                                                <input asp-for="TimesheetDetail.DateTimeFrom" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.DateTimeFrom" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.DateTimeTo" class="control-label"></label>
-                                                <input asp-for="TimesheetDetail.DateTimeTo" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.DateTimeTo" class="text-danger"></span>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                    <!-- /.card -->
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card card-secondary">
-                                        <div class="card-header">
-                                            <h3 class="card-title">Odměna</h3>
-                                            <div class="card-tools">
-                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.Hours" class="control-label"></label>
-                                                <input id="editHours" asp-for="TimesheetDetail.Hours" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.Hours" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.Reward" class="control-label"></label>
-                                                <input id="editReward" asp-for="TimesheetDetail.Reward" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.Reward" class="text-danger"></span>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                </div>
-                            </div>
-                            <!--Tlačítka dole-->
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-        </div>
-    }
-}
 
 <!-- Modal - potvrzení smazání záznamu -->
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

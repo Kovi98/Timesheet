@@ -30,7 +30,7 @@ namespace Portal.Pages.People
 
             Person = await _context.Person
                 .Include(p => p.Job)
-                .Include(p => p.PayedFrom)
+                .Include(p => p.PaidFrom)
                 .Include(p => p.Section).FirstOrDefaultAsync(m => m.Id == id);
 
             if (Person == null)

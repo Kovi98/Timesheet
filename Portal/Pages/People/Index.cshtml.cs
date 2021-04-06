@@ -19,12 +19,14 @@ namespace Portal.Pages.People
         }
 
         public IList<Person> Person { get;set; }
+        public Person PersonDetail { get; set; }
+        public bool IsEditable { get; set; }
 
         public async Task OnGetAsync()
         {
             Person = await _context.Person
                 .Include(p => p.Job)
-                .Include(p => p.PayedFrom)
+                .Include(p => p.PaidFrom)
                 .Include(p => p.Section).ToListAsync();
         }
     }

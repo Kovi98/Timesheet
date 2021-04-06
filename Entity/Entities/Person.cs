@@ -31,12 +31,12 @@ namespace Timesheet.Entity.Entities
         public bool IsActive { get; set; }
         public bool HasTax { get; set; }
         public int SectionId { get; set; }
-        public int PayedFromId { get; set; }
+        public int PaidFromId { get; set; }
         public int JobId { get; set; }
         public string IdentityDocument { get; set; }
 
         public virtual Job Job { get; set; }
-        public virtual Finance PayedFrom { get; set; }
+        public virtual Finance PaidFrom { get; set; }
         public virtual Section Section { get; set; }
         public virtual ICollection<Timesheet> Timesheet { get; set; }
     }

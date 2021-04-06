@@ -21,7 +21,7 @@ namespace Portal.Pages.People
         public IActionResult OnGet()
         {
         ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
-        ViewData["PayedFromId"] = new SelectList(_context.Finance, "Id", "Name");
+        ViewData["PaidFromId"] = new SelectList(_context.Finance, "Id", "Name");
         ViewData["SectionId"] = new SelectList(_context.Section, "Id", "Name");
             return Page();
         }

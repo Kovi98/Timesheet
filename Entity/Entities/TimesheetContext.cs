@@ -128,9 +128,9 @@ namespace Timesheet.Entity.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Person_Job");
 
-                entity.HasOne(d => d.PayedFrom)
+                entity.HasOne(d => d.PaidFrom)
                     .WithMany(p => p.Person)
-                    .HasForeignKey(d => d.PayedFromId)
+                    .HasForeignKey(d => d.PaidFromId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Person_Finance");
 
