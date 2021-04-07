@@ -25,7 +25,6 @@ namespace Timesheet.Entity.Entities
         public string City { get; set; }
         public string State { get; set; }
         public string PostalCode { get; set; }
-        public decimal? HourReward { get; set; }
         public string BankAccount { get; set; }
         public string BankCode { get; set; }
         public bool IsActive { get; set; }

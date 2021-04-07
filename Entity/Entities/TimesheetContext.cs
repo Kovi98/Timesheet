@@ -95,8 +95,6 @@ namespace Timesheet.Entity.Entities
 
                 entity.Property(e => e.DateBirth).HasColumnType("date");
 
-                entity.Property(e => e.HourReward).HasColumnType("decimal(19, 2)");
-
                 entity.Property(e => e.HouseNumber).HasMaxLength(10);
 
                 entity.Property(e => e.IdentityDocument).HasMaxLength(50);
