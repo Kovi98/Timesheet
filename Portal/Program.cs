@@ -1,4 +1,5 @@
 ﻿
+using GemBox.Document;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,10 @@ namespace Portal
     {
         public static void Main(string[] args)
         {
+            //GemBox.Document free lifence
+            ComponentInfo.SetLicense("FREE-LIMITED-KEY");
+
+            //Inicializace aplikace
             var host = CreateHostBuilder(args).Build();
 
             CreateDbIfNotExists(host);

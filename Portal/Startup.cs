@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Entity.Entities;
+using Timesheet.Entity.Models;
 
 namespace Portal
 {
@@ -30,13 +31,16 @@ namespace Portal
         public void ConfigureServices(IServiceCollection services)
         {
             //Dependency injection
-            #region EF Context DI
+            #region DI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Timesheet")));
             services.AddDbContext<TimesheetContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Timesheet")));
+
+            services.AddScoped<IDocumentManager>(options =>
+            new DocumentManager(Configuration.GetValue<string>("ContractTemplate")));
             #endregion
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
