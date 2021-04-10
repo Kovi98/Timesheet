@@ -410,59 +410,59 @@
         </div>
     </div>
 </div>
-
-<script>
-    var dataTableTimesheets;
-    $(document).ready(function () {
-        dataTableTimesheets = $('#dataTable').DataTable({
-            "language": {
-                "url": '/plugins/datatables-language/cs.json'
-            },
-            "ordering": true,
-            "searching": true,
-            "paging": true,
-            "responsive": true,
-            "lengthChange": true,
-            "autoWidth": true,
-            "info": false,
-            "stateSave": true,
-            "order": [[3, "desc"]],
-            "select": {
-                "style": 'multi',
-                "selector": 'td:first-child'
-            },
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+@section Scripts {
+    <script>
+        var dataTableTimesheets;
+        $(document).ready(function () {
+            dataTableTimesheets = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/plugins/datatables-language/cs.json'
                 },
-                {
-                    "targets": [1],
-                    "orderable": false,
-                    "searchable": false,
-                    "className": 'select-checkbox'
+                "ordering": true,
+                "searching": true,
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "info": false,
+                "stateSave": true,
+                "order": [[3, "desc"]],
+                "select": {
+                    "style": 'multi',
+                    "selector": 'td:first-child'
                 },
-                {
-                    "targets": [10],
-                    "orderable": false,
-                    "searchable": false
-                }],
-            "dom": '<"toolbar">frtip',
-            "initComplete": function (settings, json) {
-                $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
-                $('#dataTable').on('click', '#select_all', function () {
-                    if ($('#select_all:checked').val() === 'on')
-                        dataTableTimesheets.rows().select();
-                    else
-                        dataTableTimesheets.rows().deselect();
-                });
-            }
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [1],
+                        "orderable": false,
+                        "searchable": false,
+                        "className": 'select-checkbox'
+                    },
+                    {
+                        "targets": [10],
+                        "orderable": false,
+                        "searchable": false
+                    }],
+                "dom": '<"toolbar">frtip',
+                "initComplete": function (settings, json) {
+                    $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                    $('#dataTable').on('click', '#select_all', function () {
+                        if ($('#select_all:checked').val() === 'on')
+                            dataTableTimesheets.rows().select();
+                        else
+                            dataTableTimesheets.rows().deselect();
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
+    <script>
     function deleteTimesheetDetail(deleteId) {
         $('#delete-confirm').unbind('click').on('click', function (id) {
             $.ajax({
@@ -499,26 +499,27 @@
             toastr.warning("Není označen žádný záznam pro vygenerování platby.");
         }
     }
-</script>
+    </script>
 
-@{
-    if (Model.IsEditable && Model.TimesheetDetail is null)
-    {
-        <script>
-            $("#editHours").prop("disabled", true);
-            $("#editReward").prop("disabled", true);
-        </script>
+    @{
+        if (Model.IsEditable && Model.TimesheetDetail is null)
+        {
+            <script>
+                $("#editHours").prop("disabled", true);
+                $("#editReward").prop("disabled", true);
+            </script>
+        }
     }
-}
 
-<script>
-    $(function () {
-        //Initialize Select2 Elements
-        $('.select2').select2()
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
 
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4'
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
         })
-    })
-</script>
+    </script>
+}

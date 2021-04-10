@@ -270,187 +270,184 @@
                                     <input type="hidden" asp-for="PersonDetail.RowVersion" />
                                 }
                             }
-                        <div class="row">
-                            <section class="col-lg-7 connectedSortable">
-                                <div class="card card-info">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Osobní údaje</h3>
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
+                            <div class="row">
+                                <section class="col-lg-7 connectedSortable">
+                                    <div class="card card-info">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Osobní údaje</h3>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.Name" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.Name" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.Name" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.Surname" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.Surname" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.Surname" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group icheck-primary icheck-inline">
+                                                        @Html.CheckBoxFor(m => m.PersonDetail.IsActive, new { id = "isActiveCheckbox" })
+                                                        <label class="form-check-label" for="isActiveCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.IsActive)</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.DateBirth" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.DateBirth" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.DateBirth" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.IdentityDocument" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.IdentityDocument" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.IdentityDocument" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
                                         </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.Name" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.Name" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.Name" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.Surname" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.Surname" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.Surname" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group form-check icheck-primary icheck-inline">
-                                                    @Html.CheckBoxFor(m => m.PersonDetail.IsActive, new { id = "isActiveCheckbox" })
-                                                    <label class="form-check-label" for="isActiveCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.IsActive)</label>
-                                                </div>
+                                    <!-- /.card -->
+                                    <div class="card card-secondary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Ostatní</h3>
+
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.DateBirth" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.DateBirth" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.DateBirth" class="text-danger"></span>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.SectionId" class="control-label"></label>
+                                                        <select asp-for="PersonDetail.SectionId" class="form-control select2bs4" asp-items="ViewBag.SectionId"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.Id" class="control-label"></label>
+                                                        <select asp-for="PersonDetail.PaidFromId" class="form-control select2bs4" asp-items="ViewBag.PaidFromId"></select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                 <div class="form-group">
-                                                     <label asp-for="PersonDetail.IdentityDocument" class="control-label"></label>
-                                                     <input asp-for="PersonDetail.IdentityDocument" class="form-control" />
-                                                     <span asp-validation-for="PersonDetail.IdentityDocument" class="text-danger"></span>
-                                                 </div>
+                                            <div class="form-group">
+                                                <label asp-for="PersonDetail.JobId" class="control-label"></label>
+                                                <select asp-for="PersonDetail.JobId" class="form-control select2bs4" asp-items="ViewBag.JobId"></select>
                                             </div>
                                         </div>
-                                    <!-- /.card-body -->
-                                     </div>
-                                </div>
-                                <!-- /.card -->
-                                
-                                <div class="card card-warning">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Finance</h3>
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                        </div>
+                                        <!-- /.card-body -->
                                     </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-7">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.BankAccount" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.BankAccount" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.BankAccount" class="text-danger"></span>
+                                    <!-- /.card -->
+                                </section>
+                                <section class="col-lg-5 connectedSortable">
+                                    <div class="card card-green">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Adresa</h3>
+
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.Street" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.Street" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.Street" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.HouseNumber" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.HouseNumber" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.HouseNumber" class="text-danger"></span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.BankCode" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.BankCode" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.BankCode" class="text-danger"></span>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.PostalCode" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.PostalCode" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.PostalCode" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.City" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.City" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.City" class="text-danger"></span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group form-check icheck-primary icheck-inline">
-                                                    <div class="form-group form-check icheck-primary icheck-inline">
+                                            <div class="form-group">
+                                                <label asp-for="PersonDetail.State" class="control-label"></label>
+                                                <input asp-for="PersonDetail.State" class="form-control" />
+                                                <span asp-validation-for="PersonDetail.State" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <div class="card card-warning">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Finance</h3>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.BankAccount" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.BankAccount" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.BankAccount" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label asp-for="PersonDetail.BankCode" class="control-label"></label>
+                                                        <input asp-for="PersonDetail.BankCode" class="form-control" />
+                                                        <span asp-validation-for="PersonDetail.BankCode" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group icheck-primary icheck-inline">
                                                         @Html.CheckBoxFor(m => m.PersonDetail.HasTax, new { id = "hasTaxCheckbox" })
                                                         <label class="form-check-label" for="hasTaxCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.HasTax)</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- /.card-body -->
                                     </div>
-                                    <!-- /.card-body -->
-                                </div>
-                                <!-- /.card -->
-                            </section>
-                            <section class="col-lg-5 connectedSortable">
-                                <div class="card card-green">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Adresa</h3>
-
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.Street" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.Street" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.Street" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.HouseNumber" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.HouseNumber" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.HouseNumber" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.PostalCode" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.PostalCode" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.PostalCode" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.City" class="control-label"></label>
-                                                    <input asp-for="PersonDetail.City" class="form-control" />
-                                                    <span asp-validation-for="PersonDetail.City" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="PersonDetail.State" class="control-label"></label>
-                                            <input asp-for="PersonDetail.State" class="form-control" />
-                                            <span asp-validation-for="PersonDetail.State" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-body -->
-                                </div>
-                                <div class="card card-secondary">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Ostatní</h3>
-
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.SectionId" class="control-label"></label>
-                                                    <select asp-for="PersonDetail.SectionId" class="form-control" asp-items="ViewBag.SectionId"></select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label asp-for="PersonDetail.Id" class="control-label"></label>
-                                                    <select asp-for="PersonDetail.PaidFromId" class="form-control" asp-items="ViewBag.PaidFromId"></select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label asp-for="PersonDetail.JobId" class="control-label"></label>
-                                            <select asp-for="PersonDetail.JobId" class="form-control" asp-items="ViewBag.JobId"></select>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-body -->
-                                </div>
-                                <!-- /.card -->
-                            </section>
-                        </div>
+                                    <!-- /.card -->
+                                </section>
+                            </div>
                             <!--Tlačítka dole-->
                             <div class="row">
                                 <div class="col-12">
@@ -490,45 +487,46 @@
     </div>
 </div>
 
-<script>
-    var dataTableTimesheets;
-    $(document).ready(function () {
-        dataTableTimesheets = $('#dataTable').DataTable({
-            "language": {
-                "url": '/plugins/datatables-language/cs.json'
-            },
-            "ordering": true,
-            "searching": true,
-            "paging": true,
-            "responsive": true,
-            "lengthChange": true,
-            "autoWidth": true,
-            "info": false,
-            "stateSave": true,
-            "order": [[1, "asc"]],
-            "select": {
-                "style": 'single'
-            },
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+@section Scripts {
+    <script>
+        var dataTableTimesheets;
+        $(document).ready(function () {
+            dataTableTimesheets = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/plugins/datatables-language/cs.json'
                 },
-                {
-                    "targets": [7],
-                    "orderable": false,
-                    "searchable": false
-                }],
-            "dom": '<"toolbar">frtip',
-            "initComplete": function (settings, json) {
-                $("div.toolbar").html('<a href="/People?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový trenér</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generateContract()"><i class="nav-icon fas fa-handshake"></i> Vygenerovat smlouvu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
-            }
+                "ordering": true,
+                "searching": true,
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "info": false,
+                "stateSave": true,
+                "order": [[1, "asc"]],
+                "select": {
+                    "style": 'single'
+                },
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [7],
+                        "orderable": false,
+                        "searchable": false
+                    }],
+                "dom": '<"toolbar">frtip',
+                "initComplete": function (settings, json) {
+                    $("div.toolbar").html('<a href="/People?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový trenér</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generateContract()"><i class="nav-icon fas fa-handshake"></i> Vygenerovat smlouvu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
+    <script>
     function deleteTimesheetDetail(deleteId) {
         $('#delete-confirm').unbind('click').on('click', function (id) {
             $.ajax({
@@ -565,15 +563,16 @@
             toastr.warning("Není označen žádný záznam pro vygenerování smlouvy.");
         }
     };
-</script>
-<script>
-    $(function () {
-        //Initialize Select2 Elements
-        $('.select2').select2()
+    </script>
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
 
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4'
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
         })
-    })
-</script>
+    </script>
+}
