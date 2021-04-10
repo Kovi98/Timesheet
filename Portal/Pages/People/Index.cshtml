@@ -1,8 +1,27 @@
 ﻿@page
 @model Portal.Pages.People.IndexModel
-
+<!--AJAX POST needed-->
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(HttpContext).RequestToken;
+    }
+}
 @{
     ViewData["Title"] = "Trenéři";
+}
+
+@{
+    if (ViewData.ModelState["Error"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Error"].Errors)
+        {
+            <script>
+                toastr.error("@item.ErrorMessage");
+            </script>
+        }
+    }
 }
 
 <div class="row">
@@ -23,8 +42,8 @@
                             <th>
                                 #
                             </th>
-                            <th style="text-align: center">
-                                Aktivní
+                            <th>
+
                             </th>
                             <th>
                                 Jméno
@@ -32,7 +51,7 @@
                             <th>
                                 Datum narození
                             </th>
-                            <th style="text-align: center">
+                            <th>
                                 Daň
                             </th>
                             <th>
@@ -51,11 +70,17 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
-                                <td style="text-align: center">
-                                    <div class="icheck-primary">
-                                        @Html.CheckBoxFor(modelItem => item.IsActive, new { id = "activeCheckbox", disabled = "" })
-                                        <label for="activeCheckbox"></label>
-                                    </div>
+                                <td>
+                                    @{
+                                        if (item.IsActive)
+                                        {
+                                            <span class="badge badge-success">Aktivní</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-warning">Neaktivní</span>
+                                        }
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FullName)
@@ -63,11 +88,17 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.DateBirth)
                                 </td>
-                                <td style="text-align: center">
-                                    <div class="icheck-primary">
-                                        @Html.CheckBoxFor(modelItem => item.HasTax, new { id = "taxCheckbox", disabled="" })
-                                        <label for="taxCheckbox"></label>
-                                    </div>
+                                <td>
+                                    @{
+                                        if (item.HasTax)
+                                        {
+                                            <span class="badge badge-warning">Plátce</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Podepsané prohlášení</span>
+                                        }
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Job.Name)
@@ -101,20 +132,355 @@
     </div>
 </div>
 
+@{
+    //Detail karta
+    if (!Model.IsEditable && Model.PersonDetail != null)
+    {
+        <div id="row-detail" class="row">
+            <div class="col-12">
+                <div id="card-detail" class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Detail trenéra</h3>
 
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+                                <div class="row">
+                                    <div class="col-12 col-sm-4">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Číslo osobního dokladu</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PersonDetail.IdentityDocument)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Bankovní účet</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PersonDetail.BankAccount)/@Html.DisplayFor(model => model.PersonDetail.BankCode)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Hodin k platbě</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Model.PersonDetail.Timesheet.Where(x => x.Payment != null && !x.Payment.IsPaid).Sum(x => x.Hours)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <h4 class="ml-1"><i class="far fa-address-card mr-2"></i> Osobní údaje</h4>
+                                        <strong>Jméno a příjmení</strong> @Html.DisplayFor(model => model.PersonDetail.FullName) <br />
+                                        <strong>Datum narození</strong> @Html.DisplayFor(model => model.PersonDetail.DateBirth) <br />
+                                        <strong>Číslo dokladu</strong> @Html.DisplayFor(model => model.PersonDetail.IdentityDocument) <br />
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4 class="ml-1"><i class="fas fa-map-marked-alt mr-2"></i> Adresa</h4>
+                                        @Html.DisplayFor(model => model.PersonDetail.Street) @Html.DisplayFor(model => model.PersonDetail.HouseNumber) <br />
+                                        @Html.DisplayFor(model => model.PersonDetail.PostalCode) @Html.DisplayFor(model => model.PersonDetail.City) <br />
+                                        @Html.DisplayFor(model => model.PersonDetail.State) <br />
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4 class="ml-1"><i class="fas fa-align-left mr-2"></i> Ostatní</h4>
+                                        <strong>Práce</strong> @Html.DisplayFor(model => model.PersonDetail.Job.Name) <br />
+                                        <strong>Sekce</strong> @Html.DisplayFor(model => model.PersonDetail.Section.Name) <br />
+                                        <strong>Dotace</strong> @Html.DisplayFor(model => model.PersonDetail.PaidFrom.Name) <br />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+                                <h3 class="text-info"><i class="fas fa-user mr-2"></i> @Html.DisplayFor(model => model.PersonDetail.FullName)</h3>
+                                <p class="text-muted">Narozen: @Html.DisplayFor(model => model.PersonDetail.DateBirth)</p>
+                                <br>
+                                <div class="text-muted">
+                                    <p class="text-sm">
+                                        Vytvořeno
+                                        <b class="d-block">@Html.DisplayFor(model => model.PersonDetail.CreateTime)</b>
+                                    </p>
+                                    <p class="text-sm">
+                                        <b class="d-block">
+                                            @{
+                                                if (Model.PersonDetail.IsActive)
+                                                {
+                                                    <span class="badge badge-success">Aktivní</span>
+
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-warning">Neaktivní</span>
+                                                }
+                                            }
+                                        </b>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Tlačítka dole-->
+                        <div class="row">
+                            <div class="col-12">
+                                <a asp-page="" asp-route-id="@Model.PersonDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
+                                    <i class="fas fa-print"></i> Vygenerovat smlouvu
+                                </a>
+                                <a asp-page="" asp-page-handler="Edit" asp-route-id="@Model.PersonDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
+                                    <i class="fas fa-pencil-alt"></i> Upravit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    }
+    //Edit karta
+    if (Model.IsEditable)
+    {
+        <div id="row-edit" class="row">
+            <div class="col-12">
+                <div id="card-edit" class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Editace trenéra</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            @{
+                                if (Model.PersonDetail != null)
+                                {
+                                    <input type="hidden" asp-for="PersonDetail.Id" />
+                                    <input type="hidden" asp-for="PersonDetail.CreateTime" />
+                                    <input type="hidden" asp-for="PersonDetail.RowVersion" />
+                                }
+                            }
+                        <div class="row">
+                            <section class="col-lg-7 connectedSortable">
+                                <div class="card card-info">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Osobní údaje</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.Name" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.Name" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.Name" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.Surname" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.Surname" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.Surname" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group form-check icheck-primary icheck-inline">
+                                                    @Html.CheckBoxFor(m => m.PersonDetail.IsActive, new { id = "isActiveCheckbox" })
+                                                    <label class="form-check-label" for="isActiveCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.IsActive)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.DateBirth" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.DateBirth" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.DateBirth" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                 <div class="form-group">
+                                                     <label asp-for="PersonDetail.IdentityDocument" class="control-label"></label>
+                                                     <input asp-for="PersonDetail.IdentityDocument" class="form-control" />
+                                                     <span asp-validation-for="PersonDetail.IdentityDocument" class="text-danger"></span>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    <!-- /.card-body -->
+                                     </div>
+                                </div>
+                                <!-- /.card -->
+                                
+                                <div class="card card-warning">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Finance</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.BankAccount" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.BankAccount" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.BankAccount" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.BankCode" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.BankCode" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.BankCode" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group form-check icheck-primary icheck-inline">
+                                                    <div class="form-group form-check icheck-primary icheck-inline">
+                                                        @Html.CheckBoxFor(m => m.PersonDetail.HasTax, new { id = "hasTaxCheckbox" })
+                                                        <label class="form-check-label" for="hasTaxCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.HasTax)</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card -->
+                            </section>
+                            <section class="col-lg-5 connectedSortable">
+                                <div class="card card-green">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Adresa</h3>
+
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.Street" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.Street" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.Street" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.HouseNumber" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.HouseNumber" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.HouseNumber" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.PostalCode" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.PostalCode" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.PostalCode" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.City" class="control-label"></label>
+                                                    <input asp-for="PersonDetail.City" class="form-control" />
+                                                    <span asp-validation-for="PersonDetail.City" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="PersonDetail.State" class="control-label"></label>
+                                            <input asp-for="PersonDetail.State" class="form-control" />
+                                            <span asp-validation-for="PersonDetail.State" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <div class="card card-secondary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Ostatní</h3>
+
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.SectionId" class="control-label"></label>
+                                                    <select asp-for="PersonDetail.SectionId" class="form-control" asp-items="ViewBag.SectionId"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="PersonDetail.Id" class="control-label"></label>
+                                                    <select asp-for="PersonDetail.PaidFromId" class="form-control" asp-items="ViewBag.PaidFromId"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="PersonDetail.JobId" class="control-label"></label>
+                                            <select asp-for="PersonDetail.JobId" class="form-control" asp-items="ViewBag.JobId"></select>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card -->
+                            </section>
+                        </div>
+                            <!--Tlačítka dole-->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    }
+}
 
 <!-- Modal - potvrzení smazání záznamu -->
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Odstranění výkazu práce</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Odstranění trenéra</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                Opravdu chcete odstranit záznam výkazu práce?
+                Opravdu chcete odstranit trenéra?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Zpět</button>
@@ -123,3 +489,91 @@
         </div>
     </div>
 </div>
+
+<script>
+    var dataTableTimesheets;
+    $(document).ready(function () {
+        dataTableTimesheets = $('#dataTable').DataTable({
+            "language": {
+                "url": '/plugins/datatables-language/cs.json'
+            },
+            "ordering": true,
+            "searching": true,
+            "paging": true,
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "info": false,
+            "stateSave": true,
+            "order": [[1, "asc"]],
+            "select": {
+                "style": 'single'
+            },
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [7],
+                    "orderable": false,
+                    "searchable": false
+                }],
+            "dom": '<"toolbar">frtip',
+            "initComplete": function (settings, json) {
+                $("div.toolbar").html('<a href="/People?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový trenér</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generateContract()"><i class="nav-icon fas fa-handshake"></i> Vygenerovat smlouvu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+            }
+        });
+    });
+</script>
+
+<script>
+    function deleteTimesheetDetail(deleteId) {
+        $('#delete-confirm').unbind('click').on('click', function (id) {
+            $.ajax({
+                type: "POST",
+                url: "Timesheets/Index?handler=Delete",
+                data: { id: deleteId },
+                headers: {
+                    "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
+                },
+                statusCode: {
+                    404: function () {
+                        toastr.error("Záznam nebyl nalezen.");
+                    }
+                },
+                success: function (response) {
+                    var inputText = "#rowId-".concat(String(deleteId));
+                    dataTableTimesheets.row(inputText).remove().draw();
+                    toastr.success('Výkaz byl úspěšně odstraněn.');
+                },
+            });
+        });
+        $('#delete-modal').modal('show');
+    };
+    function resetTable() {
+        dataTableTimesheets.state.clear();
+        window.location.reload();
+    };
+    function generateContract() {
+        if (dataTableTimesheets.rows({ selected: true }).count() == 1) {
+            debugger;
+            var timesheetIds = dataTableTimesheets.rows({ selected: true }).ids();
+        }
+        else {
+            toastr.warning("Není označen žádný záznam pro vygenerování smlouvy.");
+        }
+    };
+</script>
+<script>
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+    })
+</script>

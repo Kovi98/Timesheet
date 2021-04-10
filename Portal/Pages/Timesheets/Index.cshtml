@@ -13,6 +13,18 @@
     ViewData["Title"] = "Výkaz práce";
 }
 
+@{
+    if (ViewData.ModelState["Error"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Error"].Errors)
+        {
+            <script>
+                toastr.error("@item.ErrorMessage");
+            </script>
+        }
+    }
+}
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -69,7 +81,6 @@
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
                                 <td>
-
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Person.FullName)
@@ -178,82 +189,84 @@
                                 </div>
                                 <div class="row">
                                 </div>
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <h4 class="ml-1"><i class="far fa-clock mr-2"></i> Čas</h4>
-                                            <strong>Začátek</strong> @Html.DisplayFor(model => model.TimesheetDetail.DateTimeFrom) <br />
-                                            <strong>Konec</strong> @Html.DisplayFor(model => model.TimesheetDetail.DateTimeTo) <br />
-                                            <strong>Vykázaný čas</strong> @Html.DisplayFor(model => model.TimesheetDetail.HoursTime) <br />
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <h4 class="ml-1"><i class="fas fa-coins mr-2"></i> Finance</h4>
-                                            <strong>Sazba</strong> @Html.DisplayFor(model => model.TimesheetDetail.Job.HourReward) <br />
-                                            <strong>Danit</strong>
-                                            @{
-                                                if (Model.TimesheetDetail.Person.HasTax)
-                                                {
-                                                    <i class="far fa-check-circle ml-1 text-green"></i>
-                                                }
-                                                else
-                                                { 
-                                                    <i class="far fa-times-circle ml-1 text-red"></i>
-                                                }
-                                            }
-                                            <br />
-                                            <strong>Odměna</strong> @Html.DisplayFor(model => model.TimesheetDetail.Reward) <br />
-                                            <strong>Daň</strong> @Html.DisplayFor(model => model.TimesheetDetail.Tax) <br />
-                                            <strong>Výplata</strong> @Html.DisplayFor(model => model.TimesheetDetail.ToPay) <br />
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <h4 class="ml-1"><i class="fas fa-align-left mr-2"></i> Ostatní</h4>
-                                            <strong>Práce</strong> @Html.DisplayFor(model => model.TimesheetDetail.Job.Name) <br />
-                                            <strong>Sekce</strong> @Html.DisplayFor(model => model.TimesheetDetail.Person.Section.Name) <br />
-                                            <strong>Dotace</strong> @Html.DisplayFor(model => model.TimesheetDetail.Person.PaidFrom.Name) <br />
-                                        </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <h4 class="ml-1"><i class="far fa-clock mr-2"></i> Čas</h4>
+                                        <strong>Začátek</strong> @Html.DisplayFor(model => model.TimesheetDetail.DateTimeFrom) <br />
+                                        <strong>Konec</strong> @Html.DisplayFor(model => model.TimesheetDetail.DateTimeTo) <br />
+                                        <strong>Vykázaný čas</strong> @Html.DisplayFor(model => model.TimesheetDetail.HoursTime) <br />
                                     </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                                    <h3 class="text-info"><i class="fas fa-user mr-2"></i> <a class="text-info" asp-page="./People/Index" asp-router-id="@Model.TimesheetDetail.Person.Id">@Html.DisplayFor(model => model.TimesheetDetail.Person.FullName)</a></h3>
-                                    <p class="text-muted">@Html.DisplayFor(model => model.TimesheetDetail.Name)</p>
-                                    <br>
-                                    <div class="text-muted">
-                                        <p class="text-sm">
-                                            Vytvořeno
-                                            <b class="d-block">@Html.DisplayFor(model => model.TimesheetDetail.CreateTime)</b>
-                                        </p>
-                                        <p class="text-sm">
-                                            @{
-                                                string paymentInfo = "Platba";
-                                                if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
-                                                {
-                                                    paymentInfo = "Zaplaceno";
-                                                }
+                                    <div class="col-sm-4">
+                                        <h4 class="ml-1"><i class="fas fa-coins mr-2"></i> Finance</h4>
+                                        <strong>Sazba</strong> @Html.DisplayFor(model => model.TimesheetDetail.Job.HourReward) <br />
+                                        <strong>Danit</strong>
+                                        @{
+                                            if (Model.TimesheetDetail.Person.HasTax)
+                                            {
+                                                <i class="far fa-check-circle ml-1 text-green"></i>
                                             }
-                                            @paymentInfo
-                                            <b class="d-block">
-                                                @{
-                                                    if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
-                                                    {
-                                                        <a asp-page="/Payment/Index" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
-
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge badge-warning">Nezaplaceno</span>
-                                                    }
-                                                }
-                                            </b>
-                                        </p>
+                                            else
+                                            {
+                                                <i class="far fa-times-circle ml-1 text-red"></i>
+                                            }
+                                        }
+                                        <br />
+                                        <strong>Odměna</strong> @Html.DisplayFor(model => model.TimesheetDetail.Reward) <br />
+                                        <strong>Daň</strong> @Html.DisplayFor(model => model.TimesheetDetail.Tax) <br />
+                                        <strong>Výplata</strong> @Html.DisplayFor(model => model.TimesheetDetail.ToPay) <br />
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4 class="ml-1"><i class="fas fa-align-left mr-2"></i> Ostatní</h4>
+                                        <strong>Práce</strong> @Html.DisplayFor(model => model.TimesheetDetail.Job.Name) <br />
+                                        <strong>Sekce</strong> @Html.DisplayFor(model => model.TimesheetDetail.Person.Section.Name) <br />
+                                        <strong>Dotace</strong> @Html.DisplayFor(model => model.TimesheetDetail.Person.PaidFrom.Name) <br />
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+                                <h3 class="text-info"><i class="fas fa-user mr-2"></i> <a class="text-info" asp-page="./People/Index" asp-router-id="@Model.TimesheetDetail.Person.Id">@Html.DisplayFor(model => model.TimesheetDetail.Person.FullName)</a></h3>
+                                <p class="text-muted">@Html.DisplayFor(model => model.TimesheetDetail.Name)</p>
+                                <br>
+                                <div class="text-muted">
+                                    <p class="text-sm">
+                                        Vytvořeno
+                                        <b class="d-block">@Html.DisplayFor(model => model.TimesheetDetail.CreateTime)</b>
+                                    </p>
+                                    <p class="text-sm">
+                                        @{
+                                            string paymentInfo = "Platba";
+                                            if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
+                                            {
+                                                paymentInfo = "Zaplaceno";
+                                            }
+                                        }
+                                        @paymentInfo
+                                        <b class="d-block">
+                                            @{
+                                                if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
+                                                {
+                                                    <a asp-page="/Payment/Index" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
+
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-warning">Nezaplaceno</span>
+                                                }
+                                            }
+                                        </b>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                         <!--Tlačítka dole-->
                         <div class="row">
                             <div class="col-12">
                                 <a asp-page="./Print" asp-route-id="@Model.TimesheetDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
-                                    <i class="fas fa-print"></i> Tisk</a>
+                                    <i class="fas fa-print"></i> Tisk
+                                </a>
                                 <a asp-page="" asp-page-handler="Edit" asp-route-id="@Model.TimesheetDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
-                                    <i class="fas fa-pencil-alt"></i> Upravit </a>
+                                    <i class="fas fa-pencil-alt"></i> Upravit
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -436,8 +449,8 @@
                     "searchable": false
                 }],
             "dom": '<"toolbar">frtip',
-            "initComplete": function(settings, json) {
-                $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Založit nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+            "initComplete": function (settings, json) {
+                $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
                 $('#dataTable').on('click', '#select_all', function () {
                     if ($('#select_all:checked').val() === 'on')
                         dataTableTimesheets.rows().select();
@@ -465,7 +478,6 @@
                     }
                 },
                 success: function (response) {
-                    debugger;
                     var inputText = "#rowId-".concat(String(deleteId));
                     dataTableTimesheets.row(inputText).remove().draw();
                     toastr.success('Výkaz byl úspěšně odstraněn.');
@@ -484,19 +496,19 @@
 
         }
         else {
-            toastr.error("Není označen žádný záznam pro vygenerování platby.");
+            toastr.warning("Není označen žádný záznam pro vygenerování platby.");
         }
     }
 </script>
 
-@{ 
+@{
     if (Model.IsEditable && Model.TimesheetDetail is null)
-            {
-                <script>
-                    $("#editHours").prop("disabled", true);
-                    $("#editReward").prop("disabled", true);
-                </script>
-            }
+    {
+        <script>
+            $("#editHours").prop("disabled", true);
+            $("#editReward").prop("disabled", true);
+        </script>
+    }
 }
 
 <script>

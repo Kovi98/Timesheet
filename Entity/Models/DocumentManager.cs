@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Timesheet.Entity.Entities;
 using GemBox.Document;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Timesheet.Entity.Models
 {
@@ -14,13 +16,9 @@ namespace Timesheet.Entity.Models
         {
             _path = path;
         }
-        public void GetContract(Person person)
+        public MemoryStream GetContract(Person person)
         {
-
-        }
-        public void GetContract(IDictionary<string, string> personData)
-        {
-
+            return null;
         }
     }
 }

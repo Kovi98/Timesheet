@@ -20,6 +20,7 @@ namespace Portal.Pages.Timesheets
         }
 
         public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get;set; }
+        [BindProperty]
         public Timesheet.Entity.Entities.Timesheet TimesheetDetail { get; set; }
         public bool IsEditable { get; set; }
 
@@ -50,8 +51,8 @@ namespace Portal.Pages.Timesheets
             if (id > 0 && timesheet != null)
             {
                 TimesheetDetail = timesheet;
-                IsEditable = false;
             }
+            IsEditable = false;
         }
 
         public async Task OnGetEditAsync(int id)
@@ -141,7 +142,13 @@ namespace Portal.Pages.Timesheets
 
             var timesheetToDelete = await _context.Timesheet.FindAsync(id);
 
-            if (Timesheet != null)
+            if (timesheetToDelete != null && timesheetToDelete.PaymentId.HasValue && timesheetToDelete.PaymentId > 0)
+            {
+                ModelState.AddModelError("Error", "Nelze smazat výkaz s existující platbou!");
+                return Page();
+            }
+
+            if (timesheetToDelete != null)
             {
                 _context.Timesheet.Remove(timesheetToDelete);
                 await _context.SaveChangesAsync();

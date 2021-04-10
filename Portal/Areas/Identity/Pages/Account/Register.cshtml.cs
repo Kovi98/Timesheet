@@ -71,6 +71,7 @@ namespace Portal.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync()
         {
+            return;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

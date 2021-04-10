@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Timesheet.Entity.Entities;
 
 namespace Timesheet.Entity.Models
 {
     public interface IDocumentManager
     {
-        void GetContract(Person person);
-        void GetContract(IDictionary<string, string> personData);
+        MemoryStream GetContract(Person person);
     }
 }
