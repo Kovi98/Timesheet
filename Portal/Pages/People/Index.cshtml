@@ -298,9 +298,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <div class="form-group icheck-primary icheck-inline">
-                                                        @Html.CheckBoxFor(m => m.PersonDetail.IsActive, new { id = "isActiveCheckbox" })
-                                                        <label class="form-check-label" for="isActiveCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.IsActive)</label>
+                                                    <div class="row mt-4 ml-3">
+                                                        <div class="form-group icheck-primary icheck-inline">
+                                                            @Html.CheckBoxFor(m => m.PersonDetail.IsActive, new { id = "isActiveCheckbox" })
+                                                            <label class="form-check-label" for="isActiveCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.IsActive)</label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -436,9 +438,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <div class="form-group icheck-primary icheck-inline">
-                                                        @Html.CheckBoxFor(m => m.PersonDetail.HasTax, new { id = "hasTaxCheckbox" })
-                                                        <label class="form-check-label" for="hasTaxCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.HasTax)</label>
+                                                    <div class="row mt-4 ml-3">
+                                                        <div class="form-group icheck-primary icheck-inline">
+                                                            @Html.CheckBoxFor(m => m.PersonDetail.HasTax, new { id = "hasTaxCheckbox" })
+                                                            <label class="form-check-label" for="hasTaxCheckbox">@Html.DisplayNameFor(model => model.PersonDetail.HasTax)</label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
