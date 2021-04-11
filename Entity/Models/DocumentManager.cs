@@ -5,6 +5,7 @@ using Timesheet.Entity.Entities;
 using GemBox.Document;
 using System.IO;
 using System.Threading.Tasks;
+using Spire.Doc;
 
 namespace Timesheet.Entity.Models
 {
@@ -13,9 +14,18 @@ namespace Timesheet.Entity.Models
         public string Format { get; set; }
         public byte[] GetContract(Person person, DocumentStorage defaultDocument)
         {
-            using (MemoryStream stream = new MemoryStream(defaultDocument.DocumentSource))
+            Document doc;
+            using (MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))
             {
-                return stream.ToArray();
+                doc = new Document(streamLoad);
+            }
+
+            doc.Replace("%Name%", person.FullName, true, false);
+
+            using (MemoryStream streamSave = new MemoryStream())
+            {
+                doc.SaveToFile(streamSave, FileFormat.Docx2013);
+                return streamSave.ToArray();
             }
         }
         public DocumentManager(string format = "PDF")
