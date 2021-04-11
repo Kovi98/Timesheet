@@ -19,11 +19,11 @@ namespace Timesheet.Entity.Entities
         {
         }
 
+        public virtual DbSet<DocumentStorage> DocumentStorage { get; set; }
         public virtual DbSet<Finance> Finance { get; set; }
         public virtual DbSet<Job> Job { get; set; }
         public virtual DbSet<Payment> Payment { get; set; }
         public virtual DbSet<Person> Person { get; set; }
-        public virtual DbSet<RewardSummary> RewardSummary { get; set; }
         public virtual DbSet<Section> Section { get; set; }
         public virtual DbSet<Timesheet> Timesheet { get; set; }
 
@@ -37,6 +37,22 @@ namespace Timesheet.Entity.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DocumentStorage>(entity =>
+            {
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.DocumentName).HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.RowVersion)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+            });
+
             modelBuilder.Entity<Finance>(entity =>
             {
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
@@ -137,21 +153,6 @@ namespace Timesheet.Entity.Entities
                     .HasForeignKey(d => d.SectionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Person_Section");
-            });
-
-            modelBuilder.Entity<RewardSummary>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("RewardSummary");
-
-                entity.Property(e => e.Hours).HasColumnType("decimal(38, 2)");
-
-                entity.Property(e => e.PaymentDateTime).HasColumnType("datetime");
-
-                entity.Property(e => e.Reward).HasColumnType("decimal(38, 2)");
-
-                entity.Property(e => e.Tax).HasColumnType("decimal(38, 2)");
             });
 
             modelBuilder.Entity<Section>(entity =>

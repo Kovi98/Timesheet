@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -18,7 +17,6 @@ namespace Timesheet.Entity.Entities
         public byte[] RowVersion { get; set; }
         public DateTime? DateTimeFrom { get; set; }
         public DateTime? DateTimeTo { get; set; }
-        [Required]
         public string Name { get; set; }
         public int? PaymentId { get; set; }
         public decimal? Reward { get; set; }

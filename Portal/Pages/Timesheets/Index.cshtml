@@ -259,7 +259,7 @@
                             </div>
                         </div>
                         <!--Tlačítka dole-->
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-12">
                                 <a asp-page="./Print" asp-route-id="@Model.TimesheetDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
                                     <i class="fas fa-print"></i> Tisk
@@ -292,7 +292,16 @@
                     </div>
                     <div class="card-body">
                         <form method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            @{
+                                if (Model.TimesheetDetail != null)
+                                {
+                                    <input type="hidden" asp-for="TimesheetDetail.Id" />
+                                    <input type="hidden" asp-for="TimesheetDetail.CreateTime" />
+                                    <input type="hidden" asp-for="TimesheetDetail.RowVersion" />
+                                    <input type="hidden" asp-for="TimesheetDetail.PaymentId" />
+                                    <input type="hidden" asp-for="TimesheetDetail.Tax" />
+                                }
+                            }
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card card-info">
@@ -307,40 +316,34 @@
                                         </div>
                                         <div class="card-body">
                                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                            @{
-                                                if (Model.TimesheetDetail != null)
-                                                {
-                                                    <input type="hidden" asp-for="TimesheetDetail.Id" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.CreateTime" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.RowVersion" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.PaymentId" />
-                                                    <input type="hidden" asp-for="TimesheetDetail.Tax" />
-                                                }
-                                            }
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.PersonId" class="control-label"></label>
-                                                <select asp-for="TimesheetDetail.PersonId" class="form-control select2bs4" asp-items="ViewBag.PersonId"></select>
-                                                <span asp-validation-for="TimesheetDetail.PersonId" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.JobId" class="control-label"></label>
-                                                <select asp-for="TimesheetDetail.JobId" class="form-control select2bs4" asp-items="ViewBag.JobId"></select>
-                                                <span asp-validation-for="TimesheetDetail.JobId" class="text-danger"></span>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label asp-for="TimesheetDetail.PersonId" class="control-label"></label>
+                                                    <select asp-for="TimesheetDetail.PersonId" class="form-control select2bs4" asp-items="ViewBag.PersonId"></select>
+                                                    <span asp-validation-for="TimesheetDetail.PersonId" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label asp-for="TimesheetDetail.JobId" class="control-label"></label>
+                                                    <select asp-for="TimesheetDetail.JobId" class="form-control select2bs4" asp-items="ViewBag.JobId"></select>
+                                                    <span asp-validation-for="TimesheetDetail.JobId" class="text-danger"></span>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label asp-for="TimesheetDetail.Name" class="control-label"></label>
                                                 <input asp-for="TimesheetDetail.Name" class="form-control" />
                                                 <span asp-validation-for="TimesheetDetail.Name" class="text-danger"></span>
                                             </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.DateTimeFrom" class="control-label"></label>
-                                                <input asp-for="TimesheetDetail.DateTimeFrom" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.DateTimeFrom" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.DateTimeTo" class="control-label"></label>
-                                                <input asp-for="TimesheetDetail.DateTimeTo" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.DateTimeTo" class="text-danger"></span>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label asp-for="TimesheetDetail.DateTimeFrom" class="control-label"></label>
+                                                    <input asp-for="TimesheetDetail.DateTimeFrom" class="form-control" />
+                                                    <span asp-validation-for="TimesheetDetail.DateTimeFrom" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label asp-for="TimesheetDetail.DateTimeTo" class="control-label"></label>
+                                                    <input asp-for="TimesheetDetail.DateTimeTo" class="form-control" />
+                                                    <span asp-validation-for="TimesheetDetail.DateTimeTo" class="text-danger"></span>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- /.card-body -->
@@ -358,15 +361,17 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.Hours" class="control-label"></label>
-                                                <input id="editHours" asp-for="TimesheetDetail.Hours" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.Hours" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label asp-for="TimesheetDetail.Reward" class="control-label"></label>
-                                                <input id="editReward" asp-for="TimesheetDetail.Reward" class="form-control" />
-                                                <span asp-validation-for="TimesheetDetail.Reward" class="text-danger"></span>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label asp-for="TimesheetDetail.Hours" class="control-label"></label>
+                                                    <input id="editHours" asp-for="TimesheetDetail.Hours" class="form-control" />
+                                                    <span asp-validation-for="TimesheetDetail.Hours" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label asp-for="TimesheetDetail.Reward" class="control-label"></label>
+                                                    <input id="editReward" asp-for="TimesheetDetail.Reward" class="form-control" />
+                                                    <span asp-validation-for="TimesheetDetail.Reward" class="text-danger"></span>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- /.card-body -->

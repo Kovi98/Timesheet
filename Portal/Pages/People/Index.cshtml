@@ -171,8 +171,8 @@
                                     <div class="col-12 col-sm-4">
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">Hodin k platbě</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Model.PersonDetail.Timesheet.Where(x => x.Payment != null && !x.Payment.IsPaid).Sum(x => x.Hours)</span>
+                                                <span class="info-box-text text-center text-muted">XXX</span>
+                                                <span class="info-box-number text-center text-muted mb-0">XXX</span>
                                             </div>
                                         </div>
                                     </div>
@@ -228,7 +228,7 @@
                             </div>
                         </div>
                         <!--Tlačítka dole-->
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-12">
                                 <a asp-page="" asp-route-id="@Model.PersonDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
                                     <i class="fas fa-print"></i> Vygenerovat smlouvu
@@ -261,7 +261,6 @@
                     </div>
                     <div class="card-body">
                         <form method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             @{
                                 if (Model.PersonDetail != null)
                                 {
@@ -282,6 +281,7 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                             <div class="row">
                                                 <div class="col-md-5">
                                                     <div class="form-group">
