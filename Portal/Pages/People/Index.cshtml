@@ -492,6 +492,7 @@
 </div>
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var dataTableTimesheets;
         $(document).ready(function () {
