@@ -19,8 +19,12 @@ namespace Timesheet.Entity.Models
             {
                 doc = new Document(streamLoad);
             }
-
+            //Naplnění šablony
             doc.Replace("%Name%", person.FullName, true, false);
+            doc.Replace("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"), true, false);
+            doc.Replace("%Address%", person.FullAddress, true, false);
+            doc.Replace("%HourReward%", person.Job.HourReward.ToString(), true, false);
+            doc.Replace("%BankAccount%", person.FullBankAccount, true, false);
 
             using (MemoryStream streamSave = new MemoryStream())
             {
