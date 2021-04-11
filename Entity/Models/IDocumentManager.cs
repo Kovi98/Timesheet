@@ -9,6 +9,6 @@ namespace Timesheet.Entity.Models
 {
     public interface IDocumentManager
     {
-        MemoryStream GetContract(Person person);
+        byte[] GetContract(Person person, DocumentStorage defaultDocument);
     }
 }

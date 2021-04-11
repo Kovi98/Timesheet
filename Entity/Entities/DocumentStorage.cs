@@ -15,5 +15,6 @@ namespace Timesheet.Entity.Entities
         public byte[] RowVersion { get; set; }
         public DateTime CreateTime { get; set; }
         public string DocumentName { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

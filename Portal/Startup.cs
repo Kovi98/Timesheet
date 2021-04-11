@@ -40,7 +40,7 @@ namespace Portal
                     Configuration.GetConnectionString("Timesheet")));
 
             services.AddScoped<IDocumentManager>(options =>
-            new DocumentManager(Configuration.GetValue<string>("ContractTemplate")));
+            new DocumentManager());
             #endregion
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)

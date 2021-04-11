@@ -10,15 +10,33 @@ namespace Timesheet.Entity.Models
 {
     public class DocumentManager : IDocumentManager
     {
-        private string _path;
-
-        public DocumentManager(string path)
+        public string Format { get; set; }
+        public byte[] GetContract(Person person, DocumentStorage defaultDocument)
         {
-            _path = path;
+            using (MemoryStream stream = new MemoryStream(defaultDocument.DocumentSource))
+            {
+                return stream.ToArray();
+            }
         }
-        public MemoryStream GetContract(Person person)
+        public DocumentManager(string format = "PDF")
         {
-            return null;
+            Format = format;
         }
+        public SaveOptions Options => this.FormatMappingDictionary[this.Format];
+        public IDictionary<string, SaveOptions> FormatMappingDictionary => new Dictionary<string, SaveOptions>()
+        {
+            ["DOCX"] = new DocxSaveOptions(),
+            ["HTML"] = new HtmlSaveOptions() { EmbedImages = true },
+            ["RTF"] = new RtfSaveOptions(),
+            ["TXT"] = new TxtSaveOptions(),
+            ["PDF"] = new PdfSaveOptions(),
+            ["XPS"] = new XpsSaveOptions(),
+            ["XML"] = new XmlSaveOptions(),
+            ["BMP"] = new ImageSaveOptions(ImageSaveFormat.Bmp),
+            ["PNG"] = new ImageSaveOptions(ImageSaveFormat.Png),
+            ["JPG"] = new ImageSaveOptions(ImageSaveFormat.Jpeg),
+            ["GIF"] = new ImageSaveOptions(ImageSaveFormat.Gif),
+            ["TIF"] = new ImageSaveOptions(ImageSaveFormat.Tiff)
+        };
     }
 }

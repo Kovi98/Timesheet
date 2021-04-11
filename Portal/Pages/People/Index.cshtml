@@ -230,9 +230,6 @@
                         <!--Tlačítka dole-->
                         <div class="row mt-2">
                             <div class="col-12">
-                                <a asp-page="" asp-route-id="@Model.PersonDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
-                                    <i class="fas fa-print"></i> Vygenerovat smlouvu
-                                </a>
                                 <a asp-page="" asp-page-handler="Edit" asp-route-id="@Model.PersonDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
                                     <i class="fas fa-pencil-alt"></i> Upravit
                                 </a>
@@ -475,7 +472,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Odstranění trenéra</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Odstranění trenéra</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -491,12 +488,35 @@
     </div>
 </div>
 
+<!-- Modal -generování smlouvy -->
+<div class="modal fade" id="contract-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contractModalLabel">Smlouva</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                TADY BUDE TĚLO
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zpět</button>
+                <form id="contract-form" method="post" asp-page="" asp-route-id="-id-" asp-route-format="-format-" asp-page-handler="DownloadContract">
+                    <input type="submit" value="Vygenerovat smlouvu" class="btn btn-success"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        var dataTableTimesheets;
+        var dataTablePeople;
         $(document).ready(function () {
-            dataTableTimesheets = $('#dataTable').DataTable({
+            dataTablePeople = $('#dataTable').DataTable({
                 "language": {
                     "url": '/plugins/datatables-language/cs.json'
                 },
@@ -532,42 +552,48 @@
     </script>
 
     <script>
-    function deleteTimesheetDetail(deleteId) {
-        $('#delete-confirm').unbind('click').on('click', function (id) {
-            $.ajax({
-                type: "POST",
-                url: "Timesheets/Index?handler=Delete",
-                data: { id: deleteId },
-                headers: {
-                    "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
-                },
-                statusCode: {
-                    404: function () {
-                        toastr.error("Záznam nebyl nalezen.");
-                    }
-                },
-                success: function (response) {
-                    var inputText = "#rowId-".concat(String(deleteId));
-                    dataTableTimesheets.row(inputText).remove().draw();
-                    toastr.success('Výkaz byl úspěšně odstraněn.');
-                },
+        function deletePersonDetail(deleteId) {
+            $('#delete-confirm').unbind('click').on('click', function (id) {
+                $.ajax({
+                    type: "POST",
+                    url: "Timesheets/Index?handler=Delete",
+                    data: { id: deleteId },
+                    headers: {
+                        "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
+                    },
+                    statusCode: {
+                        404: function () {
+                            toastr.error("Záznam nebyl nalezen.");
+                        }
+                    },
+                    success: function (response) {
+                        var inputText = "#rowId-".concat(String(deleteId));
+                        dataTablePeople.row(inputText).remove().draw();
+                        toastr.success('Výkaz byl úspěšně odstraněn.');
+                    },
+                });
             });
-        });
-        $('#delete-modal').modal('show');
-    };
-    function resetTable() {
-        dataTableTimesheets.state.clear();
-        window.location.reload();
-    };
-    function generateContract() {
-        if (dataTableTimesheets.rows({ selected: true }).count() == 1) {
+            $('#delete-modal').modal('show');
+        }
+        function resetTable() {
+            dataTablePeople.state.clear();
+            window.location.reload();
+        }
+        function generateContract() {
             debugger;
-            var timesheetIds = dataTableTimesheets.rows({ selected: true }).ids();
+            if (dataTablePeople.rows({ selected: true }).count() == 1) {
+                var personId = dataTablePeople.rows({ selected: true }).ids()[0].replace("rowId-", "");
+                var format = 'DOCX';
+                var form = $('#contract-form');
+                var action = form.attr('action');
+                action = action.replace('-id-', personId).replace('-format-', format);
+                form.attr('action', action);
+                $('#contract-modal').modal('show');
+            }
+            else {
+                toastr.warning("Není označen žádný záznam pro vygenerování smlouvy.");
+            }
         }
-        else {
-            toastr.warning("Není označen žádný záznam pro vygenerování smlouvy.");
-        }
-    };
     </script>
     <script>
         $(function () {

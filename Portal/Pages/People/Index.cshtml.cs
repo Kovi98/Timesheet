@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GemBox.Document;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,17 +16,16 @@ namespace Portal.Pages.People
     public class IndexModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
-        private readonly IDocumentManager _documentManager;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, IDocumentManager documentManager)
+        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
         {
             _context = context;
-            _documentManager = documentManager;
         }
 
         public IList<Person> Person { get;set; }
         [BindProperty]
         public Person PersonDetail { get; set; }
+
         public bool IsEditable { get; set; }
 
         public async Task OnGetAsync(int id)
@@ -134,9 +134,17 @@ namespace Portal.Pages.People
             return new OkResult();
         }
 
-        public async Task<FileContentResult> OnPostDownloadContract(int id)
+        public async Task<IActionResult> OnPostDownloadContract(int id, string format = "DOCX")
         {
-            return null;
+            var documentManager = new DocumentManager(format);
+            var defaultDocument = _context.DocumentStorage.Where(x => x.IsDefault).FirstOrDefault();
+            var person = _context.Person.Find(id);
+
+            if (person is null || defaultDocument is null)
+                return NotFound();
+            var document = documentManager.GetContract(person, defaultDocument);
+
+            return File(document, documentManager.Options.ContentType, string.Format(defaultDocument.DocumentName));
         }
 
         private bool PersonExists(int id)
