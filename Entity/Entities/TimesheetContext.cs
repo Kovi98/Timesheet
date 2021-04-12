@@ -19,7 +19,6 @@ namespace Timesheet.Entity.Entities
         {
         }
 
-        public virtual DbSet<DocumentStorage> DocumentStorage { get; set; }
         public virtual DbSet<Finance> Finance { get; set; }
         public virtual DbSet<Job> Job { get; set; }
         public virtual DbSet<Payment> Payment { get; set; }
@@ -37,22 +36,6 @@ namespace Timesheet.Entity.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DocumentStorage>(entity =>
-            {
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
-
-                entity.Property(e => e.DocumentName).HasMaxLength(50);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.RowVersion)
-                    .IsRequired()
-                    .IsRowVersion()
-                    .IsConcurrencyToken();
-            });
-
             modelBuilder.Entity<Finance>(entity =>
             {
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");

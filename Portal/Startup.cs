@@ -13,8 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.DocManager.Entities;
+using Timesheet.DocManager.Models;
 using Timesheet.Entity.Entities;
-using Timesheet.Entity.Models;
 
 namespace Portal
 {
@@ -34,10 +35,13 @@ namespace Portal
             #region DI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("Timesheet")));
+                    Configuration.GetConnectionString("Identity")));
             services.AddDbContext<TimesheetContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Timesheet")));
+            services.AddDbContext<DocumentContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("Document")));
 
             services.AddScoped<IDocumentManager>(options =>
             new DocumentManager());

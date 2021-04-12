@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Timesheet.DocManager.Entities;
 using Timesheet.Entity.Entities;
 
-namespace Timesheet.Entity.Models
+namespace Timesheet.DocManager.Models
 {
     public interface IDocumentManager
     {

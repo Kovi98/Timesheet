@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Timesheet.Entity.Entities;
+using Timesheet.DocManager.Entities;
 using GemBox.Document;
 using System.IO;
 using System.Threading.Tasks;
 using Spire.Doc;
 
-namespace Timesheet.Entity.Models
+namespace Timesheet.DocManager.Models
 {
     public class DocumentManager : IDocumentManager
     {

@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
-using Timesheet.Entity.Models;
+using Timesheet.DocManager.Models;
+using Timesheet.DocManager.Entities;
 
 namespace Portal.Pages.People
 {
     public class IndexModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly DocumentContext _docContext;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, DocumentContext docContext)
         {
             _context = context;
+            _docContext = docContext;
         }
 
         public IList<Person> Person { get;set; }
@@ -137,7 +140,7 @@ namespace Portal.Pages.People
         public async Task<IActionResult> OnPostDownloadContract(int id, string format = "DOCX")
         {
             var documentManager = new DocumentManager(format);
-            var defaultDocument = _context.DocumentStorage.Where(x => x.IsDefault).FirstOrDefault();
+            var defaultDocument = _docContext.DocumentStorage.Where(x => x.IsDefault).FirstOrDefault();
             var person = _context.Person.Find(id);
 
             if (person is null || defaultDocument is null)

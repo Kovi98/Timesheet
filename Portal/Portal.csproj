@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DocManager\DocManager.csproj" />
     <ProjectReference Include="..\Entity\Entity.csproj" />
   </ItemGroup>
 
@@ -39,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Documents\" />
     <Folder Include="Pages\Settings\" />
     <Folder Include="Pages\RewardSummaries\" />
   </ItemGroup>
