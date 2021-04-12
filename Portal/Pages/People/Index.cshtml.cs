@@ -30,6 +30,8 @@ namespace Portal.Pages.People
         public Person PersonDetail { get; set; }
 
         public bool IsEditable { get; set; }
+        [BindProperty]
+        public string Format { get; set; }
 
         public async Task OnGetAsync(int id)
         {
@@ -137,17 +139,18 @@ namespace Portal.Pages.People
             return new OkResult();
         }
 
-        public async Task<IActionResult> OnPostDownloadContract(int id, string format = "DOCX")
+        public async Task<IActionResult> OnPostDownloadContract(int id)
         {
+            string format = Format ?? "DOCX";
             var documentManager = new DocumentManager(format);
             var defaultDocument = _docContext.DocumentStorage.Where(x => x.IsDefault).FirstOrDefault();
-            var person = _context.Person.Find(id);
+            var person = _context.Person.Include(x => x.Job).First(x => x.Id == id);
 
             if (person is null || defaultDocument is null)
                 return NotFound();
             var document = documentManager.GetContract(person, defaultDocument);
 
-            return File(document, documentManager.Options.ContentType, string.Format(defaultDocument.DocumentName));
+            return File(document, documentManager.ContentType, string.Format("export.{0}", documentManager.Format.ToString()));
         }
 
         private bool PersonExists(int id)

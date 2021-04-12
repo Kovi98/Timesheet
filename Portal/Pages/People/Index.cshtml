@@ -2,6 +2,7 @@
 @model Portal.Pages.People.IndexModel
 <!--AJAX POST needed-->
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using Timesheet.DocManager.Models
 @functions{
     public string GetAntiXsrfRequestToken()
     {
@@ -492,21 +493,32 @@
 <div class="modal fade" id="contract-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="contractModalLabel">Smlouva</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                TADY BUDE TĚLO
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zpět</button>
-                <form id="contract-form" method="post" asp-page="" asp-route-id="-id-" asp-route-format="-format-" asp-page-handler="DownloadContract">
-                    <input type="submit" value="Vygenerovat smlouvu" class="btn btn-success"/>
-                </form>
-            </div>
+            <form id="contract-form" method="post" asp-page="" asp-route-id="-id-" asp-page-handler="DownloadContract">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contractModalLabel">Smlouva</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="format">Formát souboru</label>
+                                <select class="form-control" id="format" asp-for="Format">
+                                    <option selected value="DOCX">Docx</option>
+                                    <!--<option value="PDF">Pdf</option>-->
+                                    <option value="RTF">Rtf</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zpět</button>
+                    <input type="submit" value="Vygenerovat smlouvu" class="btn btn-success" />
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -583,10 +595,9 @@
             debugger;
             if (dataTablePeople.rows({ selected: true }).count() == 1) {
                 var personId = dataTablePeople.rows({ selected: true }).ids()[0].replace("rowId-", "");
-                var format = 'DOCX';
                 var form = $('#contract-form');
                 var action = form.attr('action');
-                action = action.replace('-id-', personId).replace('-format-', format);
+                action = action.replace('-id-', personId);
                 form.attr('action', action);
                 $('#contract-modal').modal('show');
             }

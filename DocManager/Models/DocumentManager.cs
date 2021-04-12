@@ -12,7 +12,55 @@ namespace Timesheet.DocManager.Models
 {
     public class DocumentManager : IDocumentManager
     {
-        public string Format { get; set; }
+        public ExportFormat Format { get; set; }
+
+        public string ContentType
+        {
+            get
+            {
+                string result = string.Empty;
+                switch (Format)
+                {
+                    case ExportFormat.Docx:
+                        result = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        break;
+                    case ExportFormat.Pdf:
+                        result = "application/pdf";
+                        break;
+                    case ExportFormat.Rtf:
+                        result = "text/richtext";
+                        break;
+                    default:
+                        result = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        break;
+
+                }
+                return result;
+            }
+        }
+        public FileFormat FileFormat
+        {
+            get
+            {
+                FileFormat result;
+                switch (Format)
+                {
+                    case ExportFormat.Docx:
+                        result = FileFormat.Docx2013;
+                        break;
+                    case ExportFormat.Pdf:
+                        result = FileFormat.PDF;
+                        break;
+                    case ExportFormat.Rtf:
+                        result = FileFormat.Rtf;
+                        break;
+                    default:
+                        result = FileFormat.Docx2013;
+                        break;
+                }
+                return result;
+            }
+        }
         public byte[] GetContract(Person person, DocumentStorage defaultDocument)
         {
             Document doc;
@@ -29,29 +77,35 @@ namespace Timesheet.DocManager.Models
 
             using (MemoryStream streamSave = new MemoryStream())
             {
-                doc.SaveToFile(streamSave, FileFormat.Docx2013);
+                doc.SaveToFile(streamSave, FileFormat);
                 return streamSave.ToArray();
             }
         }
-        public DocumentManager(string format = "PDF")
+        public DocumentManager(ExportFormat format = ExportFormat.Docx)
         {
             Format = format;
         }
-        public SaveOptions Options => this.FormatMappingDictionary[this.Format];
-        public IDictionary<string, SaveOptions> FormatMappingDictionary => new Dictionary<string, SaveOptions>()
+        public DocumentManager(string format)
         {
-            ["DOCX"] = new DocxSaveOptions(),
-            ["HTML"] = new HtmlSaveOptions() { EmbedImages = true },
-            ["RTF"] = new RtfSaveOptions(),
-            ["TXT"] = new TxtSaveOptions(),
-            ["PDF"] = new PdfSaveOptions(),
-            ["XPS"] = new XpsSaveOptions(),
-            ["XML"] = new XmlSaveOptions(),
-            ["BMP"] = new ImageSaveOptions(ImageSaveFormat.Bmp),
-            ["PNG"] = new ImageSaveOptions(ImageSaveFormat.Png),
-            ["JPG"] = new ImageSaveOptions(ImageSaveFormat.Jpeg),
-            ["GIF"] = new ImageSaveOptions(ImageSaveFormat.Gif),
-            ["TIF"] = new ImageSaveOptions(ImageSaveFormat.Tiff)
-        };
+            switch (format)
+            {
+                case "DOCX":
+                    Format = ExportFormat.Docx;
+                    break;
+                case "PDF":
+                    Format = ExportFormat.Pdf;
+                    break;
+                case "RTF":
+                    Format = ExportFormat.Rtf;
+                    break;
+            }
+        }
+    }
+
+    public enum ExportFormat
+    {
+        Docx,
+        Pdf,
+        Rtf
     }
 }
