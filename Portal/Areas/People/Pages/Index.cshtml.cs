@@ -143,7 +143,12 @@ namespace Portal.Areas.People.Pages
         {
             string format = Format ?? "DOCX";
             var documentManager = new DocumentManager(format);
-            var defaultDocument = _docContext.DocumentStorage.Where(x => x.IsDefault).FirstOrDefault();
+            var defaultDocument = await _docContext.DocumentStorage.Where(x => x.IsDefault).FirstOrDefaultAsync();
+            if (defaultDocument is null)
+            {
+                ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
+                return Page();
+            }
             var person = _context.Person.Include(x => x.Job).First(x => x.Id == id);
 
             if (person is null || defaultDocument is null)

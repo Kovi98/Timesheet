@@ -125,7 +125,7 @@ namespace Portal.Areas.Timesheets.Pages
                 }
             }
 
-            return RedirectToPage("./Index", new { id = TimesheetDetail.Id });
+            return RedirectToPage("./Index", new { id = TimesheetDetail.Id , area = "Timesheets" });
         }
 
         /// <summary>
