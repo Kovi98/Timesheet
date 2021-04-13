@@ -507,7 +507,7 @@
                                 <label for="format">Formát souboru</label>
                                 <select class="form-control" id="format" asp-for="Format">
                                     <option selected value="DOCX">Docx</option>
-                                    <!--<option value="PDF">Pdf</option>-->
+                                    <option value="PDF">Pdf</option>
                                     <option value="RTF">Rtf</option>
                                 </select>
                             </div>
@@ -568,7 +568,7 @@
             $('#delete-confirm').unbind('click').on('click', function (id) {
                 $.ajax({
                     type: "POST",
-                    url: "Timesheets/Index?handler=Delete",
+                    url: "People/Index?handler=Delete",
                     data: { id: deleteId },
                     headers: {
                         "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
