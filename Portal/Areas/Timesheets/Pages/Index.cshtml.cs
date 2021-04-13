@@ -86,7 +86,7 @@ namespace Portal.Areas.Timesheets.Pages
                 return Page();
             }
 
-            if (!TimesheetDetail.Hours.HasValue)
+            if (!TimesheetDetail.Hours.HasValue && TimesheetDetail.DateTimeFrom != null && TimesheetDetail.DateTimeTo != null)
                 TimesheetDetail.Hours = (decimal)(TimesheetDetail.DateTimeTo - TimesheetDetail.DateTimeFrom)?.TotalHours;
             if (!TimesheetDetail.Reward.HasValue)
                 TimesheetDetail.Reward = TimesheetDetail.Hours * (_context.Job.Find(TimesheetDetail.JobId).HourReward);

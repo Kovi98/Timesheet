@@ -82,6 +82,11 @@
                                 @Html.DisplayFor(modelItem => item.CreateTime)
                             </td>
                             <td class="project-actions text-right">
+                                <a class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    Upravit
+                                </a>
                                 <a class="btn btn-danger btn-sm" onclick="deleteDocDetail(@item.Id)">
                                     <i class="fas fa-trash">
                                     </i>

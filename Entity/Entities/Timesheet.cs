@@ -13,13 +13,14 @@ namespace Timesheet.Entity.Entities
         public int Id { get; set; }
 
         [Display(Name = "Hodiny", Description = "Vykázaný čas")]
+        [Range(0.0, double.MaxValue, ErrorMessage = "Vykázaný čas nesmí být záporný.")]
         public decimal? Hours { get; set; }
 
         [Display(Name = "Trenér")]
-        [Required(ErrorMessage = "Trenér je povinný!")]
+        [Required(ErrorMessage = "Trenér je povinný")]
         public int PersonId { get; set; }
         [Display(Name = "Práce")]
-        [Required(ErrorMessage = "Práce je povinná!")]
+        [Required(ErrorMessage = "Práce je povinná")]
         public int JobId { get; set; }
 
         [Display(Name = "Vytvořeno", Description = "Datum a čas vytvoření záznamu")]
@@ -33,7 +34,7 @@ namespace Timesheet.Entity.Entities
         [Display(Name = "Do", Description = "Konec")]
         public DateTime? DateTimeTo { get; set; }
 
-        [Required(ErrorMessage = "Název je povinný!")]
+        [Required(ErrorMessage = "Název je povinný")]
         public string Name { get; set; }
 
         [Display(Name = "Platba")]
@@ -41,6 +42,7 @@ namespace Timesheet.Entity.Entities
 
         [Display(Name = "Odměna", Description = "Odměna za práci")]
         [DataType(DataType.Currency)]
+        [Range(0.0, double.MaxValue, ErrorMessage = "Odměna nesmí být záporná.")]
         public decimal? Reward { get; set; }
 
         [Display(Name = "Daň", Description = "Srážková daň")]
