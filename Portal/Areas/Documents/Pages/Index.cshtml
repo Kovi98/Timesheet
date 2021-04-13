@@ -2,6 +2,7 @@
 @model Portal.Areas.Documents.Pages.IndexModel
 <!--AJAX POST needed-->
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
 @functions{
     public string GetAntiXsrfRequestToken()
     {
@@ -51,43 +52,43 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.DocumentStorage[0].DocumentName)
                             </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DocumentStorage[0].CreateTime)
+                            </th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.DocumentStorage)
                         {
-                            <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.IsDefault)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.DocumentName)
-                                </td>
-                                <td class="project-actions text-right">
-                                    <a class="btn btn-primary btn-sm" asp-page="" asp-route-id="@item.Id" asp-fragment="card-detail">
-                                        <i class="fas fa-folder">
-                                        </i>
-                                        Stáhnout šablonu
-                                    </a>
-                                    <a class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
-                                        <i class="fas fa-pencil-alt">
-                                        </i>
-                                        Upravit
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" onclick="deleteTimesheetDetail(@item.Id)">
-                                        <i class="fas fa-trash">
-                                        </i>
-                                        Smazat
-                                    </a>
-                                </td>
-                            </tr>
+                        <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IsDefault)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                <form method="post" asp-route-id="@item.Id" asp-page-handler="DownloadDocument">
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        <i class="fas fa-file-word"></i> @Html.DisplayFor(modelItem => item.DocumentName)
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreateTime)
+                            </td>
+                            <td class="project-actions text-right">
+                                <a class="btn btn-danger btn-sm" onclick="deleteDocDetail(@item.Id)">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    Smazat
+                                </a>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -95,3 +96,197 @@
         </div>
     </div>
 </div>
+
+@if (Model.IsEditable)
+{
+<div id="row-edit" class="row">
+    <div class="col-12">
+        <div id="card-edit" class="card">
+            <div class="card-header">
+                <h3 class="card-title">Editace trenéra</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    @{
+                        if (Model.DocumentStorageDetail != null)
+                        {
+                            <input type="hidden" asp-for="DocumentStorageDetail.Id" />
+                            <input type="hidden" asp-for="DocumentStorageDetail.CreateTime" />
+                            <input type="hidden" asp-for="DocumentStorageDetail.RowVersion" />
+                            <input type="hidden" asp-for="DocumentStorageDetail.DocumentSource" />
+                        }
+                    }
+                    <div class="row">
+                        <section class="col-lg-7 connectedSortable">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">Základní informace</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label asp-for="DocumentStorageDetail.Name" class="control-label"></label>
+                                                <input asp-for="DocumentStorageDetail.Name" class="form-control" />
+                                                <span asp-validation-for="DocumentStorageDetail.Name" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group icheck-primary icheck-inline">
+                                                @Html.CheckBoxFor(m => m.DocumentStorageDetail.IsDefault, new { id = "isDefaultCheckbox" })
+                                                <label class="form-check-label" for="isDefaultCheckbox">@Html.DisplayNameFor(model => model.DocumentStorageDetail.IsDefault)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
+                            <!-- /.card -->
+                        </section>
+                        <section class="col-lg-5 connectedSortable">
+                            <div class="card card-warning">
+                                <div class="card-header">
+                                    <h3 class="card-title">Šablona</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group custom-file">
+                                                <input accept=".docx, application/vnd.openxmlformats-officedocument.wordprocessingm" class="custom-file-input" type="file" asp-for="DocumentUpload" />
+                                                <label asp-for="DocumentUpload" class="custom-file-label"></label>
+                                                <span class="text-danger" asp-validation-for="DocumentUpload"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </section>
+                    </div>
+                    <!--Tlačítka dole-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+    }
+
+<!-- Modal - potvrzení smazání záznamu -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Odstranění šablony smlouvy</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Opravdu chcete odstranit šablonu smlouvy?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zpět</button>
+                <button id="delete-confirm" type="button" class="btn btn-danger" data-dismiss="modal">Odstranit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var dataTableDocs;
+        $(document).ready(function () {
+            dataTableDocs = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/plugins/datatables-language/cs.json'
+                },
+                "ordering": true,
+                "searching": true,
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "info": false,
+                "stateSave": true,
+                "order": [[1, "asc"]],
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [5],
+                        "orderable": false,
+                        "searchable": false
+                    }],
+                "dom": '<"toolbar">frtip',
+                "initComplete": function (settings, json) {
+                    $("div.toolbar").html('<a href="/Documents?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nová šablona</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                }
+            });
+        });
+    </script>
+
+    <script>
+    function deleteDocDetail(deleteId) {
+        $('#delete-confirm').unbind('click').on('click', function (id) {
+            $.ajax({
+                type: "POST",
+                url: "Documents/Index?handler=Delete",
+                data: { id: deleteId },
+                headers: {
+                    "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
+                },
+                statusCode: {
+                    404: function () {
+                        toastr.error("Záznam nebyl nalezen.");
+                    }
+                },
+                success: function (response) {
+                    var inputText = "#rowId-".concat(String(deleteId));
+                    dataTableDocs.row(inputText).remove().draw();
+                    toastr.success('Šablona byla úspěšně odstraněna.');
+                },
+            });
+        });
+        $('#delete-modal').modal('show');
+    };
+    function resetTable() {
+        dataTableDocs.state.clear();
+        window.location.reload();
+        };
+
+
+    </script>
+    <script>
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+}

@@ -26,10 +26,12 @@ namespace Portal.Areas.People.Pages
         }
 
         public IList<Person> Person { get;set; }
+
         [BindProperty]
         public Person PersonDetail { get; set; }
 
         public bool IsEditable { get; set; }
+
         [BindProperty]
         public string Format { get; set; }
 
@@ -149,7 +151,7 @@ namespace Portal.Areas.People.Pages
                 ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
                 return Page();
             }
-            var person = _context.Person.Include(x => x.Job).First(x => x.Id == id);
+            var person = await _context.Person.Include(x => x.Job).FirstAsync(x => x.Id == id);
 
             if (person is null || defaultDocument is null)
                 return NotFound();
