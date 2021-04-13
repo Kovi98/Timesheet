@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using Timesheet.DocManager.Entities;
 
-namespace Portal.Pages.Payments
+namespace Portal.Areas.Documents.Pages
 {
     public class DetailsModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly Timesheet.DocManager.Entities.DocumentContext _context;
 
-        public DetailsModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public DetailsModel(Timesheet.DocManager.Entities.DocumentContext context)
         {
             _context = context;
         }
 
-        public Payment Payment { get; set; }
+        public DocumentStorage DocumentStorage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -27,9 +27,9 @@ namespace Portal.Pages.Payments
                 return NotFound();
             }
 
-            Payment = await _context.Payment.FirstOrDefaultAsync(m => m.Id == id);
+            DocumentStorage = await _context.DocumentStorage.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Payment == null)
+            if (DocumentStorage == null)
             {
                 return NotFound();
             }

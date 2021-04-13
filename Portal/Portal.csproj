@@ -40,9 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Documents\" />
-    <Folder Include="Pages\Settings\" />
-    <Folder Include="Pages\RewardSummaries\" />
+    <Folder Include="Areas\Payments\Pages\" />
+    <Folder Include="Areas\RewardSummaries\Pages\" />
+    <Folder Include="Areas\Settings\Pages\" />
   </ItemGroup>
 
 </Project>

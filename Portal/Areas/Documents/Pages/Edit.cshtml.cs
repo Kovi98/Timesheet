@@ -6,21 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using Timesheet.DocManager.Entities;
 
-namespace Portal.Pages.Payments
+namespace Portal.Areas.Documents.Pages
 {
     public class EditModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly Timesheet.DocManager.Entities.DocumentContext _context;
 
-        public EditModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public EditModel(Timesheet.DocManager.Entities.DocumentContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public Payment Payment { get; set; }
+        public DocumentStorage DocumentStorage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,9 +29,9 @@ namespace Portal.Pages.Payments
                 return NotFound();
             }
 
-            Payment = await _context.Payment.FirstOrDefaultAsync(m => m.Id == id);
+            DocumentStorage = await _context.DocumentStorage.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Payment == null)
+            if (DocumentStorage == null)
             {
                 return NotFound();
             }
@@ -47,7 +47,7 @@ namespace Portal.Pages.Payments
                 return Page();
             }
 
-            _context.Attach(Payment).State = EntityState.Modified;
+            _context.Attach(DocumentStorage).State = EntityState.Modified;
 
             try
             {
@@ -55,7 +55,7 @@ namespace Portal.Pages.Payments
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PaymentExists(Payment.Id))
+                if (!DocumentStorageExists(DocumentStorage.Id))
                 {
                     return NotFound();
                 }
@@ -68,9 +68,9 @@ namespace Portal.Pages.Payments
             return RedirectToPage("./Index");
         }
 
-        private bool PaymentExists(int id)
+        private bool DocumentStorageExists(int id)
         {
-            return _context.Payment.Any(e => e.Id == id);
+            return _context.DocumentStorage.Any(e => e.Id == id);
         }
     }
 }

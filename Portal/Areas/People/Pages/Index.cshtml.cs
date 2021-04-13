@@ -12,7 +12,7 @@ using Timesheet.Entity.Entities;
 using Timesheet.DocManager.Models;
 using Timesheet.DocManager.Entities;
 
-namespace Portal.Pages.People
+namespace Portal.Areas.People.Pages
 {
     public class IndexModel : PageModel
     {

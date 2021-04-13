@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Portal.Pages.Timesheets
+namespace Portal.Areas.Timesheets.Pages
 {
     public class IndexModel : PageModel
     {

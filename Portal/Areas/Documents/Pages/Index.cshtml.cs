@@ -5,24 +5,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using Timesheet.DocManager.Entities;
 
-namespace Portal.Pages.Payments
+namespace Portal.Areas.Documents.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly Timesheet.DocManager.Entities.DocumentContext _context;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(Timesheet.DocManager.Entities.DocumentContext context)
         {
             _context = context;
         }
 
-        public IList<Payment> Payment { get;set; }
+        public IList<DocumentStorage> DocumentStorage { get;set; }
 
         public async Task OnGetAsync()
         {
-            Payment = await _context.Payment.ToListAsync();
+            DocumentStorage = await _context.DocumentStorage.ToListAsync();
         }
     }
 }

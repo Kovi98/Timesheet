@@ -16,7 +16,7 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
                 <div class="col-lg-10">
-                    <a asp-page="/Identity/Account/Manage/Index" class="d-block">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">
                         @{
                             string userName = "Nepřihlášený uživatel";
                             if (SignInManager.IsSignedIn(User))
@@ -41,32 +41,32 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a asp-page="/Timesheets/Index" class="nav-link">
+                    <a asp-area="Timesheets" asp-page="/Index" class="nav-link">
                         <i class="nav-icon fas fa-edit"></i>
                         <p>Výkazy</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-page="/RewardSummary/Index" class="nav-link">
+                    <a asp-area="RewardSummaries" asp-page="/Index" class="nav-link">
                         <i class="nav-icon fas fa-coins"></i>
                         <p>Odměny</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-page="/People/Index" class="nav-link">
+                    <a asp-area="People" asp-page="/Index" class="nav-link">
                         <i class="nav-icon fas fa-running"></i>
                         <p>Trenéři</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-page="/Payments/Index" class="nav-link">
+                    <a asp-area="Payments" asp-page="/Index" class="nav-link">
                         <i class="nav-icon fas fa-hand-holding-usd"></i>
                         <p>Platby</p>
                     </a>
                 </li>
                 <li class="nav-header">Nastavení</li>
                 <li class="nav-item">
-                    <a asp-page="/Identity/Account/Manage/Index" class="nav-link">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Uživatelé</p>
                     </a>
@@ -78,7 +78,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-page="./Identity/Account/Logout" class="nav-link">
+                    <a asp-area="Identity" asp-page="/Account/Logout" class="nav-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Odhlásit se</p>
                     </a>

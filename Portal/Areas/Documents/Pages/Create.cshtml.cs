@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Timesheet.Entity.Entities;
+using Timesheet.DocManager.Entities;
 
-namespace Portal.Pages.Payments
+namespace Portal.Areas.Documents.Pages
 {
     public class CreateModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly Timesheet.DocManager.Entities.DocumentContext _context;
 
-        public CreateModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public CreateModel(Timesheet.DocManager.Entities.DocumentContext context)
         {
             _context = context;
         }
@@ -24,7 +24,7 @@ namespace Portal.Pages.Payments
         }
 
         [BindProperty]
-        public Payment Payment { get; set; }
+        public DocumentStorage DocumentStorage { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -35,7 +35,7 @@ namespace Portal.Pages.Payments
                 return Page();
             }
 
-            _context.Payment.Add(Payment);
+            _context.DocumentStorage.Add(DocumentStorage);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
