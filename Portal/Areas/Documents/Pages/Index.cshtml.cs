@@ -40,18 +40,10 @@ namespace Portal.Areas.Documents.Pages
             DocumentStorage = await _context.DocumentStorage.ToListAsync();
             IsEditable = false;
         }
-        public async Task OnGetEditAsync(int id)
+        public async Task OnGetEditAsync()
         {
             DocumentStorage = await _context.DocumentStorage.ToListAsync();
-            var documentStorage = DocumentStorage.FirstOrDefault(t => t.Id == id);
-            if (id > 0)
-            {
-                DocumentStorageDetail = documentStorage;
-            }
-            else
-            {
-                DocumentStorageDetail = null;
-            }
+            DocumentStorageDetail = null;
             IsEditable = true;
         }
 
@@ -75,7 +67,7 @@ namespace Portal.Areas.Documents.Pages
             }
             if (DocumentStorageDetail.Id > 0)
             {
-                _context.Attach(DocumentStorageDetail).State = EntityState.Modified;
+                return BadRequest();
             }
             else
             {
