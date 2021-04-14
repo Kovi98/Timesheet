@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using Portal.Areas.Identity;
 using Portal.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.DocManager.Entities;
@@ -31,6 +33,11 @@ namespace Portal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //CultureInfo - cs-CZ
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("cs-CZ");
+            });
             //Dependency injection
             #region DI
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -49,8 +56,6 @@ namespace Portal
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            // AddDataAnnotationsLocalization() - lokalizace hlášek
-            services.AddRazorPages().AddDataAnnotationsLocalization();
 
             //Konfigurace IDENTITY - TODO dodìlat
             services.Configure<IdentityOptions>(options =>
@@ -87,6 +92,9 @@ namespace Portal
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+
+            // AddDataAnnotationsLocalization() - lokalizace hlášek
+            services.AddRazorPages().AddDataAnnotationsLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -112,6 +120,9 @@ namespace Portal
             //Autentizace a autorizace
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //LOcalization - CultureInfo
+            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {
