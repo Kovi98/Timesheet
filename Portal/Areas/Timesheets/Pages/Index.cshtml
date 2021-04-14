@@ -224,7 +224,7 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                                <h3 class="text-info"><i class="fas fa-user mr-2"></i> <a class="text-info" asp-page="./People/Index" asp-router-id="@Model.TimesheetDetail.Person.Id">@Html.DisplayFor(model => model.TimesheetDetail.Person.FullName)</a></h3>
+                                <h3 class="text-info"><i class="fas fa-user mr-2"></i> <a class="text-info" asp-area="People" asp-page="Index" asp-router-id="@Model.TimesheetDetail.Person.Id">@Html.DisplayFor(model => model.TimesheetDetail.Person.FullName)</a></h3>
                                 <p class="text-muted">@Html.DisplayFor(model => model.TimesheetDetail.Name)</p>
                                 <br>
                                 <div class="text-muted">

@@ -4,8 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Timesheet.Entity</AssemblyName>
     <RootNamespace>Timesheet.Entity</RootNamespace>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>CopyUsed</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>

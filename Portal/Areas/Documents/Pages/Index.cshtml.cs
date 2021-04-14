@@ -30,7 +30,7 @@ namespace Portal.Areas.Documents.Pages
 
         [BindProperty]
         [Required(ErrorMessage = "Soubor je povinný")]
-        [DisplayName("Vložit DOCX šablonu...")]
+        [DisplayName("Vložit šablonu...")]
         public IFormFile DocumentUpload { get; set; }
 
         public bool IsEditable { get; set; }

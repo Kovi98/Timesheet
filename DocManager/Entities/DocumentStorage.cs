@@ -14,6 +14,7 @@ namespace Timesheet.DocManager.Entities
         [Required(ErrorMessage = "Název je povinný!")]
         [Display(Name = "Název", Description = "Název šablony")]
         public string Name { get; set; }
+        [Required]
         public byte[] DocumentSource { get; set; }
         public byte[] RowVersion { get; set; }
         [Display(Name = "Vytvořeno", Description = "Datum a čas vytvoření záznamu")]

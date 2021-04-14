@@ -16,7 +16,7 @@
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a asp-page="/Timesheets/Index" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
+            <a asp-area="Timesheets" asp-page="/Index" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -31,7 +31,7 @@
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
             </div>
-            <a asp-page="/Payments/Index" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
+            <a asp-area="Payments" asp-page="/Index" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -46,7 +46,7 @@
             <div class="icon">
                 <i class="ion ion-person-add"></i>
             </div>
-            <a asp-page="/People/Index" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
+            <a asp-area="People" asp-page="/Index" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -61,7 +61,7 @@
             <div class="icon">
                 <i class="ion ion-card"></i>
             </div>
-            <a asp-page="/Timesheets/Index" asp-page-handler="NotPayed" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
+            <a asp-area="Timesheets" asp-page="/Index" asp-page-handler="NotPayed" class="small-box-footer">Zobrazit <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -115,7 +115,7 @@
                                             @{
                                                 if (item.Payment != null && item.Payment.IsPaid)
                                                 {
-                                                    <a asp-page="./Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
+                                                    <a asp-area="Payment" asp-page="/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
                                                 }
                                                 else
@@ -134,8 +134,8 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a asp-page="./Timesheets/Index" asp-page-handler="Edit" asp-route-id="0" asp-fragment="card-edit"  class="btn btn-sm btn-info float-left">Založit nový výkaz</a>
-                <a asp-page="./Timesheets/Index" class="btn btn-sm btn-secondary float-right">Zobrazit všechno</a>
+                <a asp-area="Timesheets"asp-page="/Index" asp-page-handler="Edit" asp-route-id="0" asp-fragment="card-edit"  class="btn btn-sm btn-info float-left">Založit nový výkaz</a>
+                <a asp-area="Timesheets"asp-page="/Index" class="btn btn-sm btn-secondary float-right">Zobrazit všechno</a>
             </div>
             <!-- /.card-footer -->
         </div>

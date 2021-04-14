@@ -35,6 +35,7 @@ namespace Timesheet.Entity.Entities
         public DateTime? DateTimeTo { get; set; }
 
         [Required(ErrorMessage = "Název je povinný")]
+        [Display(Name="Text")]
         public string Name { get; set; }
 
         [Display(Name = "Platba")]

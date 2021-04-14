@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-Portal-651AEF86-F746-4413-A1A5-B2990030D9A7</UserSecretsId>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>CopyUsed</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>

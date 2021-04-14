@@ -20,9 +20,9 @@ namespace Portal.Pages.Timesheets
 
         public Timesheet.Entity.Entities.Timesheet Timesheet { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
@@ -30,7 +30,10 @@ namespace Portal.Pages.Timesheets
             Timesheet = await _context.Timesheet
                 .Include(t => t.Job)
                 .Include(t => t.Payment)
-                .Include(t => t.Person).FirstOrDefaultAsync(m => m.Id == id);
+                .Include(t => t.Person)
+                .Include(t => t.Person.Section)
+                .Include(t => t.Person.PaidFrom)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Timesheet == null)
             {
