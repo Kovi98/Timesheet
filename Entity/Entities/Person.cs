@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -15,23 +16,60 @@ namespace Timesheet.Entity.Entities
         }
 
         public int Id { get; set; }
+
+        [Display(Name = "Jméno")]
+        [Required(ErrorMessage = "Jméno je povinné")]
         public string Name { get; set; }
+
+        [Display(Name = "Příjmení")]
+        [Required(ErrorMessage = "Příjmení je povinné")]
         public string Surname { get; set; }
+
+        [Display(Name = "Datum narození")]
+        [Required(ErrorMessage = "Datum narození je povinné")]
         public DateTime DateBirth { get; set; }
         public byte[] RowVersion { get; set; }
+
+        [Display(Name = "Vytvořeno", Description = "Datum a čas vytvoření záznamu")]
         public DateTime CreateTime { get; set; }
+
+        [Display(Name = "Ulice")]
         public string Street { get; set; }
+
+        [Display(Name = "č. p.")]
         public string HouseNumber { get; set; }
+
+        [Display(Name = "Město")]
         public string City { get; set; }
+
+        [Display(Name = "Stát")]
         public string State { get; set; }
+
+        [Display(Name = "PSČ")]
         public string PostalCode { get; set; }
+
+        [Display(Name = "Číslo účtu")]
         public string BankAccount { get; set; }
+
+        [Display(Name = "Kód banky")]
         public string BankCode { get; set; }
+
+        [Display(Name = "Aktivní", Description = "Je trenér aktivní?")]
         public bool IsActive { get; set; }
+
+        [Display(Name = "Daň", Description = "Musí se odvádět srážková daň?")]
         public bool HasTax { get; set; }
+
+        [Display(Name = "Sekce")]
         public int SectionId { get; set; }
+
+        [Display(Name = "Dotace")]
         public int PaidFromId { get; set; }
+
+        [Display(Name = "Pozice")]
         public int JobId { get; set; }
+
+        [Display(Name = "Číslo osobního dokladu")]
         public string IdentityDocument { get; set; }
 
         public virtual Job Job { get; set; }
