@@ -76,5 +76,15 @@ namespace Timesheet.Entity.Entities
         public virtual Finance PaidFrom { get; set; }
         public virtual Section Section { get; set; }
         public virtual ICollection<Timesheet> Timesheet { get; set; }
+
+        //Ručně přidáno
+        [Display(Name = "Jméno")]
+        public string FullName => Name + " " + Surname;
+
+        [Display(Name = "Číslo bankovního účtu")]
+        public string FullBankAccount => BankAccount + "/" + BankCode;
+
+        [Display(Name = "Adresa")]
+        public string FullAddress => Street + " " + HouseNumber + ", " + PostalCode + " " + City;
     }
 }
