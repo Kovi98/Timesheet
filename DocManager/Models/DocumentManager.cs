@@ -5,7 +5,8 @@ using Timesheet.Entity.Entities;
 using Timesheet.DocManager.Entities;
 using System.IO;
 using System.Threading.Tasks;
-using Spire.Doc;
+using DocumentFormat.OpenXml.Packaging;
+using System.Text.RegularExpressions;
 
 namespace Timesheet.DocManager.Models
 {
@@ -37,47 +38,40 @@ namespace Timesheet.DocManager.Models
                 return result;
             }
         }
-        public FileFormat FileFormat
-        {
-            get
-            {
-                FileFormat result;
-                switch (Format)
-                {
-                    case ExportFormat.Docx:
-                        result = FileFormat.Docx2013;
-                        break;
-                    case ExportFormat.Pdf:
-                        result = FileFormat.PDF;
-                        break;
-                    case ExportFormat.Rtf:
-                        result = FileFormat.Rtf;
-                        break;
-                    default:
-                        result = FileFormat.Docx2013;
-                        break;
-                }
-                return result;
-            }
-        }
         public byte[] GetContract(Person person, DocumentStorage defaultDocument)
         {
-            Document doc;
-            using (MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))
+            using(MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))
             {
-                doc = new Document(streamLoad);
-            }
-            //Naplnění šablony
-            doc.Replace("%Name%", person.FullName, true, false);
-            doc.Replace("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"), true, false);
-            doc.Replace("%Address%", person.FullAddress, true, false);
-            doc.Replace("%HourReward%", person.Job.HourReward.ToString(), true, false);
-            doc.Replace("%BankAccount%", person.FullBankAccount, true, false);
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(streamLoad, true))
+                {
+                    string docText = null;
+                    using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                    {
+                        docText = sr.ReadToEnd();
+                    }
 
-            using (MemoryStream streamSave = new MemoryStream())
-            {
-                doc.SaveToFile(streamSave, FileFormat);
-                return streamSave.ToArray();
+                    docText = new Regex("%Name%", RegexOptions.IgnoreCase)
+                        .Replace(docText, person.FullName);
+
+                    docText = new Regex("%DateBirth%", RegexOptions.IgnoreCase)
+                        .Replace(docText, person.DateBirth.ToString("dd.MM.yyyy"));
+
+                    docText = new Regex("%Address%", RegexOptions.IgnoreCase)
+                        .Replace(docText, person.FullAddress);
+
+                    docText = new Regex("%HourReward%", RegexOptions.IgnoreCase)
+                        .Replace(docText, person.Job.HourReward.ToString());
+
+                    docText = new Regex("%BankAccount%", RegexOptions.IgnoreCase)
+                        .Replace(docText, person.FullBankAccount);
+
+                    using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                    {
+                        sw.Write(docText);
+                    }
+                }
+
+                return streamLoad.ToArray();
             }
         }
         public DocumentManager(ExportFormat format = ExportFormat.Docx)

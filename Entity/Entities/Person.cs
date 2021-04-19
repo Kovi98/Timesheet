@@ -27,6 +27,7 @@ namespace Timesheet.Entity.Entities
 
         [Display(Name = "Datum narození")]
         [Required(ErrorMessage = "Datum narození je povinné")]
+        [DataType(DataType.Date)]
         public DateTime DateBirth { get; set; }
         public byte[] RowVersion { get; set; }
 

@@ -22,7 +22,6 @@ namespace Portal.Areas.Documents.Pages
             _context = context;
         }
 
-        [BindProperty]
         public IList<DocumentStorage> DocumentStorage { get;set; }
 
         [BindProperty]

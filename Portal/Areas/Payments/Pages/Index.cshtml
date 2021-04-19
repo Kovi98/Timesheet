@@ -1,0 +1,60 @@
+﻿@page
+@model Portal.Areas.Payments.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment[0].CreateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment[0].PaymentDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment[0].ToPay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment[0].PaymentXml)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment[0].RowVersion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Payment) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ToPay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentXml)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RowVersion)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
