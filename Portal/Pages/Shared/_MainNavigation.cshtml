@@ -14,11 +14,11 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="info">
-                <div class="col-lg-10">
+            <div class="info d-flex">
+                <div class="d-inline-block">
                     <a asp-area="Identity" asp-page="/Account/Manage/Index" class="d-block">
                         @{
-                            string userName = "Nepřihlášený uživatel";
+                            string userName = "Anonym";
                             if (SignInManager.IsSignedIn(User))
                             {
                                 var user = await UserManager.GetUserAsync(User);
@@ -28,11 +28,14 @@
                         <i class="nav-icon fas fa-user mr-2"></i> @userName
                     </a>
                 </div>
-                <!--
-    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="//Url.Page("/Index", new { area = "" })" method="post">
-            <button type="submit" class="nav-link btn"><i class="nav-icon fas fa-sign-out-alt"></i></button>
-        </form>
-    -->
+                <div class="d-inline-block">
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("Index", new { area="" })" method="post">
+                        <button id="logoutButton" type="submit" class="btn d-none"><i class="nav-icon fas fa-sign-out-alt ml-2"></i></button>
+                    </form>
+                    <a href="" id="logoutLink" class="d-block">
+                        <i class="nav-icon fas fa-sign-out-alt ml-2"></i>
+                    </a>
+                </div>
             </div>
 
         </div>
@@ -89,3 +92,14 @@
     </div>
     <!-- /.sidebar -->
 </aside>
+
+@section Scripts{ 
+<script>
+    $(document).ready(function() {
+        function logout() {
+            $('#logoutButton').toggle();
+        }
+        $('#logoutLink').on('click', logout());
+    });
+</script>
+}

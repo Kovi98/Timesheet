@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -13,7 +14,7 @@ namespace Timesheet.Entity.Entities
         public int Id { get; set; }
 
         [Display(Name = "Hodiny", Description = "Vykázaný čas")]
-        [Range(0.0, double.MaxValue, ErrorMessage = "Vykázaný čas nesmí být záporný.")]
+        [RegularExpression(@"^[0-9]\d{0,3}(\,\d{1,2})?%?$", ErrorMessage = "Pole {0} musí být desetinné číslo")]
         public decimal? Hours { get; set; }
 
         [Display(Name = "Trenér")]
@@ -43,7 +44,7 @@ namespace Timesheet.Entity.Entities
 
         [Display(Name = "Odměna", Description = "Odměna za práci")]
         [DataType(DataType.Currency)]
-        [Range(0.0, double.MaxValue, ErrorMessage = "Odměna nesmí být záporná.")]
+        [RegularExpression(@"^[0-9]\d{0,16}(\,\d{1,2})?%?$", ErrorMessage = "Pole {0} musí být desetinné číslo")]
         public decimal? Reward { get; set; }
 
         [Display(Name = "Daň", Description = "Srážková daň")]

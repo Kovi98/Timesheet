@@ -93,7 +93,7 @@
                             <tr>
                                 <th>Trenér</th>
                                 <th>Datum</th>
-                                <th>Hodin</th>
+                                <th>Čas</th>
                                 <th>Platba</th>
                             </tr>
                         </thead>
@@ -109,7 +109,7 @@
                                             @item.DateTimeTo.Value.ToString("dd. MM. yyyy")
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Hours)
+                                            @Html.DisplayFor(modelItem => item.HoursTime)
                                         </td>
                                         <td>
                                             @{

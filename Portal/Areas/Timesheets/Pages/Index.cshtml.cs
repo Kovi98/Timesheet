@@ -75,7 +75,7 @@ namespace Portal.Areas.Timesheets.Pages
             }
             ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
             ViewData["PaymentId"] = new SelectList(_context.Payment, "Id", "PaymentDateTime");
-            ViewData["PersonId"] = new SelectList(_context.Person, "Id", "FullName");
+            ViewData["PersonId"] = new SelectList(_context.Person.Where(x => x.IsActive), "Id", "FullName");
             IsEditable = true;
         }
 
@@ -83,7 +83,7 @@ namespace Portal.Areas.Timesheets.Pages
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return RedirectToPage("./Index", new { id = TimesheetDetail?.Id, area = "Timesheets" });
             }
 
             if (!TimesheetDetail.Hours.HasValue && TimesheetDetail.DateTimeFrom != null && TimesheetDetail.DateTimeTo != null)
