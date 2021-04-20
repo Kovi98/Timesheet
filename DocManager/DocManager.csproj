@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DocX.Core" Version="0.4.1" />
+    <PackageReference Include="DocXCore" Version="1.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.13" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.13" />

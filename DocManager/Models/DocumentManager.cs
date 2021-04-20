@@ -5,7 +5,7 @@ using Timesheet.Entity.Entities;
 using Timesheet.DocManager.Entities;
 using System.IO;
 using System.Threading.Tasks;
-using Xceed.Words.NET;
+using Novacode;
 
 namespace Timesheet.DocManager.Models
 {
@@ -39,19 +39,22 @@ namespace Timesheet.DocManager.Models
         }
         public byte[] GetContract(Person person, DocumentStorage defaultDocument)
         {
-            using(MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))
+            using (MemoryStream streamResult = new MemoryStream())
             {
-                using (DocX doc = DocX.Load(streamLoad))
+                using (MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))
                 {
-                    doc.ReplaceText("%Name%", person.FullName);
-                    doc.ReplaceText("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"));
-                    doc.ReplaceText("%Address%", person.FullAddress);
-                    doc.ReplaceText("%HourReward%", person.Job.HourReward.ToString());
-                    doc.ReplaceText("%BankAccount%", person.FullBankAccount);
-                    doc.Save();
-                } // Release this document from memory.
+                    using (DocX doc = DocX.Load(streamLoad))
+                    {
+                        doc.ReplaceText("%Name%", person.FullName);
+                        doc.ReplaceText("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"));
+                        doc.ReplaceText("%Address%", person.FullAddress);
+                        doc.ReplaceText("%HourReward%", person.Job.HourReward.ToString());
+                        doc.ReplaceText("%BankAccount%", person.FullBankAccount);
+                        doc.SaveAs(streamResult);
+                    }
+                }
 
-                return streamLoad.ToArray();
+                return streamResult.ToArray();
             }
         }
         public DocumentManager(ExportFormat format = ExportFormat.Docx)
