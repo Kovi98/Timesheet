@@ -5,8 +5,7 @@ using Timesheet.Entity.Entities;
 using Timesheet.DocManager.Entities;
 using System.IO;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using System.Text.RegularExpressions;
+using Xceed.Words.NET;
 
 namespace Timesheet.DocManager.Models
 {
@@ -42,34 +41,15 @@ namespace Timesheet.DocManager.Models
         {
             using(MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))
             {
-                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(streamLoad, true))
+                using (DocX doc = DocX.Load(streamLoad))
                 {
-                    string docText = null;
-                    using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-                    {
-                        docText = sr.ReadToEnd();
-                    }
-
-                    docText = new Regex("%Name%", RegexOptions.IgnoreCase)
-                        .Replace(docText, person.FullName);
-
-                    docText = new Regex("%DateBirth%", RegexOptions.IgnoreCase)
-                        .Replace(docText, person.DateBirth.ToString("dd.MM.yyyy"));
-
-                    docText = new Regex("%Address%", RegexOptions.IgnoreCase)
-                        .Replace(docText, person.FullAddress);
-
-                    docText = new Regex("%HourReward%", RegexOptions.IgnoreCase)
-                        .Replace(docText, person.Job.HourReward.ToString());
-
-                    docText = new Regex("%BankAccount%", RegexOptions.IgnoreCase)
-                        .Replace(docText, person.FullBankAccount);
-
-                    using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
-                    {
-                        sw.Write(docText);
-                    }
-                }
+                    doc.ReplaceText("%Name%", person.FullName);
+                    doc.ReplaceText("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"));
+                    doc.ReplaceText("%Address%", person.FullAddress);
+                    doc.ReplaceText("%HourReward%", person.Job.HourReward.ToString());
+                    doc.ReplaceText("%BankAccount%", person.FullBankAccount);
+                    doc.Save();
+                } // Release this document from memory.
 
                 return streamLoad.ToArray();
             }
