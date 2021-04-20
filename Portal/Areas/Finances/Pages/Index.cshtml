@@ -206,7 +206,7 @@
         $('#delete-confirm').unbind('click').on('click', function (id) {
             $.ajax({
                 type: "POST",
-                url: "Documents/Index?handler=Delete",
+                url: "Finances/Index?handler=Delete",
                 data: { id: deleteId },
                 headers: {
                     "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
@@ -219,7 +219,7 @@
                 success: function (response) {
                     var inputText = "#rowId-".concat(String(deleteId));
                     dataTableFinance.row(inputText).remove().draw();
-                    toastr.success('Šablona byla úspěšně odstraněna.');
+                    toastr.success('Dotační subjekt byl úspěšně odstraněn.');
                 },
             });
         });
