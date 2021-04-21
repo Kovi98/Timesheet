@@ -28,10 +28,18 @@ namespace Portal.Areas.Finances.Pages
             Finance = await _context.Finance.ToListAsync();
             IsEditable = false;
         }
-        public async Task OnGetEditAsync()
+        public async Task OnGetEditAsync(int id)
         {
             Finance = await _context.Finance.ToListAsync();
-            FinanceDetail = null;
+            var finance = Finance.FirstOrDefault(t => t.Id == id);
+            if (id > 0)
+            {
+                FinanceDetail = finance;
+            }
+            else
+            {
+                FinanceDetail = null;
+            }
             IsEditable = true;
         }
 
@@ -41,12 +49,34 @@ namespace Portal.Areas.Finances.Pages
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return RedirectToPage("./Index", new { id = FinanceDetail?.Id, area = "Finances" });
             }
 
-            _context.Finance.Add(FinanceDetail);
-            await _context.SaveChangesAsync();
+            if (FinanceDetail.Id > 0)
+            {
+                _context.Attach(FinanceDetail).State = EntityState.Modified;
+            }
+            else
+            {
+                FinanceDetail.CreateTime = DateTime.Now;
+                _context.Finance.Add(FinanceDetail);
+            }
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FinanceExists(FinanceDetail.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
             return RedirectToPage("Index");
         }
 
@@ -75,6 +105,11 @@ namespace Portal.Areas.Finances.Pages
             }
 
             return new OkResult();
+        }
+
+        private bool FinanceExists(int id)
+        {
+            return _context.Finance.Any(e => e.Id == id);
         }
     }
 }
