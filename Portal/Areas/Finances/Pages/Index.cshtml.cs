@@ -94,6 +94,11 @@ namespace Portal.Areas.Finances.Pages
 
             var financeToDelete = await _context.Finance.FindAsync(id);
 
+            if (false)
+            {
+                //Existujicí výkaz
+            }
+
             if (financeToDelete != null)
             {
                 _context.Finance.Remove(financeToDelete);

@@ -31,10 +31,10 @@ namespace Portal.Areas.Sections.Pages
         public async Task OnGetEditAsync(int id)
         {
             Section = await _context.Section.ToListAsync();
-            var finance = Section.FirstOrDefault(t => t.Id == id);
+            var section = Section.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {
-                SectionDetail = finance;
+                SectionDetail = section;
             }
             else
             {
@@ -92,11 +92,16 @@ namespace Portal.Areas.Sections.Pages
                 return NotFound();
             }
 
-            var financeToDelete = await _context.Section.FindAsync(id);
+            var sectionToDelete = await _context.Section.FindAsync(id);
 
-            if (financeToDelete != null)
+            if (false)
             {
-                _context.Section.Remove(financeToDelete);
+                //Existujicí výkaz
+            }
+
+            if (sectionToDelete != null)
+            {
+                _context.Section.Remove(sectionToDelete);
                 await _context.SaveChangesAsync();
             }
             else

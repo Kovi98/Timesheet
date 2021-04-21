@@ -144,8 +144,7 @@ namespace Portal.Areas.Timesheets.Pages
 
             if (timesheetToDelete != null && timesheetToDelete.PaymentId.HasValue && timesheetToDelete.PaymentId > 0)
             {
-                ModelState.AddModelError("Error", "Nelze smazat výkaz s existující platbou!");
-                return Page();
+                //Existujicí platba
             }
 
             if (timesheetToDelete != null)
