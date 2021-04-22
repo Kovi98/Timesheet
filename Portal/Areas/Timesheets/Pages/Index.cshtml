@@ -493,9 +493,14 @@
     };
     function generatePayment() {
         if (dataTableTimesheets.rows({ selected: true }).count() > 0) {
-            debugger;
             var timesheetIds = dataTableTimesheets.rows({ selected: true }).ids();
-            var html = $('<a href="/Payments?ids=0&amp;handler=CreateFromTimesheet#card-edit"/>');
+            var params = '';
+            timesheetIds.each(function (index, element) {
+                debugger
+                var idSliced = index.slice(6);
+                params += 'ids='.concat(idSliced).concat('&');
+            });
+            window.location = '/Payments?' + params + 'handler=CreateFromTimesheet#card-edit';
         }
         else {
             toastr.warning("Není označen žádný záznam pro vygenerování platby.");

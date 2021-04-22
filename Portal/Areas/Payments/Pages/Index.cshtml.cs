@@ -67,11 +67,11 @@ namespace Portal.Areas.Payments.Pages
         public async Task OnGetCreateFromTimesheetAsync(int[] ids)
         {
             Payment = await _context.Payment
-                                .Include(p => p.Timesheet)
-                                .ToListAsync();
-                PaymentDetail = null;
-                Timesheet = await _context.Timesheet.Include(x => x.Payment).Where(x => ids.Any(y => y == x.Id)).ToListAsync();
-                IsEditable = true;
+                .Include(p => p.Timesheet)
+                .ToListAsync();
+            PaymentDetail = null;
+            Timesheet = await _context.Timesheet.Include(x => x.Payment).Where(x => ids.Any(y => y == x.Id)).ToListAsync();
+            IsEditable = true;
         }
 
         public async Task<IActionResult> OnPostAsync()
