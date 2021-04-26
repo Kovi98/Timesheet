@@ -43,8 +43,8 @@
                             <th>
                                 #
                             </th>
-                            <th style="text-align: center">
-                                <input type="checkbox" id="select_all" />
+                            <th>
+                                
                             </th>
                             <th>
                                 Trenér
@@ -433,7 +433,7 @@
                 "autoWidth": true,
                 "info": false,
                 "stateSave": true,
-                "order": [[1, "asc"]],
+                "order": [[4, "desc"]],
                 "select": {
                     "style": 'multi',
                     "selector": 'td:first-child'
@@ -442,7 +442,21 @@
                     {
                         "targets": [0],
                         "visible": false,
-                        "searchable": false
+                        "searchable": false,
+                        "orderable": false
+                    },
+                    {
+                        "targets": [1],
+                        "orderable": false,
+                        "checkboxes": {
+                            'selectRow': true,
+                            'selectCallback': function (nodes, selected) {
+                                $('input[type="checkbox"]', nodes).iCheck('update');
+                            },
+                            'selectAllCallback': function (nodes, selected, indeterminate) {
+                                $('input[type="checkbox"]', nodes).iCheck('update');
+                            }
+                        }
                     },
                     {
                         "targets": [10],
@@ -452,13 +466,20 @@
                 "dom": '<"toolbar">frtip',
                 "initComplete": function (settings, json) {
                     $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
-                    $('#dataTable').on('click', '#select_all', function () {
-                        if ($('#select_all:checked').val() === 'on')
-                            dataTableTimesheets.rows().select();
-                        else
-                            dataTableTimesheets.rows().deselect();
-                    });
+                    
                 }
+            });
+
+            // Handle iCheck change event for "select all" control
+            $(dataTableTimesheets.table().container()).on('ifChanged', '.dt-checkboxes-select-all input[type="checkbox"]', function (event) {
+                var col = dataTableTimesheets.column($(this).closest('th'), { filter: 'applied' });
+                col.checkboxes.select(this.checked);
+            });
+
+            // Handle iCheck change event for checkboxes in table body
+            $(dataTableTimesheets.table().container()).on('ifChanged', '.dt-checkboxes', function (event) {
+                var cell = dataTableTimesheets.cell($(this).closest('td'));
+                cell.checkboxes.select(this.checked);
             });
         });
     </script>
