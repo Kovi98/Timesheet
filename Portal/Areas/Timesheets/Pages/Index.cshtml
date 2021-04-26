@@ -107,12 +107,16 @@
                                     @{
                                         if (item.Payment != null && item.Payment.IsPaid)
                                         {
-                                            <a asp-page="/Payment/Index" asp-route-id="@item.Id" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
+                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
+                                        }
+                                        else if (item.Payment != null) 
+                                        { 
+                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
                                         }
                                         else
                                         {
-                                            <span class="badge badge-warning">Nezaplaceno</span>
+                                            <span class="badge badge-warning">Neexistuje</span>
                                         }
                                     }
                                 </td>
