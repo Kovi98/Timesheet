@@ -68,5 +68,18 @@ namespace Timesheet.Entity.Entities
                 return TimeSpan.FromHours(Hours.HasValue ? (double)Hours.Value : 0);
             }
         }
+
+        public string FriendlyName
+        {
+            get
+            {
+                return this.ToString();
+            }
+        }
+
+        public override string ToString()
+        {
+            return (this.Person?.FullName ?? "Nevyplněno") + " (" + (this.DateTimeFrom?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + " - " + (this.DateTimeTo?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + ")";
+        }
     }
 }

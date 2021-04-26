@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
 
@@ -19,9 +20,12 @@ namespace Portal.Areas.Payments.Pages
         }
 
         public IList<Payment> Payment { get;set; }
+        [BindProperty]
         public Payment PaymentDetail { get; set; }
         public bool IsEditable { get; set; }
-        public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get; set; }
+        public SelectList Timesheets { get; set; }
+        [BindProperty]
+        public int[] TimesheetsSelected { get; set; }
 
 
         public async Task OnGetAsync(int id)
@@ -35,7 +39,6 @@ namespace Portal.Areas.Payments.Pages
                 PaymentDetail = payment;
             }
             IsEditable = false;
-            Timesheet = null;
         }
 
         public async Task OnGetNotPaidAsync()
@@ -62,6 +65,9 @@ namespace Portal.Areas.Payments.Pages
                 PaymentDetail = null;
             }
             IsEditable = true;
+            var freeTimesheets = _context.Timesheet.Include(x => x.Person).Where(x => x.PaymentId == 0 || x.PaymentId == null);
+            Timesheets = new SelectList(freeTimesheets, "Id", "FriendlyName");
+            TimesheetsSelected = await _context.Timesheet.Where(x => x.PaymentId == id && x.PaymentId != null).Select(x => x.Id).ToArrayAsync();
         }
 
         public async Task OnGetCreateFromTimesheetAsync(int[] ids)
@@ -69,8 +75,9 @@ namespace Portal.Areas.Payments.Pages
             Payment = await _context.Payment
                 .Include(p => p.Timesheet)
                 .ToListAsync();
+            ViewData["Timesheets"] = new SelectList(_context.Timesheet.Include(x => x.Person).Where(x => x.PaymentId == 0), "Id", "FriendlyName");
             PaymentDetail = null;
-            Timesheet = await _context.Timesheet.Include(x => x.Payment).Where(x => ids.Any(y => y == x.Id)).ToListAsync();
+            TimesheetsSelected = await _context.Timesheet.Include(x => x.Payment).Where(x => ids.Any(y => y == x.Id)).Select(x => x.Id).ToArrayAsync();
             IsEditable = true;
         }
 
@@ -80,7 +87,7 @@ namespace Portal.Areas.Payments.Pages
             {
                 return RedirectToPage("./Index", new { id = PaymentDetail?.Id, area = "Payments" });
             }
-
+            PaymentDetail.Timesheet = await _context.Timesheet.Where(x => (x.PaymentId == null || x.PaymentId == 0) && (TimesheetsSelected.Any(y => y == x.Id))).ToListAsync();
             if (PaymentDetail.Id > 0)
             {
                 _context.Attach(PaymentDetail).State = EntityState.Modified;
