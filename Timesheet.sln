@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal", "Portal\Portal.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entity", "Entity\Entity.csproj", "{6D271FCF-A389-4968-AFF9-EEEFC1E3D1A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocManager", "DocManager\DocManager.csproj", "{46253F1C-2896-4D88-AD8A-FD358A5414C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocManager", "DocManager\DocManager.csproj", "{46253F1C-2896-4D88-AD8A-FD358A5414C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
