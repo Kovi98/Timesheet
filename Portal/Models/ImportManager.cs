@@ -23,12 +23,7 @@ namespace Portal.Models
             {
                 using (ExcelPackage excelPackage = new ExcelPackage(stream))
                 {
-                    IEnumerable<ExcelWorksheet> wss;
-                    if (excelPackage.Workbook.Worksheets.Count == 1)
-                        wss = excelPackage.Workbook.Worksheets;
-                    else
-                        wss = excelPackage.Workbook.Worksheets.Where(x => x.Name == "Import");
-
+                    IEnumerable<ExcelWorksheet> wss = excelPackage.Workbook.Worksheets;
                     foreach (var ws in wss)
                     {
                         Dictionary<int, string> mappedColumns = new Dictionary<int, string>();
@@ -43,20 +38,27 @@ namespace Portal.Models
                             Timesheet.Entity.Entities.Timesheet timesheet = new Timesheet.Entity.Entities.Timesheet();
                             TimesheetImport timesheetImport = new TimesheetImport(timesheet);
                             timesheet.CreateTime = DateTime.Now;
+                            string fullname = string.Empty;
                             string firstname = string.Empty;
                             string lastname = string.Empty;
+
+                            bool isActive = false;
                             foreach (var col in mappedColumns)
                             {
-                                switch (col.Value)
-                                {
-                                    case "Jmeno":
-                                        firstname = ws.Cells[i, col.Key].Value.ToString();
-                                        break;
-                                    case "Prijmeni":
-                                        lastname = ws.Cells[i, col.Key].Value.ToString();
-                                        break;
-                                }
+                                if (col.Value.Trim() == "Účast")
+                                    isActive = ws.Cells[i, col.Key].Value.ToString().Trim() == "1";
                             }
+                            //Neúčast - vynechání řádku
+                            if (!isActive)
+                                continue;
+
+                            foreach (var col in mappedColumns)
+                            {
+                                if(col.Value.Trim() == "Člen")
+                                    fullname = ws.Cells[i, col.Key].Value?.ToString().Trim() ?? "";
+                            }
+                            lastname = fullname.Substring(0,fullname.IndexOf(' ')).Trim();
+                            firstname = fullname.Substring(fullname.IndexOf(' ')+1).Trim();
                             //Není jméno ani příjmení - PersonMissing
                             if (firstname == string.Empty && lastname == string.Empty)
                                 timesheetImport.AddError(TimesheetImportError.PersonMissing);
@@ -68,25 +70,25 @@ namespace Portal.Models
                             foreach (var col in mappedColumns)
                             {
                                 string value = string.Empty;
-                                switch (col.Value)
+                                switch (col.Value.Trim())
                                 {
-                                    case "Od":
-                                        value = ws.Cells[i, col.Key].Value.ToString();
+                                    case "Začátek":
+                                        value = ws.Cells[i, col.Key].Value?.ToString() ?? "";
                                         if (string.IsNullOrEmpty(value))
                                             timesheetImport.AddError(TimesheetImportError.DateTimeFromMissing);
                                         timesheet.DateTimeFrom = DateTime.Parse(value);
                                         break;
-                                    case "Do":
-                                        value = ws.Cells[i, col.Key].Value.ToString();
+                                    case "Konec":
+                                        value = ws.Cells[i, col.Key].Value?.ToString() ?? "";
                                         if (string.IsNullOrEmpty(value))
                                             timesheetImport.AddError(TimesheetImportError.DateTimeToMissing);
                                         timesheet.DateTimeTo = DateTime.Parse(value);
                                         break;
-                                    case "Text":
+                                    case "Název události":
                                         timesheet.Name = ws.Cells[i, col.Key].Value.ToString();
                                         break;
-                                    case "Funkce":
-                                        value = ws.Cells[i, col.Key].Value.ToString();
+                                    case "Pozice RT":
+                                        value = ws.Cells[i, col.Key].Value?.ToString().ToLower() ?? "";
                                         if (string.IsNullOrEmpty(value))
                                             timesheetImport.AddError(TimesheetImportError.JobMissing);
                                         var job = _context.Job.FirstOrDefault(x => x.Name == value);
