@@ -16,9 +16,9 @@ namespace Portal.Models
         {
             _context = context;
         }
-        public IList<Timesheet.Entity.Entities.Timesheet> ConvertPeople(byte[] source)
+        public IList<TimesheetImport> ConvertPeople(byte[] source)
         {
-            IList<Timesheet.Entity.Entities.Timesheet> import = new List<Timesheet.Entity.Entities.Timesheet>();
+            IList<TimesheetImport> import = new List<TimesheetImport>();
             using (MemoryStream stream = new MemoryStream(source))
             {
                 using (ExcelPackage excelPackage = new ExcelPackage(stream))
@@ -41,6 +41,8 @@ namespace Portal.Models
                         for(int i = startRow+1; i <= ws.Dimension.End.Row; i++)
                         {
                             Timesheet.Entity.Entities.Timesheet timesheet = new Timesheet.Entity.Entities.Timesheet();
+                            TimesheetImport timesheetImport = new TimesheetImport(timesheet);
+                            timesheet.CreateTime = DateTime.Now;
                             string firstname = string.Empty;
                             string lastname = string.Empty;
                             foreach (var col in mappedColumns)
@@ -55,33 +57,48 @@ namespace Portal.Models
                                         break;
                                 }
                             }
-                            //Není jméno ani příjmení - vynechání řádku
+                            //Není jméno ani příjmení - PersonMissing
                             if (firstname == string.Empty && lastname == string.Empty)
-                                continue;
-
-                            timesheet.Person = _context.Person.First(x => x.Name == firstname && x.Surname == lastname) ?? new Person() { Name = firstname, Surname = lastname };
+                                timesheetImport.AddError(TimesheetImportError.PersonMissing);
+                            var person = _context.Person.FirstOrDefault(x => x.Name == firstname && x.Surname == lastname);
+                            if (person == null)
+                                timesheetImport.AddError(TimesheetImportError.PersonUndefined);
+                            timesheet.Person = person ?? new Person{ Name = firstname, Surname = lastname, CreateTime = DateTime.Now };
 
                             foreach (var col in mappedColumns)
                             {
+                                string value = string.Empty;
                                 switch (col.Value)
                                 {
                                     case "Od":
-                                        timesheet.DateTimeFrom = DateTime.Parse(ws.Cells[i, col.Key].Value.ToString());
+                                        value = ws.Cells[i, col.Key].Value.ToString();
+                                        if (string.IsNullOrEmpty(value))
+                                            timesheetImport.AddError(TimesheetImportError.DateTimeFromMissing);
+                                        timesheet.DateTimeFrom = DateTime.Parse(value);
                                         break;
                                     case "Do":
-                                        timesheet.DateTimeTo = DateTime.Parse(ws.Cells[i, col.Key].Value.ToString());
+                                        value = ws.Cells[i, col.Key].Value.ToString();
+                                        if (string.IsNullOrEmpty(value))
+                                            timesheetImport.AddError(TimesheetImportError.DateTimeToMissing);
+                                        timesheet.DateTimeTo = DateTime.Parse(value);
                                         break;
                                     case "Text":
                                         timesheet.Name = ws.Cells[i, col.Key].Value.ToString();
                                         break;
                                     case "Funkce":
-                                        timesheet.Job = _context.Job.First(x => x.Name == ws.Cells[i, col.Key].Value.ToString()) ?? new Job() { Name = ws.Cells[i, col.Key].Value.ToString() };
+                                        value = ws.Cells[i, col.Key].Value.ToString();
+                                        if (string.IsNullOrEmpty(value))
+                                            timesheetImport.AddError(TimesheetImportError.JobMissing);
+                                        var job = _context.Job.FirstOrDefault(x => x.Name == value);
+                                        if (job == null)
+                                            timesheetImport.AddError(TimesheetImportError.JobUndefined);
+                                        timesheet.Job = job ?? new Job{ Name = ws.Cells[i, col.Key].Value.ToString(), CreateTime = DateTime.Now };
                                         break;
                                 }
                             }
-
-                            if (IsUnique(timesheet))
-                                import.Add(timesheet);
+                            if (!IsUnique(timesheet))
+                                timesheetImport.AddError(TimesheetImportError.TimesheetNotUnique);
+                            import.Add(timesheetImport);
                         }
 
                     }
@@ -94,7 +111,7 @@ namespace Portal.Models
         {
             var ts = _context.Timesheet
                 .Include(x => x.Person)
-                .First(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.FullName == timesheet.Person.FullName);
+                .FirstOrDefault(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.Name == timesheet.Person.Name && x.Person.Surname == timesheet.Person.Surname);
             return ts == null;
         }
     }

@@ -12,7 +12,7 @@ using Portal.Models;
 
 namespace Portal.Areas.Settings.Pages.Import
 {
-    public class IndexModel : PageModel
+    public class TimesheetModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
         [BindProperty]
@@ -20,7 +20,10 @@ namespace Portal.Areas.Settings.Pages.Import
         [DisplayName("Vložit excel...")]
         public IFormFile ExcelUpload { get; set; }
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        [BindProperty]
+        public IList<TimesheetImport> TimesheetImport { get; set; }
+
+        public TimesheetModel(Timesheet.Entity.Entities.TimesheetContext context)
         {
             _context = context;
         }
@@ -49,16 +52,32 @@ namespace Portal.Areas.Settings.Pages.Import
             try
             {
                 var importManager = new ImportManager(_context);
-                var importData = importManager.ConvertPeople(source);
-
-                await _context.SaveChangesAsync();
+                TimesheetImport = importManager.ConvertPeople(source);
+                //await _context.Timesheet.AddRangeAsync(importData);
+                //await _context.SaveChangesAsync();
             }
             catch(Exception e)
             {
-                return BadRequest();
+                return Page();
             }
 
-            return RedirectToPage("Index");
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSaveAsync(bool overrideErrors = false)
+        {
+            try
+            {
+                if (!overrideErrors)
+                    TimesheetImport = TimesheetImport.Where(x => x.ShouldImport).ToList();
+                await _context.Timesheet.AddRangeAsync(TimesheetImport.Select(x => x.Timesheet));
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return Page();
+            }
+
+            return Page();
         }
     }
 }
