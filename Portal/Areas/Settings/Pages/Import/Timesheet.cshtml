@@ -4,17 +4,6 @@
 @{
     ViewData["Title"] = "Import";
 }
-@{
-    if (ViewData.ModelState["Error"] != null)
-    {
-        foreach (var item in ViewData.ModelState["Error"].Errors)
-        {
-            <script>
-                toastr.error("@item.ErrorMessage");
-            </script>
-        }
-    }
-}
 
 <div id="row-edit" class="row">
     <div class="col-12">
@@ -28,34 +17,37 @@
                 </div>
             </div>
             <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
                     <div class="row">
-                        <section class="col-lg-7 connectedSortable">
-                            <div class="card card-info">
-                                <div class="card-header">
-                                    <h3 class="card-title">Základní informace</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-
+                        <section class="col-lg-6 connectedSortable">
+                            <form id="form-upload-excel" method="post" enctype="multipart/form-data">
+                                <div class="card card-success">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Excel</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
                                         </div>
                                     </div>
-                                    <!-- /.card-body -->
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group custom-file">
+                                                    <input accept=".xlsx, .xls" class="custom-file-input" type="file" asp-for="ExcelUpload" />
+                                                    <label asp-for="ExcelUpload" class="custom-file-label"></label>
+                                                    <span class="text-danger" asp-validation-for="ExcelUpload"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- /.card -->
+                                <!-- /.card -->
+                                </form>
                         </section>
-                        <section class="col-lg-5 connectedSortable">
+                        <section class="col-lg-6 connectedSortable">
                             <div class="card card-warning">
                                 <div class="card-header">
-                                    <h3 class="card-title">Excel</h3>
+                                    <h3 class="card-title">CSV</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                             <i class="fas fa-minus"></i>
@@ -77,15 +69,6 @@
                             </div>
                         </section>
                     </div>
-                    <!--Tlačítka dole-->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
             </div>
             <!-- /.card-body -->
         </div>
@@ -135,79 +118,81 @@
                                 <tbody>
                                     @foreach (var item in Model.TimesheetImport)
                                     {
-                                    <tr>
-                                        <td class="project-state">
-                                            @{
-                                                if (item.ShouldImport)
-                                                {
-                                                    <span class="badge badge-success"><i class="fas fa-check"></i></span>
-
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge badge-danger"><i class="fas fa-times"></i></span>
-                                                }
-                                            }
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Timesheet.Person.FullName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Timesheet.DateTimeFrom)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Timesheet.DateTimeTo)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Timesheet.Job.Name)
-                                        </td>
-                                        <td>
-                                            @{
-                                                foreach (var x in item.Errors)
-                                                {
-                                                    switch (x)
+                                        <tr>
+                                            <td class="project-state">
+                                                @{
+                                                    if (item.Success)
                                                     {
-                                                        case TimesheetImportError.JobMissing:
-                                                            <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o pozici chybí">Pozice</span>
-                                                            break;
-                                                        case TimesheetImportError.JobUndefined:
-                                                            <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněná pozice neexistuje">Pozice</span>
-                                                            break;
-                                                        case TimesheetImportError.PersonMissing:
-                                                            <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o trenérovi chybí">Trenér</span>
-                                                            break;
-                                                        case TimesheetImportError.PersonUndefined:
-                                                            <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněný trenér neexistuje">Trenér</span>
-                                                            break;
-                                                        case TimesheetImportError.DateTimeFromMissing:
-                                                            <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o začátku chybí">Začátek</span>
-                                                            break;
-                                                        case TimesheetImportError.DateTimeToMissing:
-                                                            <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o konci chybí">Konec</span>
-                                                            break;
-                                                        case TimesheetImportError.TimesheetNotUnique:
-                                                            <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Takový výkaz již existuje">Duplicitní</span>
-                                                            break;
+                                                        <span class="badge badge-success"><i class="fas fa-check"></i></span>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-danger"><i class="fas fa-times"></i></span>
                                                     }
                                                 }
-                                            }
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Timesheet.Person.FullName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Timesheet.DateTimeFrom)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Timesheet.DateTimeTo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Timesheet.Job.Name)
+                                            </td>
+                                            <td>
+                                                @{
+                                                    foreach (var x in item.Errors)
+                                                    {
+                                                        switch (x)
+                                                        {
+                                                            case TimesheetImportError.JobMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o pozici chybí">Pozice</span>
+                                                                break;
+                                                            case TimesheetImportError.JobUndefined:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněná pozice neexistuje">Pozice</span>
+                                                                break;
+                                                            case TimesheetImportError.PersonMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o trenérovi chybí">Trenér</span>
+                                                                break;
+                                                            case TimesheetImportError.PersonUndefined:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněný trenér neexistuje">Trenér</span>
+                                                                break;
+                                                            case TimesheetImportError.DateTimeFromMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o začátku chybí">Začátek</span>
+                                                                break;
+                                                            case TimesheetImportError.DateTimeToMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o konci chybí">Konec</span>
+                                                                break;
+                                                            case TimesheetImportError.TimesheetNotUnique:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Takový výkaz již existuje">Duplicitní</span>
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-md-12">
                             <div class="float-right">
                                 <form method="post" asp-page-handler="Save">
-                                    <input type="hidden" asp-for="TimesheetImport" />
-                                    <input type="submit" value="Uložit" class="btn btn-success" />
-                                </form>
-                                <form method="post" asp-route-overrideErrors="true" asp-page-handler="Save">
-                                    <input type="hidden" asp-for="TimesheetImport" />
-                                    <input type="submit" value="Uložit a obejít chyby" class="btn btn-warning" />
+                                    @Html.HiddenFor(x => x.TimesheetImport)
+                                    <div class="form-inline">
+                                        <div class="custom-control custom-switch mr-3">
+                                            <input type="checkbox" asp-for="OverrideErrors" class="custom-control-input" id="overrideErrorsSwitch">
+                                            <label class="custom-control-label" asp-for="OverrideErrors" for="overrideErrorsSwitch"></label>
+                                        </div>
+                                        <input type="submit" value="Uložit" class="btn btn-info" />
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -218,21 +203,27 @@
     </div>
 }
 
-                                                @section Scripts {
+@section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
-                                                        bsCustomFileInput.init();
+            bsCustomFileInput.init();
             $('#menu-data').click();
-                                                    })
+
+            $('#ExcelUpload').change(function (e) {
+                if (e.target.files.length == 1) {
+                    $('#form-upload-excel').submit();
+                }
+            });
+        })
     </script>
     <script>
         var dataTableDocs;
         $(document).ready(function () {
-                                                        dataTableDocs = $('#dataTable').DataTable({
-                                                            "language": {
-                                                                "url": '/lib/datatables-language/cs.json'
-                                                            },
+            dataTableDocs = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/lib/datatables-language/cs.json'
+                },
                 "ordering": true,
                 "searching": true,
                 "paging": true,
@@ -243,19 +234,37 @@
                 "stateSave": true,
                 "columnDefs": [
                     {
-                                                                "targets": [0],
+                        "targets": [0],
                         "searchable": false
                     },
                     {
-                                                                "targets": [5],
+                        "targets": [5],
                         "orderable": false,
                         "searchable": false
                     }]
             });
-                                                    });
-                                                    function resetTable() {
-                                                        dataTableDocs.state.clear();
-                                                        window.location.reload();
-                                                    };
+        });
+        function resetTable() {
+            dataTableDocs.state.clear();
+            window.location.reload();
+        };
     </script>
+    @if (ViewData.ModelState["Error"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Error"].Errors)
+        {
+        <script>
+                    toastr.error("@item.ErrorMessage");
+        </script>
+        }
+    }
+    @if (ViewData.ModelState["Success"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Success"].Errors)
+        {
+        <script>
+                    toastr.success("@item.ErrorMessage");
+        </script>
+        }
+    }
 }

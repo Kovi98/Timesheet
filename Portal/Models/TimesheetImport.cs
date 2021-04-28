@@ -7,13 +7,14 @@ namespace Portal.Models
 {
     public class TimesheetImport
     {
-        public bool ShouldImport { get; set; }
+        public bool Success { get; set; }
+        public bool CanPassErrors => !(Errors.Contains(TimesheetImportError.DateTimeFromMissing) || Errors.Contains(TimesheetImportError.DateTimeToMissing) || Errors.Contains(TimesheetImportError.JobMissing) || Errors.Contains(TimesheetImportError.PersonMissing) || Errors.Contains(TimesheetImportError.TimesheetNotUnique));
         public Timesheet.Entity.Entities.Timesheet Timesheet { get; set; }
         public IList<TimesheetImportError> Errors { get; set; }
         public TimesheetImport(Timesheet.Entity.Entities.Timesheet timesheet, IList<TimesheetImportError> errors = null)
         {
             Timesheet = timesheet;
-            ShouldImport = errors == null || errors.Count == 0;
+            Success = errors == null || errors.Count == 0;
             if (errors == null)
                 Errors = new List<TimesheetImportError>();
             else
@@ -21,8 +22,8 @@ namespace Portal.Models
         }
         public void AddError(TimesheetImportError error)
         {
-            if (ShouldImport)
-                ShouldImport = false;
+            if (Success)
+                Success = false;
             Errors.Add(error);
         }
 
