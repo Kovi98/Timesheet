@@ -77,6 +77,28 @@ namespace Timesheet.Entity.Entities
             }
         }
 
+        public void CalculateReward(bool overridePreviousReward = false)
+        {
+            if (Job != null && Person != null)
+            {
+                //Hours
+                if ((!Hours.HasValue || overridePreviousReward) && DateTimeFrom != null && DateTimeTo != null)
+                    Hours = (decimal)(DateTimeTo - DateTimeFrom)?.TotalHours;
+                //Reward
+                if (!Reward.HasValue || overridePreviousReward)
+                    Reward = Hours * Job.HourReward;
+                //Tax
+                if (Person.HasTax)
+                {
+                    Tax = (Reward ?? 0) * (decimal)0.15;
+                }
+                else
+                {
+                    Tax = 0;
+                }
+            }
+        }
+
         public override string ToString()
         {
             return (this.Person?.FullName ?? "Nevyplněno") + " (" + (this.DateTimeFrom?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + " - " + (this.DateTimeTo?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + ")";
