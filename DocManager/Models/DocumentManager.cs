@@ -6,6 +6,7 @@ using Timesheet.DocManager.Entities;
 using System.IO;
 using System.Threading.Tasks;
 using Novacode;
+using PuppeteerSharp;
 
 namespace Timesheet.DocManager.Models
 {
@@ -75,6 +76,27 @@ namespace Timesheet.DocManager.Models
                     Format = ExportFormat.Rtf;
                     break;
             }
+        }
+
+        public async Task<byte[]> ConvertPageToPdfAsync(string url)
+        {
+            var browserFetcher = new BrowserFetcher();
+            await browserFetcher.DownloadAsync();
+            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+            await using var page = await browser.NewPageAsync();
+            await page.GoToAsync(url);
+            var result = await page.PdfDataAsync();
+            return result;
+        }
+        public async Task<byte[]> ConvertHtmlToPdfAsync(string html)
+        {
+            var browserFetcher = new BrowserFetcher();
+            await browserFetcher.DownloadAsync();
+            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+            await using var page = await browser.NewPageAsync();
+            await page.SetContentAsync(html);
+            var result = await page.PdfDataAsync();
+            return result;
         }
     }
 
