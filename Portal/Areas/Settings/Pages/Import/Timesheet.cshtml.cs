@@ -71,6 +71,7 @@ namespace Portal.Areas.Settings.Pages.Import
             }
             catch(Exception e)
             {
+                ModelState.AddModelError("Error", "Pøi naèítání dat nastala chyba.");
                 return Page();
             }
 
