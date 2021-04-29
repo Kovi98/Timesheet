@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Portal.Models;
 using Timesheet.Entity.Entities;
 
@@ -21,8 +23,9 @@ namespace Portal.Areas.Settings.Pages.Import
         [DisplayName("Vložit excel...")]
         public IFormFile ExcelUpload { get; set; }
 
-        [BindProperty]
         public IList<TimesheetImport> TimesheetImport { get; set; }
+        [BindProperty]
+        public string TimesheetImportJSON { get; set; }
 
         [BindProperty]
         [DisplayName("Obejít propustné chyby")]
@@ -61,6 +64,7 @@ namespace Portal.Areas.Settings.Pages.Import
                 ModelState.AddModelError("Success", string.Format("Bylo naèteno {0} záznamù.", TimesheetImport.Count()));
                 if (TimesheetImport.Any(x => !x.Success))
                     ModelState.AddModelError("Error", string.Format("Pøi naèítání bylo nalezeno {0} chybných záznamù.", TimesheetImport.Where(x => !x.Success).Count()));
+                TimesheetImportJSON = JsonConvert.SerializeObject(TimesheetImport);
             }
             catch(Exception e)
             {
@@ -69,9 +73,11 @@ namespace Portal.Areas.Settings.Pages.Import
 
             return Page();
         }
-        public async Task<IActionResult> OnPostSaveAsync(string submitButton)
+        public async Task<IActionResult> OnPostSaveAsync()
         {
+            TimesheetImport = JsonConvert.DeserializeObject<IList<TimesheetImport>>(TimesheetImportJSON);
             var defaultList = TimesheetImport;
+            var transaction = _context.Database.BeginTransaction();
             try
             {
                 if (!OverrideErrors)
@@ -88,12 +94,10 @@ namespace Portal.Areas.Settings.Pages.Import
                     {
                         if (import.Errors.Contains(TimesheetImportError.PersonUndefined) && !people.Contains(import.Timesheet.Person))
                         {
-                            _context.Person.Add(import.Timesheet.Person);
                             people.Add(import.Timesheet.Person);
                         }
                         if (import.Errors.Contains(TimesheetImportError.JobUndefined) && !jobs.Contains(import.Timesheet.Job))
                         {
-                            _context.Job.Add(import.Timesheet.Job);
                             jobs.Add(import.Timesheet.Job);
                         }
                     }
@@ -101,6 +105,7 @@ namespace Portal.Areas.Settings.Pages.Import
                     //Nahrazování undefined people
                     foreach (var person in people)
                     {
+                        _context.Person.Add(person);
                         foreach (var item in TimesheetImport.Where(x => x.Timesheet.Person.FullName == person.FullName).ToList())
                         {
                             item.Timesheet.Person = person;
@@ -109,20 +114,31 @@ namespace Portal.Areas.Settings.Pages.Import
                     //Nahrazování undefined jobs
                     foreach (var job in jobs)
                     {
+                        _context.Job.Add(job);
                         foreach (var item in TimesheetImport.Where(x => x.Timesheet.Job.Name == job.Name).ToList())
                         {
                             item.Timesheet.Job = job;
                         }
                     }
+                    await _context.SaveChangesAsync();
                 }
 
-                //Samotné ukládání do DB
-                await _context.Timesheet.AddRangeAsync(TimesheetImport.Select(x => x.Timesheet));
-                await _context.SaveChangesAsync();
+                //Samotné ukládání timesheetu do DB
+                var test = _context.ChangeTracker.Entries().ToList();
+                //await _context.Timesheet.AddRangeAsync(TimesheetImport.Select(x => x.Timesheet));
+                foreach(var timesheet in TimesheetImport.Select(x => x.Timesheet))
+                {
+                    _context.Timesheet.Add(timesheet);
+                    _context.Entry(timesheet.Person).State = EntityState.Detached;
+                    _context.Entry(timesheet.Job).State = EntityState.Detached;
+                    await _context.SaveChangesAsync();
+                }
+                transaction.Commit();
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));
             }
             catch (Exception e)
             {
+                transaction.Rollback();
                 ModelState.AddModelError("Error", "Záznamy se nepodaøilo uložit.");
                 TimesheetImport = defaultList;
                 return Page();

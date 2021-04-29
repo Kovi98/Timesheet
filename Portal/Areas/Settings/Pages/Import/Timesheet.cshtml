@@ -192,7 +192,7 @@
                             </a>
                             <div class="float-right">
                                 <form method="post" asp-page-handler="Save">
-                                    @Html.HiddenFor(x => x.TimesheetImport)
+                                    @Html.HiddenFor(model => model.TimesheetImportJSON)
                                     <div class="form-inline">
                                         <div class="custom-control custom-switch mr-3">
                                             <input type="checkbox" asp-for="OverrideErrors" class="custom-control-input" id="overrideErrorsSwitch">
