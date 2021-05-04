@@ -7,6 +7,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Novacode;
 using PuppeteerSharp;
+using DocumentFormat.OpenXml.Packaging;
+using OpenXmlPowerTools;
+using System.Drawing.Imaging;
+using System.Xml.Linq;
+using System.Linq;
 
 namespace Timesheet.DocManager.Models
 {
@@ -78,7 +83,7 @@ namespace Timesheet.DocManager.Models
             }
         }
 
-        public async Task<byte[]> ConvertPageToPdfAsync(string url)
+        public static async Task<byte[]> ConvertPageToPdfAsync(string url)
         {
             var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync();
@@ -88,7 +93,7 @@ namespace Timesheet.DocManager.Models
             var result = await page.PdfDataAsync();
             return result;
         }
-        public async Task<byte[]> ConvertHtmlToPdfAsync(string html)
+        public static async Task<byte[]> ConvertHtmlToPdfAsync(string html)
         {
             var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync();

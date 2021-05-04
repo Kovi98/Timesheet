@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Timesheet.DocManager.Models;
 
 namespace Portal.Areas.Timesheets.Pages
 {
@@ -158,6 +159,17 @@ namespace Portal.Areas.Timesheets.Pages
             }
 
             return new OkResult();
+        }
+        public async Task<IActionResult> OnPostPrintAsync(int id)
+        {
+            string url = Request.Scheme +"://"+ Request.Host + Url.Page("./Print", new { id = id, area = "Timesheets" });
+            var document = await DocumentManager.ConvertPageToPdfAsync(url);
+            if (document is null)
+            {
+                return Page();
+            }
+
+            return File(document, "application/pdf", "print.pdf");
         }
         private bool TimesheetExists(int id)
         {

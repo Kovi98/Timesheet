@@ -29,10 +29,9 @@
                     </a>
                 </div>
                 <div class="d-inline-block">
-                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("Index", new { area="" })" method="post">
-                        <button id="logoutButton" type="submit" class="btn d-none"><i class="nav-icon fas fa-sign-out-alt ml-2"></i></button>
+                    <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Index" method="post">
                     </form>
-                    <a href="" id="logoutLink" class="d-block">
+                    <a href="" class="d-block logout-link">
                         <i class="nav-icon fas fa-sign-out-alt ml-2"></i>
                     </a>
                 </div>
@@ -116,7 +115,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a asp-area="Identity" asp-page="/Account/Logout" class="nav-link">
+                    <a href="" class="nav-link logout-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Odhlásit se</p>
                     </a>
@@ -131,10 +130,9 @@
 @section Scripts{ 
 <script>
     $(document).ready(function() {
-        function logout() {
-            $('#logoutButton').toggle();
-        }
-        $('#logoutLink').on('click', logout());
+        $('.logout-link').on('click', function () {
+            $('#logoutForm').submit();
+        });
     });
 </script>
 }

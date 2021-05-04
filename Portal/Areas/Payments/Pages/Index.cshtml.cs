@@ -84,7 +84,7 @@ namespace Portal.Areas.Payments.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || PaymentDetail.IsPaid)
             {
                 return RedirectToPage("./Index", new { id = PaymentDetail?.Id, area = "Payments" });
             }
@@ -116,6 +116,42 @@ namespace Portal.Areas.Payments.Pages
             }
 
             return RedirectToPage("./Index", new { id = PaymentDetail.Id, area = "Payments" });
+        }
+
+        public async Task<IActionResult> OnPostPayAsync(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var paymentToPay = await _context
+                .Payment
+                .Include(x => x.Timesheet)
+                .ThenInclude(x => x.Person)
+                .ThenInclude(x => x.PaidFrom)
+                .FirstAsync(x => x.Id == id);
+
+            if (paymentToPay != null)
+            {
+                try
+                {
+                    if (paymentToPay.Pay())
+                        await _context.SaveChangesAsync();
+                    else
+                        return BadRequest();
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            return new OkResult();
         }
 
         /// <summary>

@@ -46,7 +46,7 @@
                                 @Html.DisplayNameFor(model => model.Payment[0].CreateTime)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Payment[0].PaymentDateTime)
+                                @Html.DisplayNameFor(model => model.Payment[0].IsPaid)
                             </th>
                             <th></th>
                         </tr>
@@ -65,12 +65,12 @@
                                     @Html.DisplayFor(modelItem => item.PaymentDateTime)
                                 </td>
                                 <td class="project-actions text-right">
-                                    <a class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
+                                    <a id="href-edit-@item.Id" class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit" disabled="true">
                                         <i class="fas fa-pencil-alt">
                                         </i>
                                         Upravit
                                     </a>
-                                    <a class="btn btn-danger btn-sm" onclick="deletePaymentsDetail(@item.Id)">
+                                    <a id="href-delete-@item.Id" class="btn btn-danger btn-sm" onclick="deletePaymentsDetail(@item.Id)">
                                         <i class="fas fa-trash">
                                         </i>
                                         Smazat
@@ -174,6 +174,18 @@
 </div>
 
 @section Scripts {
+    @foreach (var item in Model.Payment)
+    {
+        @if (item.IsPaid)
+        {
+            <script>
+            $(document).ready(function () {
+                $('#href-edit-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+                $('#href-delete-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+            });
+            </script>
+        }
+    }
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var dataTablePayment;

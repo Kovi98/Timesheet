@@ -37,7 +37,7 @@ namespace Portal.Areas.Identity.Pages.Account
             }
             else
             {
-                return Redirect("./Index");
+                return Redirect("/Index");
             }
         }
     }
