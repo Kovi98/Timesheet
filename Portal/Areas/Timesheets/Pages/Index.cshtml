@@ -249,7 +249,7 @@
                                             @{
                                                 if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
                                                 {
-                                                    <a asp-page="/Payment/Index" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
+                                                    <a asp-page="Index" asp-area="Payment" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
 
                                                 }
                                                 else

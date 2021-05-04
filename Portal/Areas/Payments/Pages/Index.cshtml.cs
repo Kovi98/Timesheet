@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Timesheet.Entity.Entities;
 
 namespace Portal.Areas.Payments.Pages
@@ -13,10 +14,12 @@ namespace Portal.Areas.Payments.Pages
     public class IndexModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly IConfiguration _configuration;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public IList<Payment> Payment { get;set; }
@@ -32,6 +35,7 @@ namespace Portal.Areas.Payments.Pages
         {
             Payment = await _context.Payment
                 .Include(p => p.Timesheet)
+                .ThenInclude(p => p.Person)
                 .ToListAsync();
             var payment = Payment.FirstOrDefault(t => t.Id == id);
             if (id > 0 && payment != null)
@@ -136,7 +140,7 @@ namespace Portal.Areas.Payments.Pages
             {
                 try
                 {
-                    if (paymentToPay.Pay())
+                    if (paymentToPay.Pay(_configuration["AppSettings:BankAccount"]))
                         await _context.SaveChangesAsync();
                     else
                         return BadRequest();
@@ -168,9 +172,9 @@ namespace Portal.Areas.Payments.Pages
 
             var paymentToDelete = await _context.Payment.FindAsync(id);
 
-            if (false)
+            if (paymentToDelete.IsPaid)
             {
-                //Existujicí platba
+                return BadRequest();
             }
 
             if (paymentToDelete != null)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Xml;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
@@ -47,47 +48,55 @@ namespace Timesheet.Entity.Entities
                 decimal value = 0;
                 foreach (var item in Timesheet)
                 {
-                    value += item.Reward ?? 0;
+                    value += item.ToPay;
                 }
                 return value;
             }
         }
 
-        public bool Pay()
+        public bool Pay(string accountFrom)
         {
             if (!IsPaid && Timesheet != null && Timesheet.Count > 0)
             {
+                var result = from t in Timesheet
+                             group t by t.Person into g
+                             select new TimesheetGroup { Person = g.Key, };
                 string xml = (@"<?xml version=""1.0"" encoding=""UTF-8""?>" + Environment.NewLine +
                 @"<Import xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""" + Environment.NewLine +
                 @"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">" + Environment.NewLine +
                 "<Orders>" + Environment.NewLine);
-
-                foreach(var ts in Timesheet)
+                var today = DateTime.Now;
+                foreach (var ts in result)
                 {
                     string ss = "0";
                     if (ts.Person.PaidFrom.Name == "MŠMT")
                         ss = "10";
                     xml += ("<DomesticTransaction>" + Environment.NewLine +
-                    "<accountFrom>2401100335</accountFrom>" + Environment.NewLine +
+                    "<accountFrom>" + accountFrom + "</accountFrom>" + Environment.NewLine +
                     "<currency>CZK</currency>" + Environment.NewLine +
-                    "<amount>" + ts.Reward + "</amount>" + Environment.NewLine +
+                    "<amount>" + ts.ToPay + "</amount>" + Environment.NewLine +
                     "<accountTo>" + ts.Person.BankAccount + "</accountTo>" + Environment.NewLine +
                     "<bankCode>" + ts.Person.BankCode + "</bankCode>" + Environment.NewLine +
                     "<ss>" + ss + "</ss>" + Environment.NewLine +
-                    "<date>" + DateTime.Now.ToString("yyyy-MM-dd") + "</date>" + Environment.NewLine +
-                    "<messageForRecipient>Trenérská odměna " + ts.Person.FullName + "-" + ts.DateTimeFrom.Value.Year + "/" + ts.DateTimeFrom.Value.Month + "</messageForRecipient>" + Environment.NewLine +
+                    "<date>" + today.ToString("yyyy-MM-dd") + "</date>" + Environment.NewLine +
+                    "<messageForRecipient>Trenérská odměna " + ts.Person.FullName + "-" + today.AddMonths(-1).Year + "/" + today.AddMonths(-1).Month + "</messageForRecipient>" + Environment.NewLine +
                     "<paymentType>431001</paymentType>" + Environment.NewLine +
                     "</DomesticTransaction>" + Environment.NewLine);
                 }
                 xml += ("</Orders>" + Environment.NewLine +
                      "</Import>");
-                PaymentDateTime = DateTime.Now;
+                PaymentDateTime = today;
                 return true;
             }
             else
             {
                 return false;
             }
+        }
+        private class TimesheetGroup
+        {
+            public Person Person { get; set; }
+            public decimal ToPay { get; set; }
         }
     }
 }
