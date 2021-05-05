@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
@@ -39,6 +40,34 @@ namespace Timesheet.Entity.Entities
         [Display(Name = "Stav", Description = "Stav platby?")]
         public bool IsPaid { get { return !(PaymentDateTime is null); } }
 
+        [Display(Name = "Odměna", Description = "Hrubá odměna")]
+        [DataType(DataType.Currency)]
+        public decimal? Reward
+        {
+            get
+            {
+                decimal? value = 0;
+                foreach (var item in Timesheet)
+                {
+                    value += item.Reward;
+                }
+                return value;
+            }
+        }
+        [Display(Name = "Daň", Description = "Daň")]
+        [DataType(DataType.Currency)]
+        public decimal Tax
+        {
+            get
+            {
+                decimal value = 0;
+                foreach (var item in Timesheet)
+                {
+                    value += item.Tax;
+                }
+                return value;
+            }
+        }
         [Display(Name = "K vyplacení", Description = "Odměna k vyplacení")]
         [DataType(DataType.Currency)]
         public decimal RewardToPay
@@ -56,11 +85,11 @@ namespace Timesheet.Entity.Entities
 
         public bool Pay(string accountFrom)
         {
-            if (!IsPaid && Timesheet != null && Timesheet.Count > 0)
+            if (true)//!IsPaid && Timesheet != null && Timesheet.Count > 0)
             {
                 var result = from t in Timesheet
                              group t by t.Person into g
-                             select new TimesheetGroup { Person = g.Key, };
+                             select new TimesheetGroup { Person = g.Key, ToPay = g.ToArray().Select(x => x.ToPay).Sum() };
                 string xml = (@"<?xml version=""1.0"" encoding=""UTF-8""?>" + Environment.NewLine +
                 @"<Import xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""" + Environment.NewLine +
                 @"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">" + Environment.NewLine +
@@ -85,6 +114,7 @@ namespace Timesheet.Entity.Entities
                 }
                 xml += ("</Orders>" + Environment.NewLine +
                      "</Import>");
+                PaymentXml = xml;
                 PaymentDateTime = today;
                 return true;
             }

@@ -73,8 +73,8 @@ namespace Timesheet.Entity.Entities
                 entity.Property(e => e.PaymentDateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.PaymentXml)
-                    .HasColumnName("PaymentXML")
-                    .HasColumnType("xml");
+                    .HasColumnName("PaymentXML");
+                    //.HasColumnType("xml");
 
                 entity.Property(e => e.RowVersion)
                     .IsRequired()

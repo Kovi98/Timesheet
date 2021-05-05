@@ -62,13 +62,13 @@
                                     @Html.DisplayFor(modelItem => item.CreateTime)
                                 </td>
                                 <td>
-                                    @if(item.IsPaid)
+                                    @if (item.IsPaid)
                                     {
-                                    <span class="badge badge-success">@Html.DisplayFor(model => model.PaymentDetail.PaymentDateTime)</span>
+                                        <span class="badge badge-success">@Html.DisplayFor(model => model.PaymentDetail.PaymentDateTime)</span>
                                     }
                                     else
                                     {
-                                    <span class="badge badge-warning">Nezaplaceno</span>
+                                        <span class="badge badge-warning">Nezaplaceno</span>
                                     }
                                 </td>
                                 <td class="project-actions text-right">
@@ -118,16 +118,16 @@
                                 <div class="col-12 col-sm-4">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted">Vykázaných hodin</span>
-                                            <span class="info-box-number text-center text-muted mb-0">@Model.PaymentDetail?.Timesheet?.Select(x => x.Hours).Sum()</span>
+                                            <span class="info-box-text text-center text-muted">Odměna</span>
+                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentDetail.Reward)</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-4">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted">Výkazů práce</span>
-                                            <span class="info-box-number text-center text-muted mb-0">@Model.PaymentDetail?.Timesheet?.Count()</span>
+                                            <span class="info-box-text text-center text-muted">Daň</span>
+                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentDetail.Tax)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -140,51 +140,80 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                            </div>
-                            <div class="row">
-                                Tady něco jiného
-                            </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                            <h3 class="text-info"><i class="fas fa-user mr-2"></i> Platba</h3>
-                            <p class="text-muted">@Html.DisplayFor(model => model.PaymentDetail.PaymentDateTime)</p>
-                            <br>
                             <div class="text-muted">
                                 <p class="text-sm">
                                     Vytvořeno
                                     <b class="d-block">@Html.DisplayFor(model => model.PaymentDetail.CreateTime)</b>
                                 </p>
-                                <p class="text-sm">
-                                    Stav
-                                    <b class="d-block">
-                                        @{
-                                            if (Model.PaymentDetail.IsPaid)
-                                            {
-                                                <a asp-page="Index" asp-route-id="@Model.PaymentDetail.Id" class="badge badge-success">@Html.DisplayFor(model => model.PaymentDetail.PaymentDateTime)</a>
-
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-warning">Nezaplaceno</span>
-                                            }
-                                        }
-                                    </b>
-                                </p>
+                                @if (Model.PaymentDetail.IsPaid)
+                                {
+                                    <p class="text-sm">
+                                        Zaplaceno
+                                        <b class="d-block">@Html.DisplayFor(model => model.PaymentDetail.PaymentDateTime)</b>
+                                    </p>
+                                }
                             </div>
                         </div>
+                    </div>
+                    <div class="row table-responsive">
+                        <table class="table m-0">
+                            <thead>
+                                <tr>
+                                    <th>Trenér</th>
+                                    <th>Datum</th>
+                                    <th>Čas</th>
+                                    <th>Odměna</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (var item in Model.PaymentDetail.Timesheet.Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5))
+                                    {
+                                                                <tr>
+                                                                    <td>
+                                                                        @Html.DisplayFor(modelItem => item.Person.FullName)
+                                                                    </td>
+                                                                    <td>
+                                                                        @item.DateTimeTo.Value.ToString("dd. MM. yyyy")
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DisplayFor(modelItem => item.HoursTime)
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DisplayFor(modelItem => item.Reward)
+                                                                    </td>
+                                                                </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
                     </div>
                     <!--Tlačítka dole-->
                     <div class="row mt-2">
                         <div class="col-12">
-                            <form method="post" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="Pay">
-                                <button class="btn btn-default" type="submit">
-                                    <i class="fas fa-money-check"></i> Vygenerovat platební příkaz
-                                </button>
-                            </form>
-                            <a asp-page="" asp-page-handler="Edit" asp-route-id="@Model.PaymentDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
+                            <a id="href-detail-edit" asp-page="" asp-page-handler="Edit" asp-route-id="@Model.PaymentDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
                                 <i class="fas fa-pencil-alt"></i> Upravit
                             </a>
+                            @{
+                                if (Model.PaymentDetail.IsPaid)
+                                {
+                                    <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="DownloadPayment">
+                                        <button class="btn btn-success" type="submit">
+                                            <i class="fas fa-file-download"></i> Stáhnout platební příkaz
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="Pay">
+                                        <button class="btn btn-success" type="submit">
+                                            <i class="fas fa-money-check-alt"></i> Vygenerovat platební příkaz
+                                        </button>
+                                    </form>
+                                }
+                            }
                         </div>
                     </div>
                 </div>
@@ -295,6 +324,14 @@
             });
             </script>
         }
+    }
+    @if (Model.PaymentDetail?.IsPaid ?? false)
+    {
+        <script>
+            $(document).ready(function () {
+                $('#href-detail-edit').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+            });
+        </script>
     }
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>

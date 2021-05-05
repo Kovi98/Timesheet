@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -79,7 +80,7 @@ namespace Portal.Areas.Payments.Pages
             Payment = await _context.Payment
                 .Include(p => p.Timesheet)
                 .ToListAsync();
-            var freeTimesheets = _context.Timesheet.Include(x => x.Person).Where(x => (x.PaymentId == 0 || x.PaymentId == null) || ids.Any(y => y == x.PaymentId));
+            var freeTimesheets = _context.Timesheet.Include(x => x.Person).Where(x => (x.PaymentId == 0 || x.PaymentId == null) || ids.Any(y => y == x.Id));
             Timesheets = new SelectList(freeTimesheets, "Id", "FriendlyName");
             PaymentDetail = null;
             TimesheetsSelected = await _context.Timesheet.Include(x => x.Payment).Where(x => ids.Any(y => y == x.Id)).Select(x => x.Id).ToArrayAsync();
@@ -119,7 +120,7 @@ namespace Portal.Areas.Payments.Pages
                 }
             }
 
-            return RedirectToPage("./Index", new { id = PaymentDetail.Id, area = "Payments" });
+            return RedirectToPage("Index", new { id = PaymentDetail.Id, area = "Payments" });
         }
 
         public async Task<IActionResult> OnPostPayAsync(int id)
@@ -155,7 +156,18 @@ namespace Portal.Areas.Payments.Pages
                 return NotFound();
             }
 
-            return new OkResult();
+            return RedirectToPage("Index", new { id = PaymentDetail.Id, area = "Payments" });
+        }
+
+        public async Task<IActionResult> OnPostDownloadPayment(int id, string returnUrl = null)
+        {
+            var payment = await _context.Payment.FindAsync(id);
+            if (payment is null)
+            {
+                return BadRequest();
+            }
+
+            return File(Encoding.UTF8.GetBytes(payment.PaymentXml), "application/xml", payment.PaymentDateTime.Value.ToString("ddMMyyyy")+".xml");
         }
 
         /// <summary>
