@@ -31,7 +31,7 @@
                 <div class="d-inline-block">
                     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Index" method="post">
                     </form>
-                    <a href="" class="d-block logout-link">
+                    <a href="javascript:void(0)" class="d-block logout-link" onclick="logout()">
                         <i class="nav-icon fas fa-sign-out-alt ml-2"></i>
                     </a>
                 </div>
@@ -118,7 +118,7 @@
                     </li>
                 }
                 <li class="nav-item">
-                    <a href="" class="nav-link logout-link">
+                    <a href="javascript:void(0)" class="nav-link logout-link" onclick="logout()">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Odhlásit se</p>
                     </a>
@@ -129,13 +129,3 @@
     </div>
     <!-- /.sidebar -->
 </aside>
-
-@section Scripts{ 
-<script>
-    $(document).ready(function() {
-        $('.logout-link').on('click', function () {
-            $('#logoutForm').submit();
-        });
-    });
-</script>
-}

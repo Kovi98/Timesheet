@@ -22,26 +22,31 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
+            <a href="#">Portál <b>Timesheet</b></a>
         </div>
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Pro přístup k Portálu je nutné být přihlášen.</p>
                 <form id="account" method="post">
-                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
-                    <div class="input-group mb-3">
-                        <input asp-for="Input.Email" class="form-control" placeholder="E-mail" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                    <div class="form-group">
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        <div class="input-group mb-3">
+                            <input asp-for="Input.Email" class="form-control" placeholder="E-mail" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                    <div class="input-group mb-3">
-                        <input asp-for="Input.Password" class="form-control" placeholder="Heslo" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                    <div class="form-group">
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        <div class="input-group mb-3">
+                            <input asp-for="Input.Password" class="form-control" placeholder="Heslo" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -60,7 +65,7 @@
                     </div>
                 </form>
                 <p class="mb-0">
-                    <a asp-page="Account/Regiszer" asp-area="Identity" class="text-center">Zaregistrovat se</a>
+                    <a asp-page="Register" class="text-center">Zaregistrovat se</a>
                 </p>
             </div>
         </div>
