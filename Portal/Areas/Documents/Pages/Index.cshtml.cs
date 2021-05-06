@@ -14,7 +14,7 @@ using Timesheet.DocManager.Entities;
 
 namespace Portal.Areas.Documents.Pages
 {
-    [Authorize(Policy = "VerifiedPolicy")]
+    [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel
     {
         private readonly Timesheet.DocManager.Entities.DocumentContext _context;

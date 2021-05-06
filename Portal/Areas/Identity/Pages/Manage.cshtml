@@ -1,7 +1,7 @@
 ﻿@page
 @model Portal.Areas.Identity.Pages.ManageModel
 @{
-    ViewData["Title"] = "Výkaz práce";
+    ViewData["Title"] = "Správa uživatelů";
 }
 
 @{
@@ -28,7 +28,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Seznam výkazů práce</h3>
+                <h3 class="card-title">Uživatelé</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
@@ -81,12 +81,12 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Email)
                                 </td>
-                                <td class="project-actions text-right">
+                                <td class="project-actions float-right form-inline">
                                     @if (await Model.IsAdminAsync(item))
                                     {
                                         <form method="post" asp-route-id="@item.Id" asp-page-handler="Promote">
                                             <button class="btn btn-warning" type="submit">
-                                                <i class="fas fa-arrow-up"></i> Udělit správce
+                                                <i class="fas fa-arrow-down"></i> Odstranit správce
                                             </button>
                                         </form>
                                     }
@@ -94,22 +94,22 @@
                                     {
                                         <form method="post" asp-route-id="@item.Id" asp-page-handler="Demote">
                                             <button class="btn btn-warning" type="submit">
-                                                <i class="fas fa-arrow-up"></i> Odstranit správce
+                                                <i class="fas fa-arrow-up"></i> Udělit správce
                                             </button>
                                         </form>
                                     }
 
                                     @if (await Model.IsActiveAsync(item))
                                     {
-                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Deactivate">
+                                        <form class="ml-2" method="post" asp-route-id="@item.Id" asp-page-handler="Deactivate">
                                             <button class="btn btn-danger" type="submit">
-                                                <i class="fas fa-cross"></i> Deaktivovat
+                                                <i class="fas fa-times"></i> Deaktivovat
                                             </button>
                                         </form>
                                     }
                                     else
                                     {
-                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Activate">
+                                        <form class="ml-2" method="post" asp-route-id="@item.Id" asp-page-handler="Activate">
                                             <button class="btn btn-success" type="submit">
                                                 <i class="fas fa-check"></i> Aktivovat
                                             </button>

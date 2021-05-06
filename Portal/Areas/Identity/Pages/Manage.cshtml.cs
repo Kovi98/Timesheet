@@ -11,7 +11,7 @@ using Portal.Data;
 
 namespace Portal.Areas.Identity.Pages
 {
-    [Authorize(Policy = "VerifiedPolicy")]
+    [Authorize(Policy = "AdminPolicy")]
     public class ManageModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

@@ -95,8 +95,12 @@ namespace Portal
             });
 
             services.AddAuthorization(options =>
-                options.AddPolicy("VerifiedPolicy", policy =>
-                    policy.RequireRole("Member")));
+                {
+                    options.AddPolicy("VerifiedPolicy", policy =>
+                        policy.RequireRole("Member"));
+                    options.AddPolicy("AdminPolicy", policy =>
+                        policy.RequireRole("Admin"));
+                });
             
             // AddDataAnnotationsLocalization() - lokalizace hlášek
             services.AddRazorPages().AddDataAnnotationsLocalization();
@@ -131,7 +135,7 @@ namespace Portal
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();//.RequireAuthorization("VerifiedPolicy");
+                endpoints.MapRazorPages().RequireAuthorization("VerifiedPolicy");
             });
 
             app.UseStatusCodePagesWithRedirects("/Errors/{0}");

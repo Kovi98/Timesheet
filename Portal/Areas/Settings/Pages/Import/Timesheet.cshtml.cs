@@ -16,7 +16,7 @@ using Timesheet.Entity.Entities;
 
 namespace Portal.Areas.Settings.Pages.Import
 {
-    [Authorize(Policy = "VerifiedPolicy")]
+    [Authorize(Policy = "AdminPolicy")]
     public class TimesheetModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;

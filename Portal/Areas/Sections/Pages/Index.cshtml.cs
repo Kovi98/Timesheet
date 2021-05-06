@@ -10,7 +10,7 @@ using Timesheet.Entity.Entities;
 
 namespace Portal.Areas.Sections.Pages
 {
-    [Authorize(Policy = "VerifiedPolicy")]
+    [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
