@@ -66,54 +66,57 @@
                         <p>Platby</p>
                     </a>
                 </li>
-                <li class="nav-header">Nastavení</li>
-                <li class="nav-item">
-                    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>Uživatelé</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a asp-area="Documents" asp-page="/Index" class="nav-link">
-                        <i class="nav-icon fas fa-handshake"></i>
-                        <p>Smlouvy</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a asp-area="Finances" asp-page="/Index" class="nav-link">
-                        <i class="nav-icon fas fa-book-open"></i>
-                        <p>Dotace</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a asp-area="Sections" asp-page="/Index" class="nav-link">
-                        <i class="nav-icon fas fa-bars"></i>
-                        <p>Sekce</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a id="menu-data" href="#" class="nav-link">
-                        <i class="nav-icon fas fa-upload"></i>
-                        <p>
-                            Data
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a asp-area="Settings" asp-page="/Import/Timesheet" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Výkazy práce</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>XXX</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                @if (User.IsInRole(Roles.Admin.ToString()))
+                {
+                    <li class="nav-header">Nastavení</li>
+                    <li class="nav-item">
+                        <a asp-area="Identity" asp-page="/Manage" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>Uživatelé</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Documents" asp-page="/Index" class="nav-link">
+                            <i class="nav-icon fas fa-handshake"></i>
+                            <p>Smlouvy</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Finances" asp-page="/Index" class="nav-link">
+                            <i class="nav-icon fas fa-book-open"></i>
+                            <p>Dotace</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Sections" asp-page="/Index" class="nav-link">
+                            <i class="nav-icon fas fa-bars"></i>
+                            <p>Sekce</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="menu-data" href="#" class="nav-link">
+                            <i class="nav-icon fas fa-upload"></i>
+                            <p>
+                                Data
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a asp-area="Settings" asp-page="/Import/Timesheet" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Výkazy práce</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>XXX</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
                 <li class="nav-item">
                     <a href="" class="nav-link logout-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>

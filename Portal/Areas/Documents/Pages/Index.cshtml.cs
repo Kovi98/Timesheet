@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,6 +14,7 @@ using Timesheet.DocManager.Entities;
 
 namespace Portal.Areas.Documents.Pages
 {
+    [Authorize(Policy = "VerifiedPolicy")]
     public class IndexModel : PageModel
     {
         private readonly Timesheet.DocManager.Entities.DocumentContext _context;

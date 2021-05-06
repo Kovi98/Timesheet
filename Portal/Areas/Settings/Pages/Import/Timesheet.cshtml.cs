@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,6 +16,7 @@ using Timesheet.Entity.Entities;
 
 namespace Portal.Areas.Settings.Pages.Import
 {
+    [Authorize(Policy = "VerifiedPolicy")]
     public class TimesheetModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
