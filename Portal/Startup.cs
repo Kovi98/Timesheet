@@ -96,7 +96,7 @@ namespace Portal
 
             services.AddAuthorization(options =>
                 options.AddPolicy("VerifiedPolicy", policy =>
-                    policy.RequireRole("User")));
+                    policy.RequireRole("Member")));
             
             // AddDataAnnotationsLocalization() - lokalizace hlášek
             services.AddRazorPages().AddDataAnnotationsLocalization();

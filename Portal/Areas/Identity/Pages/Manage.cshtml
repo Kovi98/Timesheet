@@ -1,0 +1,160 @@
+﻿@page
+@model Portal.Areas.Identity.Pages.ManageModel
+@{
+    ViewData["Title"] = "Výkaz práce";
+}
+
+@{
+    if (ViewData.ModelState["Error"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Error"].Errors)
+        {
+            <script>
+                toastr.error("@item.ErrorMessage");
+            </script>
+        }
+    }
+    if (ViewData.ModelState["Success"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Success"].Errors)
+        {
+            <script>
+                toastr.success("@item.ErrorMessage");
+            </script>
+        }
+    }
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Seznam výkazů práce</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="dataTable" class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                Jméno a příjmení
+                            </th>
+                            <th>
+                                Role
+                            </th>
+                            <th>
+                                E-mail
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Users)
+                        {
+                            <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FullName)
+                                </td>
+                                <td class="project-state">
+                                    @if (await Model.IsAdminAsync(item))
+                                    {
+                                    <span class="badge badge-warning">Správce</span>
+                                    }
+                                    else if (await Model.IsActiveAsync(item))
+                                    {
+                                    <span class="badge badge-success">Aktivní</span>
+                                    }
+                                    else
+                                    {
+                                    <span class="badge badge-danger">Neaktivní</span>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td class="project-actions text-right">
+                                    @if (await Model.IsAdminAsync(item))
+                                    {
+                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Promote">
+                                            <button class="btn btn-warning" type="submit">
+                                                <i class="fas fa-arrow-up"></i> Udělit správce
+                                            </button>
+                                        </form>
+                                    }
+                                    else if (await Model.IsActiveAsync(item))
+                                    {
+                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Demote">
+                                            <button class="btn btn-warning" type="submit">
+                                                <i class="fas fa-arrow-up"></i> Odstranit správce
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @if (await Model.IsActiveAsync(item))
+                                    {
+                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Deactivate">
+                                            <button class="btn btn-danger" type="submit">
+                                                <i class="fas fa-cross"></i> Deaktivovat
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Activate">
+                                            <button class="btn btn-success" type="submit">
+                                                <i class="fas fa-check"></i> Aktivovat
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var dataTableTimesheets;
+        $(document).ready(function () {
+            dataTableTimesheets = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/lib/datatables-language/cs.json'
+                },
+                "ordering": true,
+                "searching": true,
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "info": false,
+                "stateSave": true,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false,
+                        "orderable": false
+                    },
+                    {
+                        "targets": [4],
+                        "orderable": false,
+                        "searchable": false
+                    }]
+            });
+        });
+    </script>
+}
