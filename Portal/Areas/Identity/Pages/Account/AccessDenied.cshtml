@@ -1,0 +1,24 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Přístup odepřen";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="error-page">
+        <h2 class="headline text-danger mr-3">STOP</h2>
+
+        <div class="error-content">
+            <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! Něco se pokazilo.</h3>
+
+            <p>
+                Přístup odepřen! Nemáte práva na zobrazení této stránky.
+            </p>
+            <p>
+                Vraťte se <a asp-page="/Index">zpátky na Portál</a>.
+            </p>
+        </div>
+    </div>
+    <!-- /.error-page -->
+</section>
