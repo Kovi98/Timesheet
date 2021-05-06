@@ -1,9 +1,12 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Portal.Areas.Identity;
+using Portal.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +18,12 @@ namespace Portal
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             //Inicializace aplikace
             var host = CreateHostBuilder(args).Build();
 
-            CreateDbIfNotExists(host);
+            await CreateDbIfNotExistsAsync(host);
 
             host.Run();
         }
@@ -32,7 +35,7 @@ namespace Portal
                     webBuilder.UseStartup<Startup>();
                 });
 
-        private static void CreateDbIfNotExists(IHost host)
+        private async static Task CreateDbIfNotExistsAsync(IHost host)
         {
             using (var scope = host.Services.CreateScope())
             {
@@ -40,7 +43,11 @@ namespace Portal
                 try
                 {
                     var context = services.GetRequiredService<TimesheetContext>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     DbInitializer.Initialize(context);
+                    await ContextSeed.SeedRolesAsync(userManager, roleManager);
+                    await ContextSeed.SeedAdminAsync(userManager, roleManager);
                 }
                 catch (Exception ex)
                 {

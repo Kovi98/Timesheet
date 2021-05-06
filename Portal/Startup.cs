@@ -55,6 +55,7 @@ namespace Portal
             #endregion
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             //Konfigurace IDENTITY - TODO dodìlat
@@ -71,15 +72,15 @@ namespace Portal
                 // Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = false;
+                options.Lockout.AllowedForNewUsers = true;
 
                 // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
 
-                //Potvrzování e-mailu
-                //options.SignIn.RequireConfirmedEmail = false;
+                //Potvrzení účtu
+                options.SignIn.RequireConfirmedEmail = false;
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -93,6 +94,10 @@ namespace Portal
                 options.SlidingExpiration = true;
             });
 
+            services.AddAuthorization(options =>
+                options.AddPolicy("VerifiedPolicy", policy =>
+                    policy.RequireRole("User")));
+            
             // AddDataAnnotationsLocalization() - lokalizace hlášek
             services.AddRazorPages().AddDataAnnotationsLocalization();
         }
@@ -126,8 +131,7 @@ namespace Portal
 
             app.UseEndpoints(endpoints =>
             {
-                //RequireAuthorization() = globální autorizace
-                endpoints.MapRazorPages();//.RequireAuthorization();
+                endpoints.MapRazorPages();//.RequireAuthorization("VerifiedPolicy");
             });
 
             app.UseStatusCodePagesWithRedirects("/Errors/{0}");
