@@ -42,15 +42,16 @@ namespace Portal.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
-            [EmailAddress]
+            [Required(ErrorMessage = "E-mail je povinný")]
+            [EmailAddress(ErrorMessage = "E-mail musí mít správný formát.")]
             [Display(Name = "E-mail")]
             public string Email { get; set; }
 
-            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
+            [Required(ErrorMessage = "Heslo je povinné")]
             [StringLength(100, ErrorMessage = "{0} musí být alespoň {2} a nejvíce {1} znaků dlouhé.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Heslo")]
+            [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{6,}$", ErrorMessage = "Heslo musí obsahovat velké písmeno, malé písmeno, číslo, speciální znak a musí být dlouhé alespoň 6 znaků. ")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
@@ -58,12 +59,12 @@ namespace Portal.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Hesla se neshodují.")]
             public string ConfirmPassword { get; set; }
 
-            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
+            [Required(ErrorMessage = "Jméno je povinné")]
             [Display(Name = "Jméno")]
             [StringLength(50, ErrorMessage = "{0} může být maximálně 50 znaků.")]
             public string Name { get; set; }
 
-            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
+            [Required(ErrorMessage = "Příjmení je povinné")]
             [Display(Name = "Příjmení")]
             [StringLength(50, ErrorMessage = "{0} může být maximálně 50 znaků.")]
             public string Surname { get; set; }
@@ -84,18 +85,12 @@ namespace Portal.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return Page();//RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        return Page();
-                    }
+                    ModelState.AddModelError("Success", "Registrace byla úspěšná! Je potřeba aktivovat účet správcem aplikace.");
+                    return Page();
                 }
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError("Error", error.Description);
                 }
             }
 

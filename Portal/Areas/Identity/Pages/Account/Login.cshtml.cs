@@ -44,12 +44,12 @@ namespace Portal.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
-            [EmailAddress]
+            [Required(ErrorMessage = "E-mail je povinný")]
+            [EmailAddress(ErrorMessage = "E-mail musí mít správný formát.")]
             [Display(Name ="E-mail")]
             public string Email { get; set; }
 
-            [Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(ValidationLocalization))]
+            [Required(ErrorMessage = "Heslo je povinné")]
             [DataType(DataType.Password)]
             [Display(Name = "Heslo")]
             public string Password { get; set; }

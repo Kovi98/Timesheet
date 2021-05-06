@@ -29,7 +29,6 @@
                 <p class="login-box-msg">Pro přístup k Portálu je nutné být přihlášen.</p>
                 <form id="account" method="post">
                     <div class="form-group">
-                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
                         <div class="input-group mb-3">
                             <input asp-for="Input.Email" class="form-control" placeholder="E-mail" />
                             <div class="input-group-append">
@@ -38,9 +37,9 @@
                                 </div>
                             </div>
                         </div>
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
                     </div>
                     <div class="form-group">
-                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
                         <div class="input-group mb-3">
                             <input asp-for="Input.Password" class="form-control" placeholder="Heslo" />
                             <div class="input-group-append">
@@ -49,6 +48,7 @@
                                 </div>
                             </div>
                         </div>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
                     </div>
                     <div class="row">
                         <div class="col-8">

@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Input.Name"></label>
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span asp-validation-for="Input.Name" class="text-danger"></span>
+                        <span asp-validation-for="Input.Name" class="text-danger small"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Input.Surname"></label>
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span asp-validation-for="Input.Surname" class="text-danger"></span>
+                        <span asp-validation-for="Input.Surname" class="text-danger small"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Input.Password"></label>
@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Input.ConfirmPassword"></label>
@@ -85,16 +85,16 @@
                                 </div>
                             </div>
                         </div>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
                     </div>
                     <div class="row">
                         <div class="col-8">
                             <!--<div class="icheck-primary">
-                    <input type="checkbox" id="agreeTerms" name="terms" value="agree">
-                    <label for="agreeTerms">
-                        I agree to the <a href="#">terms</a>
-                    </label>
-                </div>-->
+                                <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                                <label for="agreeTerms">
+                                    I agree to the <a href="#">terms</a>
+                                </label>
+                            </div>-->
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
@@ -123,6 +123,15 @@
             {
                 <script>
                 toastr.error("@item.ErrorMessage");
+                </script>
+            }
+        }
+        if (ViewData.ModelState["Success"] != null)
+        {
+            foreach (var item in ViewData.ModelState["Success"].Errors)
+            {
+                <script>
+                    toastr.success("@item.ErrorMessage");
                 </script>
             }
         }
