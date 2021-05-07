@@ -574,6 +574,9 @@
                         "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
                     },
                     statusCode: {
+                        400: function (response) {
+                            toastr.error(response.responseText);
+                        },
                         404: function () {
                             toastr.error("Záznam nebyl nalezen.");
                         }

@@ -160,17 +160,6 @@ namespace Portal.Areas.Timesheets.Pages
 
             return new OkResult();
         }
-        public async Task<IActionResult> OnPostPrintAsync(int id)
-        {
-            string url = Request.Scheme +"://"+ Request.Host + Url.Page("./Print", new { id = id, area = "Timesheets" });
-            var document = await DocumentManager.ConvertPageToPdfAsync(url);
-            if (document is null)
-            {
-                return Page();
-            }
-
-            return File(document, "application/pdf", "print.pdf");
-        }
         private bool TimesheetExists(int id)
         {
             return _context.Timesheet.Any(e => e.Id == id);

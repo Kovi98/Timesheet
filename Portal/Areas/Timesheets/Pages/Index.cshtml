@@ -268,11 +268,6 @@
                                 <a asp-page="./Print" asp-route-id="@Model.TimesheetDetail.Id" rel="noopener" target="_blank" class="btn btn-default">
                                     <i class="fas fa-print"></i> Tisk
                                 </a>
-                                <form method="post" asp-route-id="@Model.TimesheetDetail.Id" asp-page-handler="Print" >
-                                    <button class="btn btn-default" type="submit">
-                                        <i class="fas fa-print"></i> Tisk
-                                    </button>
-                                </form>
                                 <a asp-page="" asp-page-handler="Edit" asp-route-id="@Model.TimesheetDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
                                     <i class="fas fa-pencil-alt"></i> Upravit
                                 </a>

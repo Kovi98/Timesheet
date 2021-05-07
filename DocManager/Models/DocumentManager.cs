@@ -6,9 +6,7 @@ using Timesheet.DocManager.Entities;
 using System.IO;
 using System.Threading.Tasks;
 using Novacode;
-using PuppeteerSharp;
 using DocumentFormat.OpenXml.Packaging;
-using OpenXmlPowerTools;
 using System.Drawing.Imaging;
 using System.Xml.Linq;
 using System.Linq;
@@ -81,27 +79,6 @@ namespace Timesheet.DocManager.Models
                     Format = ExportFormat.Rtf;
                     break;
             }
-        }
-
-        public static async Task<byte[]> ConvertPageToPdfAsync(string url)
-        {
-            var browserFetcher = new BrowserFetcher();
-            await browserFetcher.DownloadAsync();
-            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-            await using var page = await browser.NewPageAsync();
-            await page.GoToAsync(url);
-            var result = await page.PdfDataAsync();
-            return result;
-        }
-        public static async Task<byte[]> ConvertHtmlToPdfAsync(string html)
-        {
-            var browserFetcher = new BrowserFetcher();
-            await browserFetcher.DownloadAsync();
-            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-            await using var page = await browser.NewPageAsync();
-            await page.SetContentAsync(html);
-            var result = await page.PdfDataAsync();
-            return result;
         }
     }
 

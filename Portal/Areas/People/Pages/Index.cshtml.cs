@@ -121,15 +121,14 @@ namespace Portal.Areas.People.Pages
             }
             if (_context.Timesheet.Any(x => x.PersonId == id))
             {
-                ModelState.AddModelError("Error", "Nelze smazat trenéra s existujícím výkazem!");
-                return Page();
+                return BadRequest("Nelze smazat trenéra s existujícím výkazem.");
             }
 
-            var timesheetToDelete = await _context.Person.FindAsync(id);
+            var personToDelete = await _context.Person.FindAsync(id);
 
-            if (Person != null)
+            if (personToDelete != null)
             {
-                _context.Person.Remove(timesheetToDelete);
+                _context.Person.Remove(personToDelete);
                 await _context.SaveChangesAsync();
             }
             else
