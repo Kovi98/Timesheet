@@ -39,7 +39,8 @@ namespace Portal.Areas.People.Pages
             Person = await _context.Person
                 .Include(p => p.Job)
                 .Include(p => p.PaidFrom)
-                .Include(p => p.Section).ToListAsync();
+                .Include(p => p.Section)
+                .Include(p => p.Timesheet).ToListAsync();
             var person = Person.FirstOrDefault(t => t.Id == id);
             if (id > 0 && person != null)
             {
@@ -56,7 +57,8 @@ namespace Portal.Areas.People.Pages
             Person = await _context.Person
                 .Include(p => p.Job)
                 .Include(p => p.PaidFrom)
-                .Include(p => p.Section).ToListAsync();
+                .Include(p => p.Section)
+                .Include(p => p.Timesheet).ToListAsync();
             var person = Person.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {

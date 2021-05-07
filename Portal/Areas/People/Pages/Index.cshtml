@@ -118,7 +118,7 @@
                                         </i>
                                         Upravit
                                     </a>
-                                    <a class="btn btn-danger btn-sm" onclick="deletePersonDetail(@item.Id)">
+                                    <a id="href-delete-@item.Id" class="btn btn-danger btn-sm" onclick="deletePersonDetail(@item.Id)">
                                         <i class="fas fa-trash">
                                         </i>
                                         Smazat
@@ -524,6 +524,17 @@
 </div>
 
 @section Scripts {
+    @foreach (var item in Model.Person)
+    {
+        @if (item.Timesheet?.Count > 0)
+        {
+            <script>
+            $(document).ready(function () {
+                $('#href-delete-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+            });
+            </script>
+        }
+    }
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var dataTablePeople;
