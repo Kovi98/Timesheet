@@ -98,11 +98,11 @@ namespace Portal.Areas.Settings.Pages.Import
                     //Hledání undefined jobs/people
                     foreach (var import in TimesheetImport)
                     {
-                        if (import.Errors.Contains(TimesheetImportError.PersonUndefined) && !people.Contains(import.Timesheet.Person))
+                        if (import.Errors.Contains(TimesheetImportError.PersonUndefined) && !people.Any(x => x.FullName == import.Timesheet.Person.FullName))
                         {
                             people.Add(import.Timesheet.Person);
                         }
-                        if (import.Errors.Contains(TimesheetImportError.JobUndefined) && !jobs.Contains(import.Timesheet.Job))
+                        if (import.Errors.Contains(TimesheetImportError.JobUndefined) && !jobs.Any(x => x.Name == import.Timesheet.Job.Name))
                         {
                             jobs.Add(import.Timesheet.Job);
                         }
