@@ -44,7 +44,7 @@
                                 #
                             </th>
                             <th>
-                                
+
                             </th>
                             <th>
                                 Trenér
@@ -110,8 +110,8 @@
                                             <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
                                         }
-                                        else if (item.Payment != null) 
-                                        { 
+                                        else if (item.Payment != null)
+                                        {
                                             <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
                                         }
                                         else
@@ -126,12 +126,12 @@
                                         </i>
                                         Zobrazit
                                     </a>
-                                    <a class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
+                                    <a id="href-edit-@item.Id" class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
                                         <i class="fas fa-pencil-alt">
                                         </i>
                                         Upravit
                                     </a>
-                                    <a class="btn btn-danger btn-sm" onclick="deleteTimesheetDetail(@item.Id)">
+                                    <a id="href-delete-@item.Id" class="btn btn-danger btn-sm" onclick="deleteTimesheetDetail(@item.Id)">
                                         <i class="fas fa-trash">
                                         </i>
                                         Smazat
@@ -421,6 +421,25 @@
     </div>
 </div>
 @section Scripts {
+    @foreach (var item in Model.Timesheet)
+    {
+        @if (item.PaymentId.HasValue || (item.PaymentId.HasValue && item.PaymentId.Value != 0))
+        {
+            <script>
+            $(document).ready(function () {
+                $('#href-delete-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+            });
+            </script>
+        }
+        @if (item.Payment?.IsPaid ?? false)
+        {
+            <script>
+            $(document).ready(function () {
+                $('#href-edit-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+            });
+            </script>
+        }
+    }
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var dataTableTimesheets;
@@ -474,7 +493,7 @@
                 "dom": '<"toolbar">frtip',
                 "initComplete": function (settings, json) {
                     $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
-                    
+
                 }
             });
 
@@ -503,6 +522,9 @@
                     "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
                 },
                 statusCode: {
+                    400: function (response) {
+                        toastr.error(response.responseText);
+                    },
                     404: function () {
                         toastr.error("Záznam nebyl nalezen.");
                     }

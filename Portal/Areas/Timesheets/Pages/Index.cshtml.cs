@@ -66,23 +66,24 @@ namespace Portal.Areas.Timesheets.Pages
                 .Include(t => t.Person.PaidFrom)
                 .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
-            if (id > 0)
+            if (id > 0 && timesheet != null && (timesheet.Payment?.IsPaid ?? false))
             {
                 TimesheetDetail = timesheet;
+                ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
+                ViewData["PaymentId"] = new SelectList(_context.Payment, "Id", "PaymentDateTime");
+                ViewData["PersonId"] = new SelectList(_context.Person.Where(x => x.IsActive), "Id", "FullName");
+                IsEditable = true;
             }
             else
             {
                 TimesheetDetail = null;
+                IsEditable = false;
             }
-            ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
-            ViewData["PaymentId"] = new SelectList(_context.Payment, "Id", "PaymentDateTime");
-            ViewData["PersonId"] = new SelectList(_context.Person.Where(x => x.IsActive), "Id", "FullName");
-            IsEditable = true;
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || (TimesheetDetail?.Payment?.IsPaid ?? false))
             {
                 return RedirectToPage("./Index", new { id = TimesheetDetail?.Id, area = "Timesheets" });
             }
@@ -145,7 +146,7 @@ namespace Portal.Areas.Timesheets.Pages
 
             if (timesheetToDelete != null && timesheetToDelete.PaymentId.HasValue && timesheetToDelete.PaymentId > 0)
             {
-                //Existujicí platba
+                return BadRequest("Nelze smazat výkaz s existující platbou.");
             }
 
             if (timesheetToDelete != null)
