@@ -90,7 +90,7 @@ namespace Timesheet.Entity.Entities
                 //Tax
                 if (Person.HasTax)
                 {
-                    Tax = (Reward ?? 0) * (decimal)0.15;
+                    Tax = Math.Floor((Reward ?? 0) * (decimal)0.15);
                 }
                 else
                 {
