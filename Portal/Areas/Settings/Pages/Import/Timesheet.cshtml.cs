@@ -139,7 +139,6 @@ namespace Portal.Areas.Settings.Pages.Import
                     if (_context.Entry(timesheet.Job).State != EntityState.Detached)
                         _context.Entry(timesheet.Job).State = EntityState.Detached;
                     await _context.SaveChangesAsync();
-                    var test = _context.ChangeTracker.Entries().ToList();
                 }
                 transaction.Commit();
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));
