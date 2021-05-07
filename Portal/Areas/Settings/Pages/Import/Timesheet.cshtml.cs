@@ -107,7 +107,6 @@ namespace Portal.Areas.Settings.Pages.Import
                             jobs.Add(import.Timesheet.Job);
                         }
                     }
-
                     //Nahrazování undefined people
                     foreach (var person in people)
                     {
@@ -130,14 +129,17 @@ namespace Portal.Areas.Settings.Pages.Import
                 }
 
                 //Samotné ukládání timesheetu do DB
-                var test = _context.ChangeTracker.Entries().ToList();
                 //await _context.Timesheet.AddRangeAsync(TimesheetImport.Select(x => x.Timesheet));
                 foreach(var timesheet in TimesheetImport.Select(x => x.Timesheet))
                 {
-                    _context.Timesheet.Add(timesheet);
-                    _context.Entry(timesheet.Person).State = EntityState.Detached;
-                    _context.Entry(timesheet.Job).State = EntityState.Detached;
+                    //_context.Timesheet.Add(timesheet);
+                    _context.Entry(timesheet).State = EntityState.Added;
+                    if (_context.Entry(timesheet.Person).State != EntityState.Detached)
+                        _context.Entry(timesheet.Person).State = EntityState.Detached;
+                    if (_context.Entry(timesheet.Job).State != EntityState.Detached)
+                        _context.Entry(timesheet.Job).State = EntityState.Detached;
                     await _context.SaveChangesAsync();
+                    var test = _context.ChangeTracker.Entries().ToList();
                 }
                 transaction.Commit();
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));

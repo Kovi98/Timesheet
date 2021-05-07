@@ -105,7 +105,7 @@ namespace Portal.Models
                             }
                             if (!IsUnique(timesheet))
                                 timesheetImport.AddError(TimesheetImportError.TimesheetNotUnique);
-
+                            
                             timesheet.CalculateReward();
                             import.Add(timesheetImport);
                         }
