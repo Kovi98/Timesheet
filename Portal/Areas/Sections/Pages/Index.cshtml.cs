@@ -94,11 +94,11 @@ namespace Portal.Areas.Sections.Pages
                 return NotFound();
             }
 
-            var sectionToDelete = await _context.Section.FindAsync(id);
+            var sectionToDelete = await _context.Section.Include(x => x.Person).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (false)
+            if (sectionToDelete?.Person?.Count == 0)
             {
-                //Existujicí výkaz
+                return BadRequest("Nelze smazat sekci, kterou již má vyplněnou trenér.");
             }
 
             if (sectionToDelete != null)

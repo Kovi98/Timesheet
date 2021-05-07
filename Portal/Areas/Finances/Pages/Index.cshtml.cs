@@ -27,12 +27,12 @@ namespace Portal.Areas.Finances.Pages
 
         public async Task OnGetAsync()
         {
-            Finance = await _context.Finance.ToListAsync();
+            Finance = await _context.Finance.Include(x => x.Person).ToListAsync();
             IsEditable = false;
         }
         public async Task OnGetEditAsync(int id)
         {
-            Finance = await _context.Finance.ToListAsync();
+            Finance = await _context.Finance.Include(x => x.Person).ToListAsync();
             var finance = Finance.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {
@@ -94,11 +94,11 @@ namespace Portal.Areas.Finances.Pages
                 return NotFound();
             }
 
-            var financeToDelete = await _context.Finance.FindAsync(id);
+            var financeToDelete = await _context.Finance.Include(x => x.Person).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (false)
+            if (financeToDelete.Person?.Count == 0)
             {
-                //Existujicí výkaz
+                return BadRequest("Nelze smazat dotaci, kterou již má vyplněnou trenér.");
             }
 
             if (financeToDelete != null)
