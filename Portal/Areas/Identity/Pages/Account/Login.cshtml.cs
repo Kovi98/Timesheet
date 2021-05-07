@@ -98,10 +98,15 @@ namespace Portal.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
+                if (result.IsNotAllowed)
+                {
+                    ModelState.AddModelError("Error", "Pod tímto uživatelským jménem a heslem se nepodařilo přihlásit do Portálu.");
+                    return Page();
+                }
             }
 
             // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("Error", "Přihlášení bylo neúspěšné!");
+            ModelState.AddModelError("Error", "Nepodařilo se přihlásit!");
             return Page();
         }
     }
