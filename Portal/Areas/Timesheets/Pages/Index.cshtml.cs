@@ -93,7 +93,7 @@ namespace Portal.Areas.Timesheets.Pages
                 TimesheetDetail.Reward = TimesheetDetail.Hours * (_context.Job.Find(TimesheetDetail.JobId).HourReward);
             if (_context.Person.Find(TimesheetDetail.PersonId).HasTax)
             {
-                TimesheetDetail.Tax = Math.Floor((TimesheetDetail.Reward ?? 0) * (decimal)0.15);
+                TimesheetDetail.Tax = Math.Truncate((TimesheetDetail.Reward ?? 0) * (decimal)0.15);
             }
             else
             {
