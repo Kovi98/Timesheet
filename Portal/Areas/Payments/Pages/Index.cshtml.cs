@@ -146,7 +146,7 @@ namespace Portal.Areas.Payments.Pages
                     else
                         return BadRequest();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     return BadRequest();
                 }
