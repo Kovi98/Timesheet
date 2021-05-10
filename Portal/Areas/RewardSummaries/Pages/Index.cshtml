@@ -1,0 +1,84 @@
+﻿@page
+@model Portal.Areas.RewardSummaries.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].Hours)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].Reward)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].HasTax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].Tax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].CreateDateTimeYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].CreateDateTimeMonth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].Payment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].PaymentDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RewardSummary[0].Person)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.RewardSummary) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reward)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasTax)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tax)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDateTimeYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDateTimeMonth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Payment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.Name)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

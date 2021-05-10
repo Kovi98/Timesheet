@@ -25,6 +25,7 @@ namespace Timesheet.Entity.Entities
         public virtual DbSet<Person> Person { get; set; }
         public virtual DbSet<Section> Section { get; set; }
         public virtual DbSet<Timesheet> Timesheet { get; set; }
+        public virtual DbSet<RewardSummary> RewardSummary { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -191,6 +192,16 @@ namespace Timesheet.Entity.Entities
                     .HasForeignKey(d => d.PersonId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Timesheet_Person");
+            });
+            modelBuilder.Entity<RewardSummary>(entity =>
+            {
+                //entity.Property(r => r.Id).HasComputedColumnSql("ROW_NUMBER() OVER(ORDER BY (SELECT 1))");
+                entity.ToView("RewardSummary");
+                //entity.HasKey(r => r.Id);
+                //entity.HasOne(r => r.Person)
+                //    .WithMany()
+                //    .HasForeignKey(r => r.PersonId);
+                //entity.HasMany(r => r.Timesheet);
             });
 
             OnModelCreatingPartial(modelBuilder);
