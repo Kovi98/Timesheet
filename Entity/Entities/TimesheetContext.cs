@@ -195,13 +195,15 @@ namespace Timesheet.Entity.Entities
             });
             modelBuilder.Entity<RewardSummary>(entity =>
             {
-                //entity.Property(r => r.Id).HasComputedColumnSql("ROW_NUMBER() OVER(ORDER BY (SELECT 1))");
                 entity.ToView("RewardSummary");
                 //entity.HasKey(r => r.Id);
-                //entity.HasOne(r => r.Person)
-                //    .WithMany()
-                //    .HasForeignKey(r => r.PersonId);
-                //entity.HasMany(r => r.Timesheet);
+                entity.HasOne(r => r.Person)
+                    .WithMany()
+                    .HasForeignKey(r => r.PersonId);
+                entity.HasOne(r => r.Payment)
+                    .WithMany()
+                    .HasForeignKey(r => r.PaymentId);
+                //entity.HasMany(r => r.Timesheet).WithOne();
             });
 
             OnModelCreatingPartial(modelBuilder);

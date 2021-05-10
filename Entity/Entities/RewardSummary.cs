@@ -18,10 +18,13 @@ namespace Timesheet.Entity.Entities
         public decimal? Tax { get; set; }
         public int? CreateDateTimeYear { get; set; }
         public int? CreateDateTimeMonth { get; set; }
-        public int? Payment { get; set; }
+        public int? PaymentId { get; set; }
         public DateTime? PaymentDateTime { get; set; }
 
         public Person Person { get; set; }
-        //public virtual ICollection<Timesheet> Timesheet { get; set; }
+        public Payment Payment { get; set; }
+
+
+        //public virtual IList<Timesheet> Timesheet { get; set; }
     }
 }

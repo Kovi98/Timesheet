@@ -2,83 +2,53 @@
 @model Portal.Areas.RewardSummaries.Pages.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Přehled odměn";
 }
 
-<h1>Index</h1>
+<!-- Timelime example  -->
+<div class="row">
+    <div class="col-md-12">
+        <!-- The time line -->
+        <div class="timeline">
+            @foreach (var label in Model.YearsMonths)
+            {
+                @foreach (var labelItem in Model.YearsMonths.Where(x => x == label).Select(x => x.Item2).FirstOrDefault())
+                {
+                    var year = label.Item1 == null ? "Neuvedeno" : label.Item1.ToString();
+                    var month = labelItem == null ? "Neuvedeno" : labelItem.ToString();
+                    <!-- timeline time label -->
+                    <div class="time-label">
+                        <span class="bg-green">@year/@month</span>
+                    </div>
+                    <!-- /.timeline-label -->
+                    var rewardSummaries = Model.RewardSummary.Where(x => x.CreateDateTimeYear == label.Item1 && x.CreateDateTimeMonth == labelItem);
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].Hours)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].Reward)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].HasTax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].Tax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].CreateDateTimeYear)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].CreateDateTimeMonth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].Payment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].PaymentDateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RewardSummary[0].Person)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.RewardSummary) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hours)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reward)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HasTax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDateTimeYear)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDateTimeMonth)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Payment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Person.Name)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                    @foreach (var person in rewardSummaries.GroupBy(x => x.Person))
+                    {
+                        <!-- timeline item -->
+                        <div>
+                            <i class="fas fa-user bg-info"></i>
+                            <div class="timeline-item">
+                                <span class="time"><i class="fas fa-sort-amount-down"></i> <strong>@person.Select(x => x.Id).Count()</strong> výkazů.</span>
+                                <h3 class="timeline-header"><a asp-area="People" asp-page="Index" asp-route-id="@person.Key.Id" class="text-info">@Html.DisplayFor(modelItem => person.Key.FullName)</a></h3>
+
+                                <div class="timeline-body">
+                                    Výkazy?
+                                </div>
+                                <div class="timeline-footer">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END timeline item -->
+                    }
+
+                    @foreach (var rewardSummary in rewardSummaries)
+                    {
+
+                    }
+                }
+            }
+        </div>
+    </div>
+    <!-- /.col -->
+</div>
