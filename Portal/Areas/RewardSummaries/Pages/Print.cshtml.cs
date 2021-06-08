@@ -21,36 +21,43 @@ namespace Portal.Areas.RewardSummaries.Pages
         public List<Timesheet.Entity.Entities.Timesheet> Timesheets { get; set; }
         public RewardSummary RewardSummaryDetail { get; set; }
 
-        public async Task OnGetAsync(int year, int month)
+        public async Task OnGetAsync(int year, int month, int personId)
         {
-            if (year == 0)
+            if (personId == 0)
             {
-                Timesheets = await _context.Timesheet
-                    .Include(x => x.Person)
-                    .Include(x => x.Payment)
-                    .ToListAsync();
-            }
-            else if (month == 0)
-            {
-                Timesheets = await _context.Timesheet
-                    .Include(x => x.Person)
-                    .Include(x => x.Payment)
-                    .Where(x => (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Year : 0) == year)
-                    .ToListAsync();
-            }
-            else {
-                Timesheets = await _context.Timesheet
-                    .Include(x => x.Person)
-                    .Include(x => x.Payment)
-                    .Where(x => (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Year : 0) == year && (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Month : 0) == month)
-                    .ToListAsync();
+                if (year == 0)
+                {
+                    Timesheets = await _context.Timesheet
+                        .Include(x => x.Person)
+                        .Include(x => x.Payment)
+                        .ToListAsync();
+                }
+                else if (month == 0)
+                {
+                    Timesheets = await _context.Timesheet
+                        .Include(x => x.Person)
+                        .Include(x => x.Payment)
+                        .Where(x => (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Year : 0) == year)
+                        .ToListAsync();
+                }
+                else
+                {
+                    Timesheets = await _context.Timesheet
+                        .Include(x => x.Person)
+                        .Include(x => x.Payment)
+                        .Where(x => (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Year : 0) == year && (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Month : 0) == month)
+                        .ToListAsync();
+                }
             }
             RewardSummaryDetail = new RewardSummary
             {
                 Hours = Timesheets.Select(x => x.Hours).Sum(),
                 Reward = Timesheets.Select(x => x.Reward).Sum(),
                 Tax = Timesheets.Select(x => x.Tax).Sum(),
-
+                CreateDateTimeYear = year,
+                CreateDateTimeMonth = month,
+                PersonId = personId,
+                Person = await _context.Person.FindAsync(personId)
             };
         }
     }

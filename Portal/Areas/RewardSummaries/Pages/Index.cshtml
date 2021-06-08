@@ -84,7 +84,6 @@
                                 <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth">
                                 <i class="fas fa-print">
                                 </i>
-                                Tisk
                             </a>
                         </td>
                     </tr>
@@ -154,11 +153,22 @@
                             .append('<td>' + taxSum + '</td>')
                             .append('<td>' + rewardToPaySum + '</td>')
                             .append('<td/>')
-                            .append('<td class="project-actions text-right"><a href="/RewardSummaries/Print?year=' + year + '&amp;month=' + month + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" ><i class="fas fa-print"></i>Tisk</a></td>');
+                            .append('<td class="project-actions text-right"><a href="/RewardSummaries/Print?year=' + year + '&amp;month=' + month + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" ><i class="fas fa-print"></i></a></td>');
                     },
                     "endRender": null,
                     "dataSrc": [2, 3]
                 },
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "searchable": false,
+                        "orderable": false
+                    },
+                    {
+                        "targets": [-1],
+                        "orderable": false,
+                        "searchable": false
+                    }],
                 "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
                 "initComplete": function (settings, json) {
                     /*$("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');*/
