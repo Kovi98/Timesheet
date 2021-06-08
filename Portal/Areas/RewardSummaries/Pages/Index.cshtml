@@ -8,47 +8,145 @@
 <!-- Timelime example  -->
 <div class="row">
     <div class="col-md-12">
-        <!-- The time line -->
-        <div class="timeline">
-            @foreach (var label in Model.YearsMonths)
-            {
-                @foreach (var labelItem in Model.YearsMonths.Where(x => x == label).Select(x => x.Item2).FirstOrDefault())
+        <table id="dataTable" class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Trenér
+                    </th>
+                    <th>
+                        Rok
+                    </th>
+                    <th>
+                        Měsíc
+                    </th>
+                    <th>
+                        Odměna
+                    </th>
+                    <th>
+                        Daň
+                    </th>
+                    <th>
+                        Výplata
+                    </th>
+                    <th>
+                        Platba
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RewardSummary)
                 {
-                    var year = label.Item1 == null ? "Neuvedeno" : label.Item1.ToString();
-                    var month = labelItem == null ? "Neuvedeno" : labelItem.ToString();
-                    <!-- timeline time label -->
-                    <div class="time-label">
-                        <span class="bg-green">@year/@month</span>
-                    </div>
-                    <!-- /.timeline-label -->
-                    var rewardSummaries = Model.RewardSummary.Where(x => x.CreateDateTimeYear == label.Item1 && x.CreateDateTimeMonth == labelItem);
+                    <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Person.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreateDateTimeYear)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreateDateTimeMonth)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Reward)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Tax)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RewardToPay)
+                        </td>
+                        <td class="project-state">
+                            @{
+                                if (item.Payment != null && item.Payment.IsPaid)
+                                {
+                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
-                    @foreach (var person in rewardSummaries.GroupBy(x => x.Person))
-                    {
-                        <!-- timeline item -->
-                        <div>
-                            <i class="fas fa-user bg-info"></i>
-                            <div class="timeline-item">
-                                <span class="time"><i class="fas fa-sort-amount-down"></i> <strong>@person.Select(x => x.Id).Count()</strong> výkazů.</span>
-                                <h3 class="timeline-header"><a asp-area="People" asp-page="Index" asp-route-id="@person.Key.Id" class="text-info">@Html.DisplayFor(modelItem => person.Key.FullName)</a></h3>
-
-                                <div class="timeline-body">
-                                    Výkazy?
-                                </div>
-                                <div class="timeline-footer">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END timeline item -->
-                    }
-
-                    @foreach (var rewardSummary in rewardSummaries)
-                    {
-
-                    }
+                                }
+                                else if (item.Payment != null)
+                                {
+                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Neexistuje</span>
+                                }
+                            }
+                        </td>
+                        <td class="project-actions text-right">
+                                <a class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth" asp-route-personId="@item.PersonId">
+                                <i class="fas fa-print">
+                                </i>
+                                Tisk
+                            </a>
+                        </td>
+                    </tr>
                 }
-            }
-        </div>
+            </tbody>
+        </table>
     </div>
     <!-- /.col -->
 </div>
+@section Scripts {
+    <script>
+        var dataTableTimesheets;
+        $(document).ready(function () {
+            dataTableTimesheets = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/lib/datatables-language/cs.json'
+                },
+                "ordering": true,
+                "searching": true,
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "info": false,
+                "stateSave": true,
+                "rowGroup": {
+                    "startRender": function (rows, group) {
+                        var rewardSum = rows
+                            .data()
+                            .pluck(3)
+                            .reduce(function (a, b) {
+                                return a + b.replace(/[^\d]/g, '') * 1;
+                            }, 0) / 100;
+                        rewardSum = $.fn.dataTable.render.number('', ',', 2).display(rewardSum);
+
+                        var taxSum = rows
+                            .data()
+                            .pluck(4)
+                            .reduce(function (a, b) {
+                                return a + b.replace(/[^\d]/g, '') * 1;
+                            }, 0) / 100;
+                        taxSum = $.fn.dataTable.render.number('', ',', 2).display(taxSum);
+
+                        var rewardToPaySum = rows
+                            .data()
+                            .pluck(5)
+                            .reduce(function (a, b) {
+                                return a + b.replace(/[^\d]/g, '') * 1;
+                            }, 0) / 100;
+                        rewardToPaySum = $.fn.dataTable.render.number('', ',', 2).display(rewardToPaySum);
+
+                        return $('<tr/>')
+                            .append('<td colspan="3">' + group + '</td>')
+                            .append('<td>' + rewardSum + '</td>')
+                            .append('<td>' + taxSum + '</td>')
+                            .append('<td>' + rewardToPaySum + '</td>')
+                            .append('<td/>')
+                            .append('<td class="project-actions text-right"><a href="/RewardSummaries/Print?year=0&amp;month=0" class="btn btn-secondary btn-sm" ><i class="fas fa-print"></i>Tisk</a></td>');
+                    },
+                    "endRender": null,
+                    "dataSrc": [1, 2]
+                },
+                "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
+                "initComplete": function (settings, json) {
+                    /*$("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');*/
+
+                }
+            });
+        });
+    </script>
+}

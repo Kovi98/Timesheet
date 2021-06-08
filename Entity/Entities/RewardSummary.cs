@@ -24,7 +24,7 @@ namespace Timesheet.Entity.Entities
         public Person Person { get; set; }
         public Payment Payment { get; set; }
 
-
+        public decimal? RewardToPay { get => Reward - Tax; }
         //public virtual IList<Timesheet> Timesheet { get; set; }
     }
 }
