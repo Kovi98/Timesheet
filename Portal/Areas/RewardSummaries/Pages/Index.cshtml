@@ -8,9 +8,12 @@
 <!-- Timelime example  -->
 <div class="row">
     <div class="col-md-12">
-        <table id="dataTable" class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+        <table id="dataTable" class="table table-hover dt-responsive nowrap" style="width:100%">
             <thead>
                 <tr>
+                    <th>
+
+                    </th>
                     <th>
                         Trenér
                     </th>
@@ -39,6 +42,9 @@
                 @foreach (var item in Model.RewardSummary)
                 {
                     <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
+                        <td>
+
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Person.FullName)
                         </td>
@@ -75,7 +81,7 @@
                             }
                         </td>
                         <td class="project-actions text-right">
-                                <a class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth" asp-route-personId="@item.PersonId">
+                                <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth" asp-route-personId="@item.PersonId">
                                 <i class="fas fa-print">
                                 </i>
                                 Tisk
@@ -108,7 +114,7 @@
                     "startRender": function (rows, group) {
                         var rewardSum = rows
                             .data()
-                            .pluck(3)
+                            .pluck(4)
                             .reduce(function (a, b) {
                                 return a + b.replace(/[^\d]/g, '') * 1;
                             }, 0) / 100;
@@ -116,7 +122,7 @@
 
                         var taxSum = rows
                             .data()
-                            .pluck(4)
+                            .pluck(5)
                             .reduce(function (a, b) {
                                 return a + b.replace(/[^\d]/g, '') * 1;
                             }, 0) / 100;
@@ -124,22 +130,34 @@
 
                         var rewardToPaySum = rows
                             .data()
-                            .pluck(5)
+                            .pluck(6)
                             .reduce(function (a, b) {
                                 return a + b.replace(/[^\d]/g, '') * 1;
                             }, 0) / 100;
                         rewardToPaySum = $.fn.dataTable.render.number('', ',', 2).display(rewardToPaySum);
 
+                        var year = 0;
+                        var month = 0;
+                        if (group.length == 1 || group.length == 2) {
+                            month = group;
+                            year = rows
+                                .data()
+                                .pluck(2)[0];
+                        }
+                        else {
+                            year = group;
+                        }
+
                         return $('<tr/>')
-                            .append('<td colspan="3">' + group + '</td>')
+                            .append('<td colspan="4">' + group + '</td>')
                             .append('<td>' + rewardSum + '</td>')
                             .append('<td>' + taxSum + '</td>')
                             .append('<td>' + rewardToPaySum + '</td>')
                             .append('<td/>')
-                            .append('<td class="project-actions text-right"><a href="/RewardSummaries/Print?year=0&amp;month=0" class="btn btn-secondary btn-sm" ><i class="fas fa-print"></i>Tisk</a></td>');
+                            .append('<td class="project-actions text-right"><a href="/RewardSummaries/Print?year=' + year + '&amp;month=' + month + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" ><i class="fas fa-print"></i>Tisk</a></td>');
                     },
                     "endRender": null,
-                    "dataSrc": [1, 2]
+                    "dataSrc": [2, 3]
                 },
                 "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
                 "initComplete": function (settings, json) {
