@@ -24,6 +24,7 @@ namespace Portal.Areas.RewardSummaries.Pages
         {
             RewardSummary = await _context.RewardSummary
             .Include(r => r.Person)
+            .Include(r => r.Payment)
             .OrderByDescending(r => r.CreateDateTimeYear)
             .OrderByDescending(r => r.CreateDateTimeMonth).ToListAsync();
         }

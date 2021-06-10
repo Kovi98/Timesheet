@@ -95,9 +95,9 @@
 </div>
 @section Scripts {
     <script>
-        var dataTableTimesheets;
+        var dataTableRewards;
         $(document).ready(function () {
-            dataTableTimesheets = $('#dataTable').DataTable({
+            dataTableRewards = $('#dataTable').DataTable({
                 "language": {
                     "url": '/lib/datatables-language/cs.json'
                 },
@@ -171,10 +171,14 @@
                     }],
                 "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
                 "initComplete": function (settings, json) {
-                    /*$("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');*/
+                    $("div.toolbar").html('<a href="/RewardSummaries/Print" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-print"></i> Všechny výkazy</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
 
                 }
             });
         });
+        function resetTable() {
+            dataTableRewards.state.clear();
+            window.location.reload();
+        };
     </script>
 }
