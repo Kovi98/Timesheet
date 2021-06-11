@@ -84,7 +84,7 @@
                                 <td class="project-actions float-right form-inline">
                                     @if (await Model.IsAdminAsync(item))
                                     {
-                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Promote">
+                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Demote">
                                             <button class="btn btn-warning" type="submit">
                                                 <i class="fas fa-arrow-down"></i> Odstranit správce
                                             </button>
@@ -92,7 +92,7 @@
                                     }
                                     else if (await Model.IsActiveAsync(item))
                                     {
-                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Demote">
+                                        <form method="post" asp-route-id="@item.Id" asp-page-handler="Promote">
                                             <button class="btn btn-warning" type="submit">
                                                 <i class="fas fa-arrow-up"></i> Udělit správce
                                             </button>

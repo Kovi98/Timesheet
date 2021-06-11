@@ -2,5 +2,163 @@
 @model Portal.Areas.RewardSummaries.Pages.PrintModel
 @{
     Layout = null;
-    ViewData["Title"] = "Tisk přehledu";
 }
+<script>
+    window.addEventListener("load", window.print());
+</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tisk přehledu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/adminlte.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Main content -->
+    <section class="invoice">
+        <!-- title row -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="page-header">
+                    <i class="fas fa-globe"></i> Portál Timesheet
+                    <small class="float-right">Datum: @DateTime.Now.ToString("dd. MM. yyyy")</small>
+                </h2>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- info row -->
+        <div class="row invoice-info">
+            <div class="col-sm-4 invoice-col">
+                Přehled odměn:<br>
+                Rok: 
+                @{
+                    string empty = "Neuvedeno";
+                    if (Model.RewardSummaryDetail.CreateDateTimeYear == 0)
+                    {
+                        @empty;
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.CreateDateTimeYear);
+                    }
+                }
+                <br />
+                Měsíc: 
+                @{
+                    if (Model.RewardSummaryDetail.CreateDateTimeMonth == 0)
+                    {
+                        @empty;
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.CreateDateTimeMonth);
+                    }
+                }
+                <br />
+                Trenér: 
+                @{
+                    if (Model.RewardSummaryDetail.PersonId == 0)
+                    {
+                        @empty;
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.Person.FullName);
+                    }
+                }
+                <br />
+
+            </div>
+            <!-- /.col -->
+            @if (Model.RewardSummaryDetail.PersonId != 0)
+            {
+                <div class="col-sm-4 invoice-col">
+                    Detail trenéra
+                    <address>
+                        <strong>@Html.DisplayFor(model => model.RewardSummaryDetail.Person.FullName)</strong><br>
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.Person.Street) @Html.DisplayFor(model => model.RewardSummaryDetail.Person.HouseNumber)<br>
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.Person.PostalCode) @Html.DisplayFor(model => model.RewardSummaryDetail.Person.City)<br>
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.Person.State)<br>
+                    </address>
+                </div>
+            }
+            <!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+                Finance<br>
+                Odměny celkem: @Html.DisplayFor(model => model.RewardSummaryDetail.Reward)<br>
+                Daň: @Html.DisplayFor(model => model.RewardSummaryDetail.Tax)<br>
+                <b>Vyplaceno:</b> @Html.DisplayFor(model => model.RewardSummaryDetail.RewardToPay)
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <!-- Table row -->
+        <div class="row">
+            <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Trenér</th>
+                            <th>Začátek</th>
+                            <th>Konec</th>
+                            <th>Čas</th>
+                            <th>Odměna</th>
+                            <th>Daň</th>
+                            <th>Výplata</th>
+                            <th>Platba</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Timesheets)
+                        {
+                        <tr>
+                            <td>@Html.DisplayFor(model => item.Person.FullName)</td>
+                            <td>@Html.DisplayFor(model => item.DateTimeFrom)</td>
+                            <td>@Html.DisplayFor(model => item.DateTimeTo)</td>
+                            <td>@Html.DisplayFor(model => item.HoursTime)</td>
+                            <td>@Html.DisplayFor(model => item.Reward)</td>
+                            <td>@Html.DisplayFor(model => item.Tax)</td>
+                            <td>@Html.DisplayFor(model => item.ToPay)</td>
+                            <td class="project-state">
+                                @{
+                                    if (item.Payment != null && item.Payment.IsPaid)
+                                    {
+                                        <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
+
+                                    }
+                                    else if (item.Payment != null)
+                                    {
+                                        <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Neexistuje</span>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/adminlte.min.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>
