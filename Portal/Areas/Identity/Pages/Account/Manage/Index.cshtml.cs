@@ -23,6 +23,8 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
         }
 
         public string Username { get; set; }
+        public string Email { get; set; }
+        public string Fullname { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -39,10 +41,11 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(ApplicationUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            Username = await _userManager.GetUserNameAsync(user);
+            Email = await _userManager.GetEmailAsync(user);
+            Fullname = user.FullName;
 
-            Username = userName;
+            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Input = new InputModel
             {

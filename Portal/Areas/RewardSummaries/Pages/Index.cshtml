@@ -5,93 +5,94 @@
     ViewData["Title"] = "Přehled odměn";
 }
 
-<!-- Timelime example  -->
 <div class="row">
-    <div class="col-md-12">
-        <table id="dataTable" class="table table-hover dt-responsive nowrap" style="width:100%">
-            <thead>
-                <tr>
-                    <th>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="dataTable" class="table table-hover dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>
 
-                    </th>
-                    <th>
-                        Trenér
-                    </th>
-                    <th>
-                        Rok
-                    </th>
-                    <th>
-                        Měsíc
-                    </th>
-                    <th>
-                        Odměna
-                    </th>
-                    <th>
-                        Daň
-                    </th>
-                    <th>
-                        Výplata
-                    </th>
-                    <th>
-                        Platba
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.RewardSummary)
-                {
-                    <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
-                        <td>
+                            </th>
+                            <th>
+                                Trenér
+                            </th>
+                            <th>
+                                Rok
+                            </th>
+                            <th>
+                                Měsíc
+                            </th>
+                            <th>
+                                Odměna
+                            </th>
+                            <th>
+                                Daň
+                            </th>
+                            <th>
+                                Výplata
+                            </th>
+                            <th>
+                                Platba
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RewardSummary)
+                        {
+                            <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
+                                <td>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Person.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreateDateTimeYear)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreateDateTimeMonth)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Reward)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Tax)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RewardToPay)
+                                </td>
+                                <td class="project-state">
+                                    @{
+                                        if (item.Payment != null && item.Payment.IsPaid)
+                                        {
+                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
 
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Person.FullName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreateDateTimeYear)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreateDateTimeMonth)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Reward)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Tax)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RewardToPay)
-                        </td>
-                        <td class="project-state">
-                            @{
-                                if (item.Payment != null && item.Payment.IsPaid)
-                                {
-                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
-
-                                }
-                                else if (item.Payment != null)
-                                {
-                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-danger">Neexistuje</span>
-                                }
-                            }
-                        </td>
-                        <td class="project-actions text-right">
-                                <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth">
-                                <i class="fas fa-print">
-                                </i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                                        }
+                                        else if (item.Payment != null)
+                                        {
+                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger">Neexistuje</span>
+                                        }
+                                    }
+                                </td>
+                                <td class="project-actions text-right">
+                                    <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth">
+                                        <i class="fas fa-print">
+                                        </i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <!-- /.col -->
 </div>
 @section Scripts {
     <script>
