@@ -50,6 +50,7 @@ namespace Timesheet.DocManager.Models
                     using (DocX doc = DocX.Load(streamLoad))
                     {
                         doc.ReplaceText("%Name%", person.FullName);
+                        doc.ReplaceText("%Job%", person.Job.Name);
                         doc.ReplaceText("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"));
                         doc.ReplaceText("%Address%", person.FullAddress);
                         doc.ReplaceText("%HourReward%", person.Job.HourReward.ToString());
