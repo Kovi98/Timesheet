@@ -32,7 +32,6 @@ namespace Portal
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             //CultureInfo - cs-CZ
@@ -51,12 +50,9 @@ namespace Portal
             services.AddDbContext<DocumentContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Document")));
-
-            services.AddScoped<IDocumentManager>(options =>
-            new DocumentManager());
+            services.AddScoped<IDocumentManager, DocumentManager>();
             #endregion
 
-            //services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -98,9 +94,9 @@ namespace Portal
                 options.SignIn.RequireConfirmedEmail = false;
             });
 
+            // Cookie settings
             services.ConfigureApplicationCookie(options =>
             {
-                // Cookie settings
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
 
@@ -117,11 +113,9 @@ namespace Portal
                         policy.RequireRole("Admin"));
                 });
             
-            // AddDataAnnotationsLocalization() - lokalizace hlášek
             services.AddRazorPages().AddDataAnnotationsLocalization();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -132,7 +126,6 @@ namespace Portal
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -145,7 +138,7 @@ namespace Portal
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //LOcalization - CultureInfo
+            //Localization - CultureInfo
             app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>

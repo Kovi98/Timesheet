@@ -20,7 +20,6 @@ namespace Portal
     {
         public async static Task Main(string[] args)
         {
-            //Inicializace aplikace
             var host = CreateHostBuilder(args).Build();
 
             await CreateDbIfNotExistsAsync(host);
