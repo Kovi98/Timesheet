@@ -34,12 +34,12 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "{0} je povinné!")]
             [DataType(DataType.Password)]
             [Display(Name = "Heslo")]
             public string OldPassword { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "{0} je povinné!")]
             [StringLength(100, ErrorMessage = "{0} musí být alespoň {2} a maximálně {1} znaky dlouhé.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Nové heslo")]
@@ -95,7 +95,7 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Vaše heslo bylo úspěšně změněno.";
 
-            return RedirectToPage();
+            return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
         }
     }
 }
