@@ -17,14 +17,16 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group custom-file">
-                            <input accept=".xlsx, .xls" class="custom-file-input" type="file" asp-for="ExcelUpload" />
-                            <label asp-for="ExcelUpload" class="custom-file-label"></label>
+                <form id="form-upload-excel" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group custom-file">
+                                <input accept=".xlsx, .xls" class="custom-file-input" type="file" asp-for="ExcelUpload" />
+                                <label asp-for="ExcelUpload" class="custom-file-label"></label>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
             <!-- /.card-body -->
         </div>
@@ -174,6 +176,7 @@
             $('#menu-data').click();
 
             $('#ExcelUpload').change(function (e) {
+                debugger;
                 if (e.target.files.length == 1) {
                     $('#form-upload-excel').submit();
                 }
