@@ -19,10 +19,12 @@ namespace Timesheet.Entity.Entities
 
         [Display(Name = "Jméno")]
         [Required(ErrorMessage = "Jméno je povinné")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string Name { get; set; }
 
         [Display(Name = "Příjmení")]
         [Required(ErrorMessage = "Příjmení je povinné")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string Surname { get; set; }
 
         [Display(Name = "Datum narození")]
@@ -35,24 +37,31 @@ namespace Timesheet.Entity.Entities
         public DateTime CreateTime { get; set; }
 
         [Display(Name = "Ulice")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string Street { get; set; }
 
         [Display(Name = "č. p.")]
+        [MaxLength(10, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string HouseNumber { get; set; }
 
         [Display(Name = "Město")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string City { get; set; }
 
         [Display(Name = "Stát")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string State { get; set; }
 
         [Display(Name = "PSČ")]
+        [MaxLength(5, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string PostalCode { get; set; }
 
         [Display(Name = "Číslo účtu")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string BankAccount { get; set; }
 
         [Display(Name = "Kód banky")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string BankCode { get; set; }
 
         [Display(Name = "Aktivní", Description = "Je trenér aktivní?")]
@@ -71,6 +80,7 @@ namespace Timesheet.Entity.Entities
         public int JobId { get; set; }
 
         [Display(Name = "Číslo osobního dokladu")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string IdentityDocument { get; set; }
 
         public virtual Job Job { get; set; }
