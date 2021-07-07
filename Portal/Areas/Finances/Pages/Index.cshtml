@@ -168,7 +168,7 @@
 @section Scripts {
     @foreach (var item in Model.Finance)
     {
-        @if (item.Person?.Count == 0)
+        @if (item.Person?.Count != 0)
         {
             <script>
             $(document).ready(function () {

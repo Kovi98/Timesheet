@@ -168,7 +168,7 @@
 @section Scripts {
     @foreach (var item in Model.Section)
     {
-        @if (item.Person?.Count == 0)
+        @if (item.Person?.Count != 0)
         {
             <script>
             $(document).ready(function () {
@@ -205,7 +205,7 @@
                     }],
                 "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
                 "initComplete": function (settings, json) {
-                    $("div.toolbar").html('<a href="/Sections?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový dotační subjekt</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                    $("div.toolbar").html('<a href="/Sections?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nová sekce</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
                 }
             });
         });

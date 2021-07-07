@@ -96,7 +96,7 @@ namespace Portal.Areas.Finances.Pages
 
             var financeToDelete = await _context.Finance.Include(x => x.Person).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (financeToDelete.Person?.Count == 0)
+            if (financeToDelete.Person?.Count != 0)
             {
                 return BadRequest("Nelze smazat dotaci, kterou již má vyplněnou trenér.");
             }

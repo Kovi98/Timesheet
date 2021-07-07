@@ -27,12 +27,12 @@ namespace Portal.Areas.Sections.Pages
 
         public async Task OnGetAsync()
         {
-            Section = await _context.Section.ToListAsync();
+            Section = await _context.Section.Include(x => x.Person).ToListAsync();
             IsEditable = false;
         }
         public async Task OnGetEditAsync(int id)
         {
-            Section = await _context.Section.ToListAsync();
+            Section = await _context.Section.Include(x => x.Person).ToListAsync();
             var section = Section.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {

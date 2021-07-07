@@ -19,6 +19,7 @@ namespace Timesheet.Entity.Entities
 
         [Required(ErrorMessage = "Název je povinný")]
         [Display(Name = "Název")]
+        [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string Name { get; set; }
         public byte[] RowVersion { get; set; }
 
