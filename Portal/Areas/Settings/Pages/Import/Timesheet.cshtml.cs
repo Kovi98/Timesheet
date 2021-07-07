@@ -33,6 +33,7 @@ namespace Portal.Areas.Settings.Pages.Import
         [DisplayName("Obejít propustné chyby")]
         public bool OverrideErrors { get; set; }
 
+
         public TimesheetModel(Timesheet.Entity.Entities.TimesheetContext context)
         {
             _context = context;
@@ -69,7 +70,7 @@ namespace Portal.Areas.Settings.Pages.Import
                 TimesheetImportJSON = JsonConvert.SerializeObject(TimesheetImport, Formatting.None, new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }) ;
+                });
             }
             catch(Exception e)
             {
