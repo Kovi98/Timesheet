@@ -66,7 +66,7 @@ namespace Portal.Areas.Timesheets.Pages
                 .Include(t => t.Person.PaidFrom)
                 .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
-            if (id > 0 && timesheet != null && (timesheet.Payment?.IsPaid ?? false))
+            if ((id > 0 && timesheet != null && !(timesheet.Payment?.IsPaid ?? false)) || (id == 0))
             {
                 TimesheetDetail = timesheet;
                 ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");

@@ -89,7 +89,7 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Vaše heslo bylo úspěšně změněno.";
 
-            return RedirectToPage();
+            return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
         }
     }
 }

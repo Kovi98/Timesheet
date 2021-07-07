@@ -1,0 +1,32 @@
+﻿@page
+@model Portal.Areas.Identity.Pages.Account.Manage.NameModel
+@{
+    ViewData["Title"] = "Změnit jméno";
+}
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-body">
+                <form id="name-form" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.NewName"></label>
+                        <input asp-for="Input.NewName" class="form-control" />
+                        <span asp-validation-for="Input.NewName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.NewSurname"></label>
+                        <input asp-for="Input.NewSurname" class="form-control" />
+                        <span asp-validation-for="Input.NewSurname" class="text-danger"></span>
+                    </div>
+                    <button id="change-name-button" type="submit" asp-page-handler="ChangeName" class="btn btn-primary">Změnit jméno</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,65 +1,54 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Portal.Areas.Identity;
 
 namespace Portal.Areas.Identity.Pages.Account.Manage
 {
-    public partial class EmailModel : PageModel
+    public class NameModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public EmailModel(
+        public NameModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
-        public string Username { get; set; }
-
-        public string Email { get; set; }
-
-        public bool IsEmailConfirmed { get; set; }
-
+        public string Name { get; set; }
+        public string Surname { get; set; }
         [TempData]
         public string StatusMessage { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
-
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "NovÃ½ email")]
-            public string NewEmail { get; set; }
+            [Required(ErrorMessage = "Jméno je povinné")]
+            [Display(Name = "Jméno")]
+            [StringLength(50, ErrorMessage = "{0} mùže být maximálnì 50 znakù.")]
+            public string NewName { get; set; }
+            [Required(ErrorMessage = "Pøíjmení je povinné")]
+            [Display(Name = "Pøíjmení")]
+            [StringLength(50, ErrorMessage = "{0} mùže být maximálnì 50 znakù.")]
+            public string NewSurname { get; set; }
         }
-
         private async Task LoadAsync(ApplicationUser user)
         {
-            var email = await _userManager.GetEmailAsync(user);
-            Email = email;
+            Name = user.Name;
+            Surname = user.Surname;
 
             Input = new InputModel
             {
-                NewEmail = email,
+                NewName = Name,
+                NewSurname = Surname
             };
-
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         }
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -71,8 +60,7 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
             await LoadAsync(user);
             return Page();
         }
-
-        public async Task<IActionResult> OnPostChangeEmailAsync()
+        public async Task<IActionResult> OnPostChangeNameAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -86,15 +74,19 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var email = await _userManager.GetEmailAsync(user);
-            if (Input.NewEmail != email)
+            var name = user.Name;
+            var surname = user.Surname;
+            if (Input.NewName != name || Input.NewSurname != surname)
             {
-                user.Email = email;
+                if (Input.NewName != name)
+                    user.Name = Input.NewName;
+                if (Input.NewSurname != surname)
+                    user.Surname = Input.NewSurname;
                 var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
                 {
-                    StatusMessage = "Email byl ÃºspÄ›Å¡nÄ› zmÄ›nÄ›n.";
+                    StatusMessage = "Jméno bylo úspìšnì zmìnìno.";
                     return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
                 }
                 else
@@ -107,8 +99,8 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            StatusMessage = "Email zÅ¯stal nezmÄ›nÄ›n.";
-            return RedirectToPage();
+            StatusMessage = "Jméno zùstalo nezmìnìno.";
+            return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
         }
     }
 }
