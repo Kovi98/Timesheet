@@ -34,18 +34,18 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "{0} je povinné")]
             [DataType(DataType.Password)]
             [Display(Name = "Heslo")]
             public string OldPassword { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "{0} je povinné")]
             [StringLength(100, ErrorMessage = "{0} musí být alespoň {2} a maximálně {1} znaky dlouhé.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Nové heslo")]
             public string NewPassword { get; set; }
 
-            [DataType(DataType.Password)]
+            [Required(ErrorMessage = "{0} je povinné")]
             [Display(Name = "Potvrdit nové heslo")]
             [Compare("NewPassword", ErrorMessage = "Nové heslo a potvrzení nového hesla se neshodují.")]
             public string ConfirmPassword { get; set; }
@@ -57,12 +57,6 @@ namespace Portal.Areas.Identity.Pages.Account.Manage
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var hasPassword = await _userManager.HasPasswordAsync(user);
-            if (!hasPassword)
-            {
-                //return RedirectToPage("./SetPassword");
             }
 
             return Page();
