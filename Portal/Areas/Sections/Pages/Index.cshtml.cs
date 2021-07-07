@@ -96,7 +96,7 @@ namespace Portal.Areas.Sections.Pages
 
             var sectionToDelete = await _context.Section.Include(x => x.Person).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (sectionToDelete?.Person?.Count == 0)
+            if (sectionToDelete?.Person?.Count != 0)
             {
                 return BadRequest("Nelze smazat sekci, kterou již má vyplněnou trenér.");
             }
