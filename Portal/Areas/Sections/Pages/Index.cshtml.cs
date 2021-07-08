@@ -70,14 +70,19 @@ namespace Portal.Areas.Sections.Pages
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SectionExists(SectionDetail.Id))
+                Section = await _context.Section.Include(x => x.Person).ToListAsync();
+                if (SectionDetail.Id > 0)
                 {
-                    return NotFound();
+                    var section = Section.FirstOrDefault(t => t.Id == SectionDetail.Id);
+                    SectionDetail = section;
                 }
                 else
                 {
-                    throw;
+                    SectionDetail = null;
                 }
+                IsEditable = true;
+                ModelState.AddModelError("Error", "Tento záznam byl změněn jiným uživatelem. Aktualizujte si záznam.");
+                return Page();
             }
             return RedirectToPage("Index");
         }

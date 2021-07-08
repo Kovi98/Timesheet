@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Entity.Entities;
@@ -70,14 +71,19 @@ namespace Portal.Areas.Finances.Pages
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FinanceExists(FinanceDetail.Id))
+                Finance = await _context.Finance.Include(x => x.Person).ToListAsync();
+                if (FinanceDetail.Id > 0)
                 {
-                    return NotFound();
+                    var finance = Finance.FirstOrDefault(t => t.Id == FinanceDetail.Id);
+                    FinanceDetail = finance;
                 }
                 else
                 {
-                    throw;
+                    FinanceDetail = null;
                 }
+                IsEditable = true;
+                ModelState.AddModelError("Error", "Tento záznam byl změněn jiným uživatelem. Aktualizujte si záznam.");
+                return Page();
             }
             return RedirectToPage("Index");
         }

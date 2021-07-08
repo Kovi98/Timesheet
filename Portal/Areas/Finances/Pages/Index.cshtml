@@ -240,5 +240,23 @@
             window.location.reload();
         }
     </script>
+    @if (ViewData.ModelState["Error"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Error"].Errors)
+        {
+            <script>
+                    toastr.error("@item.ErrorMessage");
+            </script>
+        }
+    }
+    @if (ViewData.ModelState["Success"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Success"].Errors)
+        {
+            <script>
+                    toastr.success("@item.ErrorMessage");
+            </script>
+        }
+    }
 }
 

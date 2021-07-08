@@ -68,7 +68,8 @@ namespace Portal.Areas.Documents.Pages
             }
             if (DocumentStorageDetail.Id > 0)
             {
-                return BadRequest();
+                DocumentStorage = await _context.DocumentStorage.ToListAsync();
+                return Page();
             }
             else
             {
@@ -85,10 +86,6 @@ namespace Portal.Areas.Documents.Pages
                 if (_context.DocumentStorage.Any(x => x.Id == DocumentStorageDetail.Id))
                 {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
                 }
             }
 
