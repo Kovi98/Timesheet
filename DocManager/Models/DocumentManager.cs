@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Timesheet.DocManager.Models
 {
-    public class DocumentManager : IDocumentManager
+    public class DocumentManager
     {
         public ExportFormat Format { get; set; }
 

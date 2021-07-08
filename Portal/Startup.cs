@@ -50,7 +50,7 @@ namespace Portal
             services.AddDbContext<DocumentContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Document")));
-            services.AddScoped<IDocumentManager, DocumentManager>();
+            services.AddScoped<DocumentManager>();
             #endregion
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
