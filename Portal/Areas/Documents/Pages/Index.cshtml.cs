@@ -38,12 +38,12 @@ namespace Portal.Areas.Documents.Pages
 
         public async Task OnGetAsync()
         {
-            DocumentStorage = await _context.DocumentStorage.ToListAsync();
+            DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
             IsEditable = false;
         }
         public async Task OnGetEditAsync()
         {
-            DocumentStorage = await _context.DocumentStorage.ToListAsync();
+            DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
             DocumentStorageDetail = null;
             IsEditable = true;
         }
@@ -63,12 +63,12 @@ namespace Portal.Areas.Documents.Pages
             
             if (!ModelState.IsValid)
             {
-                DocumentStorage = await _context.DocumentStorage.ToListAsync();
+                DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
                 return Page();
             }
             if (DocumentStorageDetail.Id > 0)
             {
-                DocumentStorage = await _context.DocumentStorage.ToListAsync();
+                DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
                 return Page();
             }
             else
