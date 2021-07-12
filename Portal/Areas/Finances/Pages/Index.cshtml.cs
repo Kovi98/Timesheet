@@ -28,12 +28,12 @@ namespace Portal.Areas.Finances.Pages
 
         public async Task OnGetAsync()
         {
-            Finance = await _context.Finance.Include(x => x.Person).ToListAsync();
+            Finance = await _context.Finance.Include(x => x.Person).AsNoTracking().ToListAsync();
             IsEditable = false;
         }
         public async Task OnGetEditAsync(int id)
         {
-            Finance = await _context.Finance.Include(x => x.Person).ToListAsync();
+            Finance = await _context.Finance.Include(x => x.Person).AsNoTracking().ToListAsync();
             var finance = Finance.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {
@@ -71,7 +71,7 @@ namespace Portal.Areas.Finances.Pages
             }
             catch (DbUpdateConcurrencyException)
             {
-                Finance = await _context.Finance.Include(x => x.Person).ToListAsync();
+                Finance = await _context.Finance.Include(x => x.Person).AsNoTracking().ToListAsync();
                 if (FinanceDetail.Id > 0)
                 {
                     var finance = Finance.FirstOrDefault(t => t.Id == FinanceDetail.Id);
