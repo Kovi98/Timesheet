@@ -37,6 +37,7 @@ namespace Portal.Areas.Payments.Pages
             Payment = await _context.Payment
                 .Include(p => p.Timesheet)
                 .ThenInclude(p => p.Person)
+                .AsNoTracking()
                 .ToListAsync();
             var payment = Payment.FirstOrDefault(t => t.Id == id);
             if (id > 0 && payment != null)
@@ -50,6 +51,8 @@ namespace Portal.Areas.Payments.Pages
         {
             Payment = await _context.Payment
                 .Include(p => p.Timesheet)
+                .ThenInclude(p => p.Person)
+                .AsNoTracking()
                 .ToListAsync();
             Payment = Payment.Where(p => !p.IsPaid).ToList();
             IsEditable = false;
@@ -59,6 +62,7 @@ namespace Portal.Areas.Payments.Pages
         {
             Payment = await _context.Payment
                 .Include(p => p.Timesheet)
+                .ThenInclude(p => p.Person)
                 .ToListAsync();
             var payment = Payment.FirstOrDefault(t => t.Id == id);
             if (id > 0)
