@@ -34,6 +34,7 @@ namespace Portal.Areas.Timesheets.Pages
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
                 .Include(t => t.Person.PaidFrom)
+                .AsNoTracking()
                 .ToListAsync();
             Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).ToList();
             IsEditable = false;
@@ -47,6 +48,7 @@ namespace Portal.Areas.Timesheets.Pages
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
                 .Include(t => t.Person.PaidFrom)
+                .AsNoTracking()
                 .ToListAsync();
             var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
             if (id > 0 && timesheet != null)
