@@ -27,7 +27,7 @@ namespace Portal.Areas.Sections.Pages
 
         public async Task OnGetAsync()
         {
-            Section = await _context.Section.Include(x => x.Person).ToListAsync();
+            Section = await _context.Section.Include(x => x.Person).AsNoTracking().ToListAsync();
             IsEditable = false;
         }
         public async Task OnGetEditAsync(int id)
