@@ -83,7 +83,7 @@ namespace Timesheet.Entity.Entities
             }
         }
 
-        public bool Pay(string accountFrom)
+        public bool TryCreatePaymentOrder(string accountFrom)
         {
             if (true)//!IsPaid && Timesheet != null && Timesheet.Count > 0)
             {

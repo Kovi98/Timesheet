@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Portal.Services;
 using Timesheet.Entity.Entities;
 
 namespace Portal.Areas.Payments.Pages
@@ -15,12 +16,12 @@ namespace Portal.Areas.Payments.Pages
     public class IndexModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly PaymentService _paymentService;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, IConfiguration configuration)
+        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, PaymentService paymentService)
         {
             _context = context;
-            _configuration = configuration;
+            _paymentService = paymentService;
         }
 
         public IList<Payment> Payment { get;set; }
@@ -145,7 +146,7 @@ namespace Portal.Areas.Payments.Pages
             {
                 try
                 {
-                    if (paymentToPay.Pay(_configuration["AppSettings:BankAccount"]))
+                    if (_paymentService.TryPay(paymentToPay))
                         await _context.SaveChangesAsync();
                     else
                         return BadRequest();

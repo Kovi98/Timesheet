@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Portal.Areas.Identity;
 using Portal.Data;
+using Portal.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -34,6 +35,10 @@ namespace Portal
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //Custom configs
+            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.CONFIG_SECTION_NAME));
+            //Custom services
+            services.AddSingleton<PaymentService>();
             //CultureInfo - cs-CZ
             services.Configure<RequestLocalizationOptions>(options =>
             {
