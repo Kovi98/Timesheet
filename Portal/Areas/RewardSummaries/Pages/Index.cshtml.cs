@@ -53,7 +53,7 @@ namespace Portal.Areas.RewardSummaries.Pages
                 result.Content = content.Replace(Environment.NewLine, string.Empty).Replace(@"\", string.Empty);
                 return result;
             }
-            catch (Exception e)
+            catch
             {
                 return StatusCode(500);
             }
