@@ -33,6 +33,7 @@ namespace Portal.Pages.Timesheets
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
                 .Include(t => t.Person.PaidFrom)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Timesheet == null)
