@@ -72,7 +72,7 @@ namespace Portal.Areas.Settings.Pages.Import
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 });
             }
-            catch(Exception e)
+            catch
             {
                 ModelState.AddModelError("Error", "Pøi naèítání dat nastala chyba.");
                 return Page();
@@ -144,7 +144,7 @@ namespace Portal.Areas.Settings.Pages.Import
                 transaction.Commit();
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));
             }
-            catch (Exception e)
+            catch
             {
                 transaction.Rollback();
                 ModelState.AddModelError("Error", "Záznamy se nepodaøilo uložit.");
