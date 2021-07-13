@@ -38,7 +38,7 @@ namespace Portal
             //Custom configs
             services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.CONFIG_SECTION_NAME));
             //Custom services
-            services.AddSingleton<PaymentService>();
+            services.AddTransient<PaymentService>();
             //CultureInfo - cs-CZ
             services.Configure<RequestLocalizationOptions>(options =>
             {
