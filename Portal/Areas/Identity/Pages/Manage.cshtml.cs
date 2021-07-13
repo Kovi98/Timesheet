@@ -28,7 +28,7 @@ namespace Portal.Areas.Identity.Pages
         }
         public async Task OnGetAsync()
         {
-            Users = await _userManager.Users.ToListAsync();
+            Users = await _userManager.Users.AsNoTracking().ToListAsync();
 
         }
         public async Task<IActionResult> OnPostActivateAsync(string id)
@@ -44,7 +44,7 @@ namespace Portal.Areas.Identity.Pages
             {
                 ModelState.AddModelError("Error", "Nastala neoèekávaná chyba!");
             }
-            Users = await _userManager.Users.ToListAsync();
+            Users = await _userManager.Users.AsNoTracking().ToListAsync();
             return Page();
         }
         public async Task<IActionResult> OnPostDeactivateAsync(string id)
@@ -60,7 +60,7 @@ namespace Portal.Areas.Identity.Pages
             {
                 ModelState.AddModelError("Error", "Nastala neoèekávaná chyba!");
             }
-            Users = await _userManager.Users.ToListAsync();
+            Users = await _userManager.Users.AsNoTracking().ToListAsync();
             return Page();
         }
         public async Task<IActionResult> OnPostPromoteAsync(string id)
@@ -77,7 +77,7 @@ namespace Portal.Areas.Identity.Pages
             {
                 ModelState.AddModelError("Error", "Nastala neoèekávaná chyba!");
             }
-            Users = await _userManager.Users.ToListAsync();
+            Users = await _userManager.Users.AsNoTracking().ToListAsync();
             return Page();
         }
         public async Task<IActionResult> OnPostDemoteAsync(string id)
@@ -93,7 +93,7 @@ namespace Portal.Areas.Identity.Pages
             {
                 ModelState.AddModelError("Error", "Nastala neoèekávaná chyba!");
             }
-            Users = await _userManager.Users.ToListAsync();
+            Users = await _userManager.Users.AsNoTracking().ToListAsync();
             return Page();
         }
 
