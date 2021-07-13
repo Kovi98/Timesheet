@@ -40,7 +40,8 @@ namespace Portal.Areas.People.Pages
                 .Include(p => p.Job)
                 .Include(p => p.PaidFrom)
                 .Include(p => p.Section)
-                .Include(p => p.Timesheet).ToListAsync();
+                .Include(p => p.Timesheet)
+                .AsNoTracking().ToListAsync();
             var person = Person.FirstOrDefault(t => t.Id == id);
             if (id > 0 && person != null)
             {
