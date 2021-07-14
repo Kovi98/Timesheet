@@ -149,39 +149,42 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row table-responsive">
-                        <table class="table m-0">
-                            <thead>
-                                <tr>
-                                    <th>Trenér</th>
-                                    <th>Datum</th>
-                                    <th>Čas</th>
-                                    <th>Odměna</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    foreach (var item in Model.PaymentDetail.Timesheet.Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5))
-                                    {
-                                                                <tr>
-                                                                    <td>
-                                                                        @Html.DisplayFor(modelItem => item.Person.FullName)
-                                                                    </td>
-                                                                    <td>
-                                                                        @item.DateTimeTo.Value.ToString("dd. MM. yyyy")
-                                                                    </td>
-                                                                    <td>
-                                                                        @Html.DisplayFor(modelItem => item.HoursTime)
-                                                                    </td>
-                                                                    <td>
-                                                                        @Html.DisplayFor(modelItem => item.Reward)
-                                                                    </td>
-                                                                </tr>
+                    @if (Model.PaymentDetail.Timesheet?.Count > 0)
+                    {
+                        <div class="row table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Trenér</th>
+                                        <th>Datum</th>
+                                        <th>Čas</th>
+                                        <th>Odměna</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var item in Model.PaymentDetail.Timesheet.Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Person.FullName)
+                                                </td>
+                                                <td>
+                                                    @item.DateTimeTo.Value.ToString("dd. MM. yyyy")
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.HoursTime)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Reward)
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
                     <!--Tlačítka dole-->
                     <div class="row mt-2">
                         <div class="col-12">
@@ -199,8 +202,13 @@
                                 }
                                 else
                                 {
+                                    string disabled = string.Empty;
+                                    @if (Model.PaymentDetail.Timesheet?.Count == 0)
+                                    {
+                                        disabled = "disabled";
+                                    }
                                     <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="Pay">
-                                        <button class="btn btn-success" type="submit">
+                                        <button class="btn btn-success" type="submit" @disabled>
                                             <i class="fas fa-money-check-alt"></i> Vygenerovat platební příkaz
                                         </button>
                                     </form>

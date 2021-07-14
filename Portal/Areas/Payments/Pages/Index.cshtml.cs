@@ -98,10 +98,29 @@ namespace Portal.Areas.Payments.Pages
             {
                 return RedirectToPage("./Index", new { id = PaymentDetail?.Id, area = "Payments" });
             }
-            PaymentDetail.Timesheet = await _context.Timesheet.Where(x => (x.PaymentId == null || x.PaymentId == 0) && (TimesheetsSelected.Any(y => y == x.Id))).ToListAsync();
+            PaymentDetail.Timesheet = await _context.Timesheet.Where(x => TimesheetsSelected.Any(y => y == x.Id)).ToListAsync();
+            
             if (PaymentDetail.Id > 0)
             {
-                _context.Attach(PaymentDetail).State = EntityState.Modified;
+                var oldTimesheets = (await _context.Payment.Include(x => x.Timesheet).FirstOrDefaultAsync(x => x.Id == PaymentDetail.Id)).Timesheet;
+                var timesheetsToRemove = new List<Timesheet.Entity.Entities.Timesheet>();
+                foreach (var timesheet in oldTimesheets)
+                {
+                    if (!PaymentDetail.Timesheet.Any(x => x.Id == timesheet.Id))
+                    {
+                        timesheetsToRemove.Add(timesheet);
+                    }
+                }
+                foreach (var timesheet in timesheetsToRemove)
+                {
+                    timesheet.Payment = null;
+                    _context.Attach(timesheet).State = EntityState.Modified;
+                }
+                foreach (var timesheet in PaymentDetail.Timesheet)
+                {
+                    timesheet.PaymentId = PaymentDetail.Id;
+                    _context.Attach(timesheet).State = EntityState.Modified;
+                }
             }
             else
             {

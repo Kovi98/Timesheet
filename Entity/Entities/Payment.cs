@@ -85,7 +85,7 @@ namespace Timesheet.Entity.Entities
 
         public bool TryCreatePaymentOrder(string accountFrom)
         {
-            if (true)//!IsPaid && Timesheet != null && Timesheet.Count > 0)
+            if (!IsPaid && Timesheet != null && Timesheet.Count > 0)//!IsPaid && Timesheet != null && Timesheet.Count > 0)
             {
                 var result = from t in Timesheet
                              group t by t.Person into g
