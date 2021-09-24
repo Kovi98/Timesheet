@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Xml;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -90,31 +89,35 @@ namespace Timesheet.Entity.Entities
                 var result = from t in Timesheet
                              group t by t.Person into g
                              select new TimesheetGroup { Person = g.Key, ToPay = g.ToArray().Select(x => x.ToPay).Sum() };
-                string xml = (@"<?xml version=""1.0"" encoding=""UTF-8""?>" + Environment.NewLine +
-                @"<Import xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""" + Environment.NewLine +
-                @"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">" + Environment.NewLine +
-                "<Orders>" + Environment.NewLine);
+
+                StringBuilder sb = new StringBuilder();
+                //header
+                sb.AppendLine(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
+                sb.AppendLine(@"<Import xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""");
+                sb.AppendLine(@"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">");
+                sb.AppendLine("<Orders>");
                 var today = DateTime.Now;
                 foreach (var ts in result)
                 {
                     string ss = "0";
                     if (ts.Person.PaidFrom.Name == "MŠMT")
                         ss = "10";
-                    xml += ("<DomesticTransaction>" + Environment.NewLine +
-                    "<accountFrom>" + accountFrom + "</accountFrom>" + Environment.NewLine +
-                    "<currency>CZK</currency>" + Environment.NewLine +
-                    "<amount>" + ts.ToPay + "</amount>" + Environment.NewLine +
-                    "<accountTo>" + ts.Person.BankAccount + "</accountTo>" + Environment.NewLine +
-                    "<bankCode>" + ts.Person.BankCode + "</bankCode>" + Environment.NewLine +
-                    "<ss>" + ss + "</ss>" + Environment.NewLine +
-                    "<date>" + today.ToString("yyyy-MM-dd") + "</date>" + Environment.NewLine +
-                    "<messageForRecipient>Trenérská odměna " + ts.Person.FullName + "-" + today.AddMonths(-1).Year + "/" + today.AddMonths(-1).Month + "</messageForRecipient>" + Environment.NewLine +
-                    "<paymentType>431001</paymentType>" + Environment.NewLine +
-                    "</DomesticTransaction>" + Environment.NewLine);
+                    sb.AppendLine("<DomesticTransaction>");
+                    sb.AppendLine($"<accountFrom>{accountFrom}</accountFrom>");
+                    sb.AppendLine("<currency>CZK</currency>");
+                    sb.AppendLine($"<amount>{ts.ToPay}</amount>");
+                    sb.AppendLine($"<accountTo>{ts.Person.BankAccount}</accountTo>");
+                    sb.AppendLine($"<bankCode>{ts.Person.BankCode}</bankCode>");
+                    sb.AppendLine($"<ss>{ss}</ss>");
+                    sb.AppendLine($"<date>{today.ToString("yyyy-MM-dd")}</date>");
+                    sb.AppendLine($"<messageForRecipient>Trenérská odměna {ts.Person.FullName}-{today.AddMonths(-1).Year}/{today.AddMonths(-1).Month}</messageForRecipient>");
+                    sb.AppendLine("<paymentType>431001</paymentType>");
+                    sb.AppendLine("</DomesticTransaction>");
                 }
-                xml += ("</Orders>" + Environment.NewLine +
-                     "</Import>");
-                PaymentXml = xml;
+                sb.AppendLine("</Orders>");
+                sb.AppendLine("</Import>");
+
+                PaymentXml = sb.ToString();
                 PaymentDateTime = today;
                 return true;
             }

@@ -1,5 +1,4 @@
-﻿using Entity.Services;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -11,8 +10,9 @@ using Portal.Areas.Identity;
 using Portal.Data;
 using System;
 using Timesheet.DocManager.Entities;
-using Timesheet.DocManager.Models;
+using Timesheet.DocManager.Services;
 using Timesheet.Entity.Entities;
+using Timesheet.Entity.Services;
 
 namespace Portal
 {
@@ -43,12 +43,12 @@ namespace Portal
             services.AddDbContext<DocumentContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Document")));
-            services.AddScoped<DocumentManager>();
             #endregion
             //Custom configs
             services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.CONFIG_SECTION_NAME));
             //Custom services
-            services.AddScoped<PaymentService>();
+            services.AddScoped<IDocumentManager, DocumentManager>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()

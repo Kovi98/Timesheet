@@ -1,30 +1,29 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Portal.Services;
 using Timesheet.Entity.Entities;
+using Timesheet.Entity.Services;
 
 namespace Portal.Areas.Payments.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly Timesheet.Entity.Entities.TimesheetContext _context;
-        private readonly PaymentService _paymentService;
+        private readonly IPaymentService _paymentService;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, PaymentService paymentService)
+        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, IPaymentService paymentService)
         {
             _context = context;
             _paymentService = paymentService;
         }
 
-        public IList<Payment> Payment { get;set; }
+        public IList<Payment> Payment { get; set; }
         [BindProperty]
         public Payment PaymentDetail { get; set; }
         public bool IsEditable { get; set; }
@@ -99,7 +98,7 @@ namespace Portal.Areas.Payments.Pages
                 return RedirectToPage("./Index", new { id = PaymentDetail?.Id, area = "Payments" });
             }
             PaymentDetail.Timesheet = await _context.Timesheet.Where(x => TimesheetsSelected.Any(y => y == x.Id)).ToListAsync();
-            
+
             if (PaymentDetail.Id > 0)
             {
                 var oldTimesheets = (await _context.Payment.Include(x => x.Timesheet).FirstOrDefaultAsync(x => x.Id == PaymentDetail.Id)).Timesheet;
@@ -191,7 +190,7 @@ namespace Portal.Areas.Payments.Pages
                 return BadRequest();
             }
 
-            return File(Encoding.UTF8.GetBytes(payment.PaymentXml), "application/xml", payment.PaymentDateTime.Value.ToString("ddMMyyyy")+".xml");
+            return File(Encoding.UTF8.GetBytes(payment.PaymentXml), "application/xml", payment.PaymentDateTime.Value.ToString("ddMMyyyy") + ".xml");
         }
 
         /// <summary>

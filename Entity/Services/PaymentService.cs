@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Timesheet.Entity.Entities;
 
-namespace Entity.Services
+namespace Timesheet.Entity.Services
 {
-    public class PaymentService
+    public class PaymentService : IPaymentService
     {
         private readonly PaymentOptions _paymentOptions;
         public PaymentService(IOptions<PaymentOptions> paymentOptions)
