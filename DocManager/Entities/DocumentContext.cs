@@ -1,6 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -33,7 +32,9 @@ namespace Timesheet.DocManager.Entities
         {
             modelBuilder.Entity<DocumentStorage>(entity =>
             {
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValue<DateTime>(DateTime.Now);
 
                 entity.Property(e => e.DocumentName).HasMaxLength(50);
 

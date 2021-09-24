@@ -1,23 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Entity.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Portal.Areas.Identity;
 using Portal.Data;
-using Portal.Services;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using Timesheet.DocManager.Entities;
 using Timesheet.DocManager.Models;
 using Timesheet.Entity.Entities;
@@ -35,10 +27,6 @@ namespace Portal
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //Custom configs
-            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.CONFIG_SECTION_NAME));
-            //Custom services
-            services.AddTransient<PaymentService>();
             //CultureInfo - cs-CZ
             services.Configure<RequestLocalizationOptions>(options =>
             {
@@ -57,6 +45,10 @@ namespace Portal
                     Configuration.GetConnectionString("Document")));
             services.AddScoped<DocumentManager>();
             #endregion
+            //Custom configs
+            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.CONFIG_SECTION_NAME));
+            //Custom services
+            services.AddScoped<PaymentService>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
@@ -117,7 +109,7 @@ namespace Portal
                     options.AddPolicy("AdminPolicy", policy =>
                         policy.RequireRole("Admin"));
                 });
-            
+
             services.AddRazorPages().AddDataAnnotationsLocalization();
         }
 

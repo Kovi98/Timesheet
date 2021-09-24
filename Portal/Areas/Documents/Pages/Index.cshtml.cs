@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Threading.Tasks;
 using Timesheet.DocManager.Entities;
+using Timesheet.DocManager.Services;
 
 namespace Portal.Areas.Documents.Pages
 {
@@ -18,13 +17,14 @@ namespace Portal.Areas.Documents.Pages
     public class IndexModel : PageModel
     {
         private readonly Timesheet.DocManager.Entities.DocumentContext _context;
+        private readonly IDocumentManager _docManager;
 
-        public IndexModel(Timesheet.DocManager.Entities.DocumentContext context)
+        public IndexModel(IDocumentManager documentManager)
         {
-            _context = context;
+            _docManager = documentManager;
         }
 
-        public IList<DocumentStorage> DocumentStorage { get;set; }
+        public IList<DocumentStorage> DocumentStorage { get; set; }
 
         [BindProperty]
         public DocumentStorage DocumentStorageDetail { get; set; }
@@ -38,12 +38,12 @@ namespace Portal.Areas.Documents.Pages
 
         public async Task OnGetAsync()
         {
-            DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
+            DocumentStorage = await _docManager.GetDocumentsAsync();
             IsEditable = false;
         }
         public async Task OnGetEditAsync()
         {
-            DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
+            DocumentStorage = await _docManager.GetDocumentsAsync();
             DocumentStorageDetail = null;
             IsEditable = true;
         }
@@ -52,7 +52,13 @@ namespace Portal.Areas.Documents.Pages
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!(DocumentUpload is null) && DocumentUpload.Length > 0 && DocumentUpload.ContentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            if (!ModelState.IsValid)
+            {
+                DocumentStorage = await _docManager.GetDocumentsAsync();
+                return Page();
+            }
+
+            if (DocumentUpload != null && DocumentUpload.Length > 0 && DocumentUpload.ContentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -60,33 +66,15 @@ namespace Portal.Areas.Documents.Pages
                     DocumentStorageDetail.DocumentSource = ms.ToArray();
                 }
             }
-            
-            if (!ModelState.IsValid)
-            {
-                DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
-                return Page();
-            }
-            if (DocumentStorageDetail.Id > 0)
-            {
-                DocumentStorage = await _context.DocumentStorage.AsNoTracking().ToListAsync();
-                return Page();
-            }
-            else
-            {
-                DocumentStorageDetail.CreateTime = DateTime.Now;
-                _context.DocumentStorage.Add(DocumentStorageDetail);
-            }
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _docManager.SaveAsync(DocumentStorageDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (_context.DocumentStorage.Any(x => x.Id == DocumentStorageDetail.Id))
-                {
-                    return NotFound();
-                }
+                DocumentStorage = await _docManager.GetDocumentsAsync();
+                return Page();
             }
 
             return RedirectToPage("Index");
