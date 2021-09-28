@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -16,12 +18,14 @@ namespace Portal.Areas.Documents.Pages
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.DocManager.Entities.DocumentContext _context;
         private readonly IDocumentManager _docManager;
+        private readonly ILogger _logger;
+        private readonly string _errorText = $"Error in {typeof(IndexModel).Namespace} : {typeof(IndexModel).FullName}";
 
-        public IndexModel(IDocumentManager documentManager)
+        public IndexModel(IDocumentManager documentManager, ILogger logger)
         {
             _docManager = documentManager;
+            _logger = logger;
         }
 
         public IList<DocumentStorage> DocumentStorage { get; set; }
@@ -38,43 +42,61 @@ namespace Portal.Areas.Documents.Pages
 
         public async Task OnGetAsync()
         {
-            DocumentStorage = await _docManager.GetDocumentsAsync();
-            IsEditable = false;
+            try
+            {
+                await LoadData();
+                IsEditable = false;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, _errorText);
+            }
         }
         public async Task OnGetEditAsync()
         {
-            DocumentStorage = await _docManager.GetDocumentsAsync();
-            DocumentStorageDetail = null;
-            IsEditable = true;
+            try
+            {
+                await LoadData();
+                DocumentStorageDetail = null;
+                IsEditable = true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, _errorText);
+            }
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                DocumentStorage = await _docManager.GetDocumentsAsync();
-                return Page();
-            }
-
-            if (DocumentUpload != null && DocumentUpload.Length > 0 && DocumentUpload.ContentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    DocumentUpload.CopyTo(ms);
-                    DocumentStorageDetail.DocumentSource = ms.ToArray();
-                }
-            }
-
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    await LoadData();
+                    return Page();
+                }
+
+                if (DocumentUpload != null && DocumentUpload.Length > 0 && DocumentUpload.ContentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        DocumentUpload.CopyTo(ms);
+                        DocumentStorageDetail.DocumentSource = ms.ToArray();
+                    }
+                }
                 await _docManager.SaveAsync(DocumentStorageDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                DocumentStorage = await _docManager.GetDocumentsAsync();
+                await LoadData();
                 return Page();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, _errorText);
+                return RedirectToPage("Index");
             }
 
             return RedirectToPage("Index");
@@ -87,21 +109,25 @@ namespace Portal.Areas.Documents.Pages
         /// <returns>404 - NotFound / OkResult</returns>
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            if (id == 0)
-            {
-                return NotFound();
-            }
+            if (id == 0) return NotFound();
 
-            var documentStorageToDelete = await _context.DocumentStorage.FindAsync(id);
+            var documentStorageToDelete = await _docManager.GetAsync(id);
 
-            if (documentStorageToDelete != null)
+            try
             {
-                _context.DocumentStorage.Remove(documentStorageToDelete);
-                await _context.SaveChangesAsync();
+                if (documentStorageToDelete != null)
+                {
+                    await _docManager.RemoveAsync(documentStorageToDelete);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception e)
             {
-                return NotFound();
+                _logger.LogError(e, _errorText);
+                return RedirectToPage("Index");
             }
 
             return new OkResult();
@@ -109,13 +135,15 @@ namespace Portal.Areas.Documents.Pages
 
         public async Task<IActionResult> OnPostDownloadDocument(int id, string returnUrl = null)
         {
-            var document = await _context.DocumentStorage.FindAsync(id);
-            if (document is null)
-            {
-                return LocalRedirect(returnUrl);
-            }
+            var document = await _docManager.GetAsync(id);
+            if (document is null) return LocalRedirect(returnUrl);
 
             return File(document.DocumentSource, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", document.DocumentName);
+        }
+
+        private async Task LoadData()
+        {
+            DocumentStorage = await _docManager.GetDocumentsAsync();
         }
     }
 }

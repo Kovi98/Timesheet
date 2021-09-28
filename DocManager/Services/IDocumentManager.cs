@@ -12,5 +12,7 @@ namespace Timesheet.DocManager.Services
         string GetContentType(ExportFormat format);
         Task<byte[]> GenerateContract(Person person, DocumentStorage defaultDocument = null);
         Task SaveAsync(DocumentStorage document);
+        Task<DocumentStorage> GetAsync(int id);
+        Task RemoveAsync(DocumentStorage document);
     }
 }

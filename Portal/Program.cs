@@ -7,9 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Portal.Areas.Identity;
 using Portal.Data;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using Timesheet.Entity.Data;
 using Timesheet.Entity.Entities;
@@ -20,11 +20,31 @@ namespace Portal
     {
         public async static Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+                .AddCommandLine(args)
+                .Build();
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateBootstrapLogger();
+            try
+            {
+                var host = CreateHostBuilder(args).Build();
 
-            await CreateDbIfNotExistsAsync(host);
+                await CreateDbIfNotExistsAsync(host);
 
-            host.Run();
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -32,6 +52,8 @@ namespace Portal
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseSerilog((context, configuration) => configuration
+                    .ReadFrom.Configuration(context.Configuration));
                 });
 
         private async static Task CreateDbIfNotExistsAsync(IHost host)
@@ -42,9 +64,10 @@ namespace Portal
                 try
                 {
                     var context = services.GetRequiredService<TimesheetContext>();
+                    DbInitializer.Initialize(context);
+
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    DbInitializer.Initialize(context);
                     await ContextSeed.SeedRolesAsync(userManager, roleManager);
                     await ContextSeed.SeedAdminAsync(userManager, roleManager);
                 }

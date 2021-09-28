@@ -70,12 +70,19 @@ namespace Timesheet.DocManager.Services
             }
             await _context.SaveChangesAsync();
         }
+        public async Task<DocumentStorage> GetAsync(int id)
+        {
+            return await _context.DocumentStorage.FindAsync(id);
+        }
+        public async Task RemoveAsync(DocumentStorage document)
+        {
+            _context.DocumentStorage.Remove(document);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public enum ExportFormat
     {
-        Docx//,
-        //Pdf,
-        //Rtf
+        Docx
     }
 }
