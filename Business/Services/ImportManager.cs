@@ -4,12 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Timesheet.Entity.Entities;
+using Timesheet.Common;
+using Timesheet.Common.Enums;
+using Timesheet.Common.Interfaces;
+using Timesheet.Common.Models;
+using Timesheet.Db;
 
-namespace Portal.Models
+namespace Timesheet.Business
 {
-    public class ImportManager
+    public class ImportManager : IImportManager
     {
         private TimesheetContext _context { get; set; }
         public ImportManager(TimesheetContext context)
@@ -35,7 +38,7 @@ namespace Portal.Models
 
                         for (int i = startRow + 1; i <= ws.Dimension.End.Row; i++)
                         {
-                            Timesheet.Entity.Entities.Timesheet timesheet = new Timesheet.Entity.Entities.Timesheet();
+                            var timesheet = new Common.Timesheet();
                             TimesheetImport timesheetImport = new TimesheetImport(timesheet);
                             timesheet.CreateTime = DateTime.Now;
                             string fullname = string.Empty;
@@ -105,7 +108,7 @@ namespace Portal.Models
                             }
                             if (!IsUnique(timesheet))
                                 timesheetImport.AddError(TimesheetImportError.TimesheetNotUnique);
-                            
+
                             timesheet.CalculateReward();
                             import.Add(timesheetImport);
                         }
@@ -116,7 +119,7 @@ namespace Portal.Models
             return import;
         }
 
-        private bool IsUnique (Timesheet.Entity.Entities.Timesheet timesheet)
+        private bool IsUnique(Common.Timesheet timesheet)
         {
             var ts = _context.Timesheet
                 .Include(x => x.Person)
