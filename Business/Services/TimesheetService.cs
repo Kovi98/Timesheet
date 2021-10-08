@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Timesheet.Entity.Entities;
-using Timesheet.Entity.Interfaces;
+using Timesheet.Common;
+using Timesheet.Db;
 
-namespace Timesheet.Entity.Services
+namespace Timesheet.Business
 {
-    public class TimesheetService : EntityServiceBase<Entities.Timesheet>, ITimesheetService
+    public class TimesheetService : EntityServiceBase<Common.Timesheet>, ITimesheetService
     {
         private readonly TimesheetContext _context;
         public TimesheetService(TimesheetContext context) : base(context)
@@ -25,7 +25,7 @@ namespace Timesheet.Entity.Services
                 .AnyAsync(x => x.Id == id);
         }
 
-        public override async Task<Entities.Timesheet> GetAsync(int id)
+        public override async Task<Common.Timesheet> GetAsync(int id)
         {
             return await _context.Timesheet
                 .Include(t => t.Job)
@@ -36,7 +36,7 @@ namespace Timesheet.Entity.Services
                 .Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public override async Task<List<Entities.Timesheet>> GetAsync(bool asNoTracking = true)
+        public override async Task<List<Common.Timesheet>> GetAsync(bool asNoTracking = true)
         {
             return asNoTracking
                 ? await _context.Timesheet
@@ -55,7 +55,7 @@ namespace Timesheet.Entity.Services
                     .ToListAsync();
         }
 
-        public async Task<List<Entities.Timesheet>> GetFreesAsync(bool asNoTracking = true)
+        public async Task<List<Common.Timesheet>> GetFreesAsync(bool asNoTracking = true)
         {
             return asNoTracking
                 ? (await _context.Timesheet

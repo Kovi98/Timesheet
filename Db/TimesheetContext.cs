@@ -1,12 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using Timesheet.Common;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
 // #nullable disable
 
-namespace Timesheet.Entity.Entities
+namespace Timesheet.Db
 {
     public partial class TimesheetContext : DbContext
     {
@@ -24,8 +24,9 @@ namespace Timesheet.Entity.Entities
         public virtual DbSet<Payment> Payment { get; set; }
         public virtual DbSet<Person> Person { get; set; }
         public virtual DbSet<Section> Section { get; set; }
-        public virtual DbSet<Timesheet> Timesheet { get; set; }
+        public virtual DbSet<Timesheet.Common.Timesheet> Timesheet { get; set; }
         public virtual DbSet<RewardSummary> RewardSummary { get; set; }
+        public virtual DbSet<DocumentStorage> DocumentStorage { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -75,7 +76,7 @@ namespace Timesheet.Entity.Entities
 
                 entity.Property(e => e.PaymentXml)
                     .HasColumnName("PaymentXML");
-                    //.HasColumnType("xml");
+                //.HasColumnType("xml");
 
                 entity.Property(e => e.RowVersion)
                     .IsRequired()
@@ -153,7 +154,7 @@ namespace Timesheet.Entity.Entities
                     .IsConcurrencyToken();
             });
 
-            modelBuilder.Entity<Timesheet>(entity =>
+            modelBuilder.Entity<Timesheet.Common.Timesheet>(entity =>
             {
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
@@ -204,6 +205,23 @@ namespace Timesheet.Entity.Entities
                     .WithMany()
                     .HasForeignKey(r => r.PaymentId);
                 //entity.HasMany(r => r.Timesheet).WithOne();
+            });
+            modelBuilder.Entity<DocumentStorage>(entity =>
+            {
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValue<DateTime>(DateTime.Now);
+
+                entity.Property(e => e.DocumentName).HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.RowVersion)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
             });
 
             OnModelCreatingPartial(modelBuilder);

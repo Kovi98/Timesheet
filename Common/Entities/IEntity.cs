@@ -1,4 +1,4 @@
-﻿namespace Timesheet.Entity.Interfaces
+﻿namespace Timesheet.Common
 {
     public interface IEntity
     {

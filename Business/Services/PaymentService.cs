@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Timesheet.Entity.Entities;
-using Timesheet.Entity.Interfaces;
+using Timesheet.Common;
+using Timesheet.Db;
 
-namespace Timesheet.Entity.Services
+namespace Timesheet.Business
 {
     public class PaymentService : EntityServiceBase<Payment>, IPaymentService
     {

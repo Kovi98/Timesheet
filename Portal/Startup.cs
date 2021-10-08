@@ -9,10 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Portal.Areas.Identity;
 using Portal.Data;
 using System;
-using Timesheet.DocManager.Entities;
-using Timesheet.DocManager.Services;
-using Timesheet.Entity.Entities;
-using Timesheet.Entity.Services;
+using Timesheet.Business.Extensions;
 
 namespace Portal
 {
@@ -32,24 +29,15 @@ namespace Portal
             {
                 options.DefaultRequestCulture = new RequestCulture("cs-CZ");
             });
-            //Dependency injection
-            #region DI
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Identity")));
-            services.AddDbContext<TimesheetContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("Timesheet")));
-            services.AddDbContext<DocumentContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("Document")));
-            #endregion
-            //Custom configs
-            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.CONFIG_SECTION_NAME));
-            //Custom services
-            services.AddScoped<IDocumentManager, DocumentManager>();
-            services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<ITimesheetService, TimesheetService>();
+
+            services.RegisterDatabase(Configuration);
+
+            services.RegisterConfigs(Configuration);
+            services.RegisterServices();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()

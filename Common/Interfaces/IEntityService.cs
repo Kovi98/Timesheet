@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Timesheet.Entity.Interfaces
+namespace Timesheet.Common
 {
     public interface IEntityService<T> where T : class
     {

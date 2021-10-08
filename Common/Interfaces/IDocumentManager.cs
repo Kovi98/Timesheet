@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Timesheet.DocManager.Entities;
-using Timesheet.Entity.Entities;
 
-namespace Timesheet.DocManager.Services
+namespace Timesheet.Common
 {
     public interface IDocumentManager
     {

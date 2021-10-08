@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Timesheet.DocManager.Entities;
-using Timesheet.Entity.Entities;
+using Timesheet.Common;
+using Timesheet.Db;
 
-namespace Timesheet.DocManager.Services
+namespace Timesheet.Business
 {
     public class DocumentManager : IDocumentManager
     {
-        private readonly DocumentContext _context;
+        private readonly TimesheetContext _context;
         public async Task<byte[]> GenerateContract(Person person, DocumentStorage defaultDocument = null)
         {
             if (defaultDocument == null) defaultDocument = await GetDefaultDocumentAsync();
@@ -34,19 +34,16 @@ namespace Timesheet.DocManager.Services
                 return streamResult.ToArray();
             }
         }
-        public DocumentManager(DocumentContext dbContext)
+        public DocumentManager(TimesheetContext dbContext)
         {
             _context = dbContext;
         }
         public string GetContentType(ExportFormat format)
         {
-            string result = format switch
+            return format switch
             {
-                ExportFormat.Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"//,
-                //ExportFormat.Pdf => "application/pdf",
-                //ExportFormat.Rtf => "text/richtext"
+                ExportFormat.Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             };
-            return result;
         }
         public async Task<DocumentStorage> GetDefaultDocumentAsync()
         {
@@ -79,10 +76,5 @@ namespace Timesheet.DocManager.Services
             _context.DocumentStorage.Remove(document);
             await _context.SaveChangesAsync();
         }
-    }
-
-    public enum ExportFormat
-    {
-        Docx
     }
 }

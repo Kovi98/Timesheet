@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Timesheet.Entity.Entities;
-using Timesheet.Entity.Interfaces;
+using Timesheet.Common;
+using Timesheet.Db;
 
-namespace Timesheet.Entity.Services
+namespace Timesheet.Business
 {
     public abstract class EntityServiceBase<T> : IEntityService<T> where T : class, IEntity
     {

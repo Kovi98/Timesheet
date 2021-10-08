@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Timesheet.Entity.Entities;
 
-namespace Timesheet.Entity.Interfaces
+namespace Timesheet.Common
 {
     public interface IPaymentService : IEntityService<Payment>
     {
