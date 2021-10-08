@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using Timesheet.Entity.Interfaces;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -8,9 +7,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Timesheet.Entity.Entities
 {
-    public partial class RewardSummary
+    public partial class RewardSummary : IEntity
     {
-        public Int64 Id { get; set; }
+        public int Id { get; set; }
         public int PersonId { get; set; }
         public decimal? Hours { get; set; }
         public decimal? Reward { get; set; }

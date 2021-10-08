@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Timesheet.DocManager.Models;
 
 namespace Portal.Areas.Timesheets.Pages
 {
@@ -20,7 +18,7 @@ namespace Portal.Areas.Timesheets.Pages
             _context = context;
         }
 
-        public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get;set; }
+        public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get; set; }
         [BindProperty]
         public Timesheet.Entity.Entities.Timesheet TimesheetDetail { get; set; }
         public bool IsEditable { get; set; }
@@ -129,7 +127,7 @@ namespace Portal.Areas.Timesheets.Pages
                 }
             }
 
-            return RedirectToPage("./Index", new { id = TimesheetDetail.Id , area = "Timesheets" });
+            return RedirectToPage("./Index", new { id = TimesheetDetail.Id, area = "Timesheets" });
         }
 
         /// <summary>

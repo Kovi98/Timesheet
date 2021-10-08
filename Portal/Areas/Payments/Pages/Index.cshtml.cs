@@ -2,25 +2,28 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Timesheet.Entity.Entities;
-using Timesheet.Entity.Services;
+using Timesheet.Entity.Interfaces;
 
 namespace Portal.Areas.Payments.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
         private readonly IPaymentService _paymentService;
+        private readonly ITimesheetService _timesheetService;
+        private readonly ILogger _logger;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, IPaymentService paymentService)
+        public IndexModel(IPaymentService paymentService, ILogger logger, ITimesheetService timesheetService)
         {
-            _context = context;
             _paymentService = paymentService;
+            _timesheetService = timesheetService;
+            _logger = logger;
         }
 
         public IList<Payment> Payment { get; set; }
@@ -34,11 +37,7 @@ namespace Portal.Areas.Payments.Pages
 
         public async Task OnGetAsync(int id)
         {
-            Payment = await _context.Payment
-                .Include(p => p.Timesheet)
-                .ThenInclude(p => p.Person)
-                .AsNoTracking()
-                .ToListAsync();
+            await LoadData();
             var payment = Payment.FirstOrDefault(t => t.Id == id);
             if (id > 0 && payment != null)
             {
@@ -49,45 +48,36 @@ namespace Portal.Areas.Payments.Pages
 
         public async Task OnGetNotPaidAsync()
         {
-            Payment = await _context.Payment
-                .Include(p => p.Timesheet)
-                .ThenInclude(p => p.Person)
-                .AsNoTracking()
-                .ToListAsync();
+            await LoadData();
             Payment = Payment.Where(p => !p.IsPaid).ToList();
             IsEditable = false;
         }
 
         public async Task OnGetEditAsync(int id)
         {
-            Payment = await _context.Payment
-                .Include(p => p.Timesheet)
-                .ThenInclude(p => p.Person)
-                .ToListAsync();
-            var payment = Payment.FirstOrDefault(t => t.Id == id);
+            await LoadData();
+            var payment = await _paymentService.GetAsync(id);
             if (id > 0)
             {
                 PaymentDetail = payment;
-                TimesheetsSelected = await _context.Timesheet.Where(x => x.PaymentId == id && x.PaymentId != null).Select(x => x.Id).ToArrayAsync();
+                TimesheetsSelected = payment.Timesheet.Select(x => x.Id).ToArray();
             }
             else
             {
                 PaymentDetail = null;
             }
             IsEditable = true;
-            var freeTimesheets = _context.Timesheet.Include(x => x.Person).Where(x => (x.PaymentId == 0 || x.PaymentId == null) || x.PaymentId == id);
+            var freeTimesheets = await _timesheetService.GetFreesAsync();
             Timesheets = new SelectList(freeTimesheets, "Id", "FriendlyName");
         }
 
         public async Task OnGetCreateFromTimesheetAsync(int[] ids)
         {
-            Payment = await _context.Payment
-                .Include(p => p.Timesheet)
-                .ToListAsync();
-            var freeTimesheets = _context.Timesheet.Include(x => x.Person).Where(x => (x.PaymentId == 0 || x.PaymentId == null) || ids.Any(y => y == x.Id));
+            await LoadData();
+            var freeTimesheets = await _timesheetService.GetFreesAsync();
             Timesheets = new SelectList(freeTimesheets, "Id", "FriendlyName");
             PaymentDetail = null;
-            TimesheetsSelected = await _context.Timesheet.Include(x => x.Payment).Where(x => ids.Any(y => y == x.Id)).Select(x => x.Id).ToArrayAsync();
+            TimesheetsSelected = freeTimesheets.Where(x => ids.Any(y => y == x.Id)).Select(x => x.Id).ToArray();
             IsEditable = true;
         }
 
@@ -97,11 +87,11 @@ namespace Portal.Areas.Payments.Pages
             {
                 return RedirectToPage("./Index", new { id = PaymentDetail?.Id, area = "Payments" });
             }
-            PaymentDetail.Timesheet = await _context.Timesheet.Where(x => TimesheetsSelected.Any(y => y == x.Id)).ToListAsync();
+            PaymentDetail.Timesheet = (await _timesheetService.GetAsync(false)).Where(x => TimesheetsSelected.Any(y => y == x.Id)).ToList();
 
             if (PaymentDetail.Id > 0)
             {
-                var oldTimesheets = (await _context.Payment.Include(x => x.Timesheet).FirstOrDefaultAsync(x => x.Id == PaymentDetail.Id)).Timesheet;
+                var oldTimesheets = (await _paymentService.GetAsync(PaymentDetail.Id))?.Timesheet;
                 var timesheetsToRemove = new List<Timesheet.Entity.Entities.Timesheet>();
                 foreach (var timesheet in oldTimesheets)
                 {
@@ -224,9 +214,13 @@ namespace Portal.Areas.Payments.Pages
 
             return new OkResult();
         }
-        private bool PaymentExists(int id)
+        private async Task<bool> PaymentExists(int id)
         {
-            return _context.Payment.Any(e => e.Id == id);
+            return await _paymentService.ExistsAsync(id);
+        }
+        private async Task LoadData()
+        {
+            Payment = await _paymentService.GetAsync();
         }
     }
 }

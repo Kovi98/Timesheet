@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using Timesheet.Entity.Interfaces;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace Timesheet.Entity.Entities
 {
-    public partial class Payment
+    public partial class Payment : IEntity
     {
         public Payment()
         {

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Timesheet.Entity.Interfaces;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -9,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Timesheet.Entity.Entities
 {
-    public partial class Timesheet
+    public partial class Timesheet : IEntity
     {
         public int Id { get; set; }
 
@@ -36,7 +35,7 @@ namespace Timesheet.Entity.Entities
         public DateTime? DateTimeTo { get; set; }
 
         [Required(ErrorMessage = "Název je povinný")]
-        [Display(Name="Text")]
+        [Display(Name = "Text")]
         [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string Name { get; set; }
 
