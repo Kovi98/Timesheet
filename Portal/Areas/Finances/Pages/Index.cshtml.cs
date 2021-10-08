@@ -1,43 +1,40 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using Timesheet.Common;
 
 namespace Portal.Areas.Finances.Pages
 {
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly IFinanceService _financeService;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(IFinanceService financeService)
         {
-            _context = context;
+            _financeService = financeService;
         }
 
-        public IList<Finance> Finance { get;set; }
+        public IList<Finance> Finance { get; set; }
         [BindProperty]
         public Finance FinanceDetail { get; set; }
         public bool IsEditable { get; set; }
 
         public async Task OnGetAsync()
         {
-            Finance = await _context.Finance.Include(x => x.Person).AsNoTracking().ToListAsync();
+            await LoadData();
             IsEditable = false;
         }
         public async Task OnGetEditAsync(int id)
         {
-            Finance = await _context.Finance.Include(x => x.Person).AsNoTracking().ToListAsync();
-            var finance = Finance.FirstOrDefault(t => t.Id == id);
+            await LoadData();
             if (id > 0)
             {
-                FinanceDetail = finance;
+                FinanceDetail = Finance.FirstOrDefault(t => t.Id == id);
             }
             else
             {
@@ -55,27 +52,16 @@ namespace Portal.Areas.Finances.Pages
                 return RedirectToPage("./Index", new { id = FinanceDetail?.Id, area = "Finances" });
             }
 
-            if (FinanceDetail.Id > 0)
-            {
-                _context.Attach(FinanceDetail).State = EntityState.Modified;
-            }
-            else
-            {
-                FinanceDetail.CreateTime = DateTime.Now;
-                _context.Finance.Add(FinanceDetail);
-            }
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _financeService.SaveAsync(FinanceDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                Finance = await _context.Finance.Include(x => x.Person).AsNoTracking().ToListAsync();
+                await LoadData();
                 if (FinanceDetail.Id > 0)
                 {
-                    var finance = Finance.FirstOrDefault(t => t.Id == FinanceDetail.Id);
-                    FinanceDetail = finance;
+                    FinanceDetail = Finance.FirstOrDefault(t => t.Id == FinanceDetail.Id);
                 }
                 else
                 {
@@ -100,7 +86,7 @@ namespace Portal.Areas.Finances.Pages
                 return NotFound();
             }
 
-            var financeToDelete = await _context.Finance.Include(x => x.Person).FirstOrDefaultAsync(x => x.Id == id);
+            var financeToDelete = await _financeService.GetAsync(id);
 
             if (financeToDelete.Person?.Count != 0)
             {
@@ -109,8 +95,7 @@ namespace Portal.Areas.Finances.Pages
 
             if (financeToDelete != null)
             {
-                _context.Finance.Remove(financeToDelete);
-                await _context.SaveChangesAsync();
+                await _financeService.RemoveAsync(financeToDelete);
             }
             else
             {
@@ -120,9 +105,9 @@ namespace Portal.Areas.Finances.Pages
             return new OkResult();
         }
 
-        private bool FinanceExists(int id)
+        private async Task LoadData()
         {
-            return _context.Finance.Any(e => e.Id == id);
+            Finance = await _financeService.GetAsync();
         }
     }
 }

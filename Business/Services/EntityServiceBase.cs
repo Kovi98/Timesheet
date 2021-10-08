@@ -8,7 +8,7 @@ namespace Timesheet.Business
 {
     public abstract class EntityServiceBase<T> : IEntityService<T> where T : class, IEntity
     {
-        private readonly TimesheetContext _context;
+        protected readonly TimesheetContext _context;
         public EntityServiceBase(TimesheetContext context)
         {
             _context = context;

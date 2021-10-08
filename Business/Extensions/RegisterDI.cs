@@ -18,6 +18,9 @@ namespace Timesheet.Business.Extensions
             services.AddScoped<IDocumentManager, DocumentManager>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ITimesheetService, TimesheetService>();
+            services.AddScoped<IJobService, JobService>();
+            services.AddScoped<ISectionService, SectionService>();
+            services.AddScoped<IFinanceService, FinanceService>();
             return services;
         }
         public static IServiceCollection RegisterDatabase(this IServiceCollection services, IConfiguration config)
