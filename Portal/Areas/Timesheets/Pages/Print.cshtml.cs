@@ -1,45 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using System.Threading.Tasks;
+using Timesheet.Common;
 
 namespace Portal.Pages.Timesheets
 {
     public class PrintModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly ITimesheetService _timesheetService;
 
-        public PrintModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public PrintModel(ITimesheetService timesheetService)
         {
-            _context = context;
+            _timesheetService = timesheetService;
         }
 
-        public Timesheet.Entity.Entities.Timesheet Timesheet { get; set; }
+        public Timesheet.Common.Timesheet Timesheet { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == 0)
+            if (!await _timesheetService.ExistsAsync(id))
             {
                 return NotFound();
             }
-
-            Timesheet = await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person)
-                .Include(t => t.Person.Section)
-                .Include(t => t.Person.PaidFrom)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (Timesheet == null)
-            {
-                return NotFound();
-            }
+            Timesheet = await _timesheetService.GetAsync(id);
             return Page();
         }
     }

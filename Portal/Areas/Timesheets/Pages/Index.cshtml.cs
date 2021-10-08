@@ -6,49 +6,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.Common;
 
 namespace Portal.Areas.Timesheets.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly ITimesheetService _timesheetService;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(ITimesheetService timesheetService)
         {
-            _context = context;
+            _timesheetService = timesheetService;
         }
 
-        public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get; set; }
+        public IList<Timesheet.Common.Timesheet> Timesheet { get; set; }
         [BindProperty]
-        public Timesheet.Entity.Entities.Timesheet TimesheetDetail { get; set; }
+        public Timesheet.Common.Timesheet TimesheetDetail { get; set; }
         public bool IsEditable { get; set; }
 
 
         public async Task OnGetNotPayedAsync()
         {
-            Timesheet = await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person)
-                .Include(t => t.Person.Section)
-                .Include(t => t.Person.PaidFrom)
-                .AsNoTracking()
-                .ToListAsync();
+            await LoadData();
             Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).ToList();
             IsEditable = false;
         }
 
         public async Task OnGetAsync(int id)
         {
-            Timesheet = await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person)
-                .Include(t => t.Person.Section)
-                .Include(t => t.Person.PaidFrom)
-                .AsNoTracking()
-                .ToListAsync();
-            var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
+            await LoadData();
+            var timesheet = await _timesheetService.GetAsync(id);
             if (id > 0 && timesheet != null)
             {
                 TimesheetDetail = timesheet;
@@ -58,14 +45,8 @@ namespace Portal.Areas.Timesheets.Pages
 
         public async Task OnGetEditAsync(int id)
         {
-            Timesheet = await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person)
-                .Include(t => t.Person.Section)
-                .Include(t => t.Person.PaidFrom)
-                .ToListAsync();
-            var timesheet = Timesheet.FirstOrDefault(t => t.Id == id);
+            LoadData();
+            var timesheet = await _timesheetService.GetAsync(id);
             if ((id > 0 && timesheet != null && !(timesheet.Payment?.IsPaid ?? false)) || (id == 0))
             {
                 TimesheetDetail = timesheet;
@@ -137,12 +118,12 @@ namespace Portal.Areas.Timesheets.Pages
         /// <returns>404 - NotFound / OkResult</returns>
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            if (id == 0)
+            if (!await _timesheetService.ExistsAsync(id))
             {
                 return NotFound();
             }
 
-            var timesheetToDelete = await _context.Timesheet.FindAsync(id);
+            var timesheetToDelete = await _timesheetService.GetAsync(id);
 
             if (timesheetToDelete != null && timesheetToDelete.PaymentId.HasValue && timesheetToDelete.PaymentId > 0)
             {
@@ -151,8 +132,7 @@ namespace Portal.Areas.Timesheets.Pages
 
             if (timesheetToDelete != null)
             {
-                _context.Timesheet.Remove(timesheetToDelete);
-                await _context.SaveChangesAsync();
+                await _timesheetService.RemoveAsync(timesheetToDelete);
             }
             else
             {
@@ -161,9 +141,9 @@ namespace Portal.Areas.Timesheets.Pages
 
             return new OkResult();
         }
-        private bool TimesheetExists(int id)
+        private async Task LoadData()
         {
-            return _context.Timesheet.Any(e => e.Id == id);
+            Timesheet = await _timesheetService.GetAsync();
         }
     }
 }

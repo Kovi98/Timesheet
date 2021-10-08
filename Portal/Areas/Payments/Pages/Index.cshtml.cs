@@ -8,8 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Timesheet.Entity.Entities;
-using Timesheet.Entity.Interfaces;
+using Timesheet.Common;
 
 namespace Portal.Areas.Payments.Pages
 {
@@ -94,7 +93,7 @@ namespace Portal.Areas.Payments.Pages
                 if (PaymentDetail.Id > 0)
                 {
                     var oldTimesheets = (await _paymentService.GetAsync(PaymentDetail.Id))?.Timesheet;
-                    var timesheetsToRemove = new List<Timesheet.Entity.Entities.Timesheet>();
+                    var timesheetsToRemove = new List<Timesheet.Common.Timesheet>();
                     foreach (var timesheet in oldTimesheets)
                     {
                         if (!PaymentDetail.Timesheet.Any(x => x.Id == timesheet.Id))

@@ -24,7 +24,7 @@ namespace Timesheet.Db
         public virtual DbSet<Payment> Payment { get; set; }
         public virtual DbSet<Person> Person { get; set; }
         public virtual DbSet<Section> Section { get; set; }
-        public virtual DbSet<Timesheet.Common.Timesheet> Timesheet { get; set; }
+        public virtual DbSet<Common.Timesheet> Timesheet { get; set; }
         public virtual DbSet<RewardSummary> RewardSummary { get; set; }
         public virtual DbSet<DocumentStorage> DocumentStorage { get; set; }
 
