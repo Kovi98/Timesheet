@@ -89,41 +89,39 @@ namespace Portal.Areas.Payments.Pages
             }
             PaymentDetail.Timesheet = (await _timesheetService.GetAsync(false)).Where(x => TimesheetsSelected.Any(y => y == x.Id)).ToList();
 
-            if (PaymentDetail.Id > 0)
-            {
-                var oldTimesheets = (await _paymentService.GetAsync(PaymentDetail.Id))?.Timesheet;
-                var timesheetsToRemove = new List<Timesheet.Entity.Entities.Timesheet>();
-                foreach (var timesheet in oldTimesheets)
-                {
-                    if (!PaymentDetail.Timesheet.Any(x => x.Id == timesheet.Id))
-                    {
-                        timesheetsToRemove.Add(timesheet);
-                    }
-                }
-                foreach (var timesheet in timesheetsToRemove)
-                {
-                    timesheet.Payment = null;
-                    _context.Attach(timesheet).State = EntityState.Modified;
-                }
-                foreach (var timesheet in PaymentDetail.Timesheet)
-                {
-                    timesheet.PaymentId = PaymentDetail.Id;
-                    _context.Attach(timesheet).State = EntityState.Modified;
-                }
-            }
-            else
-            {
-                PaymentDetail.CreateTime = DateTime.Now;
-                _context.Payment.Add(PaymentDetail);
-            }
-
             try
             {
-                await _context.SaveChangesAsync();
+                if (PaymentDetail.Id > 0)
+                {
+                    var oldTimesheets = (await _paymentService.GetAsync(PaymentDetail.Id))?.Timesheet;
+                    var timesheetsToRemove = new List<Timesheet.Entity.Entities.Timesheet>();
+                    foreach (var timesheet in oldTimesheets)
+                    {
+                        if (!PaymentDetail.Timesheet.Any(x => x.Id == timesheet.Id))
+                        {
+                            timesheetsToRemove.Add(timesheet);
+                        }
+                    }
+                    foreach (var timesheet in timesheetsToRemove)
+                    {
+                        timesheet.Payment = null;
+                        _timesheetService.SetModified(timesheet);
+                    }
+                    foreach (var timesheet in PaymentDetail.Timesheet)
+                    {
+                        timesheet.PaymentId = PaymentDetail.Id;
+                        _timesheetService.SetModified(timesheet);
+                    }
+                }
+                else
+                {
+                    PaymentDetail.CreateTime = DateTime.Now;
+                    await _paymentService.SaveAsync(PaymentDetail);
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PaymentExists(PaymentDetail.Id))
+                if (!await _paymentService.ExistsAsync(PaymentDetail.Id))
                 {
                     return NotFound();
                 }
@@ -138,24 +136,19 @@ namespace Portal.Areas.Payments.Pages
 
         public async Task<IActionResult> OnPostPayAsync(int id)
         {
-            if (id == 0)
+            if (!await _paymentService.ExistsAsync(id))
             {
                 return NotFound();
             }
 
-            var paymentToPay = await _context
-                .Payment
-                .Include(x => x.Timesheet)
-                .ThenInclude(x => x.Person)
-                .ThenInclude(x => x.PaidFrom)
-                .FirstAsync(x => x.Id == id);
+            var paymentToPay = await _paymentService.GetAsync(id);
 
             if (paymentToPay != null)
             {
                 try
                 {
                     if (_paymentService.TryPay(paymentToPay))
-                        await _context.SaveChangesAsync();
+                        await _paymentService.SaveAsync(paymentToPay);
                     else
                         return BadRequest();
                 }
@@ -174,7 +167,7 @@ namespace Portal.Areas.Payments.Pages
 
         public async Task<IActionResult> OnPostDownloadPayment(int id, string returnUrl = null)
         {
-            var payment = await _context.Payment.FindAsync(id);
+            var payment = await _paymentService.GetAsync(id);
             if (payment is null)
             {
                 return BadRequest();
@@ -190,12 +183,11 @@ namespace Portal.Areas.Payments.Pages
         /// <returns>404 - NotFound / OkResult</returns>
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            if (id == 0)
+            if (!await _paymentService.ExistsAsync(id))
             {
                 return NotFound();
             }
-
-            var paymentToDelete = await _context.Payment.FindAsync(id);
+            var paymentToDelete = await _paymentService.GetAsync(id);
 
             if (paymentToDelete.IsPaid)
             {
@@ -204,8 +196,7 @@ namespace Portal.Areas.Payments.Pages
 
             if (paymentToDelete != null)
             {
-                _context.Payment.Remove(paymentToDelete);
-                await _context.SaveChangesAsync();
+                await _paymentService.RemoveAsync(paymentToDelete);
             }
             else
             {
@@ -213,10 +204,6 @@ namespace Portal.Areas.Payments.Pages
             }
 
             return new OkResult();
-        }
-        private async Task<bool> PaymentExists(int id)
-        {
-            return await _paymentService.ExistsAsync(id);
         }
         private async Task LoadData()
         {
