@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Timesheet.Common;
 
 namespace Portal.Areas.Sections.Pages
 {
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly ISectionService _sectionService;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(ISectionService sectionService)
         {
-            _context = context;
+            _sectionService = sectionService;
         }
 
         public IList<Section> Section { get; set; }
@@ -27,12 +26,12 @@ namespace Portal.Areas.Sections.Pages
 
         public async Task OnGetAsync()
         {
-            Section = await _context.Section.Include(x => x.Person).AsNoTracking().ToListAsync();
+            await LoadData();
             IsEditable = false;
         }
         public async Task OnGetEditAsync(int id)
         {
-            Section = await _context.Section.Include(x => x.Person).ToListAsync();
+            await LoadData();
             var section = Section.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {
@@ -54,23 +53,13 @@ namespace Portal.Areas.Sections.Pages
                 return RedirectToPage("./Index", new { id = SectionDetail?.Id, area = "Sections" });
             }
 
-            if (SectionDetail.Id > 0)
-            {
-                _context.Attach(SectionDetail).State = EntityState.Modified;
-            }
-            else
-            {
-                SectionDetail.CreateTime = DateTime.Now;
-                _context.Section.Add(SectionDetail);
-            }
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _sectionService.SaveAsync(SectionDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                Section = await _context.Section.Include(x => x.Person).ToListAsync();
+                await LoadData();
                 if (SectionDetail.Id > 0)
                 {
                     var section = Section.FirstOrDefault(t => t.Id == SectionDetail.Id);
@@ -99,7 +88,7 @@ namespace Portal.Areas.Sections.Pages
                 return NotFound();
             }
 
-            var sectionToDelete = await _context.Section.Include(x => x.Person).FirstOrDefaultAsync(x => x.Id == id);
+            var sectionToDelete = await _sectionService.GetAsync(id);
 
             if (sectionToDelete?.Person?.Count != 0)
             {
@@ -108,8 +97,7 @@ namespace Portal.Areas.Sections.Pages
 
             if (sectionToDelete != null)
             {
-                _context.Section.Remove(sectionToDelete);
-                await _context.SaveChangesAsync();
+                await _sectionService.RemoveAsync(sectionToDelete);
             }
             else
             {
@@ -119,9 +107,9 @@ namespace Portal.Areas.Sections.Pages
             return new OkResult();
         }
 
-        private bool SectionExists(int id)
+        private async Task LoadData()
         {
-            return _context.Section.Any(e => e.Id == id);
+            Section = await _sectionService.GetAsync();
         }
     }
 }
