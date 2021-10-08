@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Timesheet.Entity.Entities;
+using Timesheet.Common;
+using Timesheet.Db;
 
 namespace Timesheet.Entity.Data
 {

@@ -11,8 +11,8 @@ using Serilog;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Timesheet.Db;
 using Timesheet.Entity.Data;
-using Timesheet.Entity.Entities;
 
 namespace Portal
 {
