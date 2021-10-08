@@ -13,11 +13,22 @@ namespace Timesheet.Business
         {
             _context = context;
         }
-        public abstract Task<bool> ExistsAsync(int id);
+        public virtual async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Set<T>().AnyAsync(x => x.Id == id);
+        }
 
-        public abstract Task<T> GetAsync(int id);
+        public virtual async Task<T> GetAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
 
-        public abstract Task<List<T>> GetAsync(bool asNoTracking = true);
+        public virtual async Task<List<T>> GetAsync(bool asNoTracking = true)
+        {
+            return asNoTracking
+                ? await _context.Set<T>().AsNoTracking().ToListAsync()
+                : await _context.Set<T>().ToListAsync();
+        }
 
         public async Task RemoveAsync(T entity)
         {

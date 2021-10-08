@@ -14,16 +14,6 @@ namespace Timesheet.Business
         {
             _context = context;
         }
-        public override async Task<bool> ExistsAsync(int id)
-        {
-            return await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person)
-                .Include(t => t.Person.Section)
-                .Include(t => t.Person.PaidFrom)
-                .AnyAsync(x => x.Id == id);
-        }
 
         public override async Task<Common.Timesheet> GetAsync(int id)
         {
@@ -58,22 +48,22 @@ namespace Timesheet.Business
         public async Task<List<Common.Timesheet>> GetFreesAsync(bool asNoTracking = true)
         {
             return asNoTracking
-                ? (await _context.Timesheet
+                ? await _context.Timesheet
                     .Include(t => t.Job)
                     .Include(t => t.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
                     .Where(x => (x.PaymentId == 0 || x.PaymentId == null))
-                    .AsNoTracking().ToListAsync())
-                : (await _context.Timesheet
+                    .AsNoTracking().ToListAsync()
+                : await _context.Timesheet
                     .Include(t => t.Job)
                     .Include(t => t.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
                     .Where(x => (x.PaymentId == 0 || x.PaymentId == null))
-                    .AsNoTracking().ToListAsync());
+                    .AsNoTracking().ToListAsync();
         }
     }
 }

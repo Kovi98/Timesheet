@@ -17,11 +17,6 @@ namespace Timesheet.Business
             _context = context;
         }
 
-        public override async Task<bool> ExistsAsync(int id)
-        {
-            return await _context.Payment.AnyAsync(x => x.Id == id);
-        }
-
         public override async Task<Payment> GetAsync(int id)
         {
             return await _context.Payment
