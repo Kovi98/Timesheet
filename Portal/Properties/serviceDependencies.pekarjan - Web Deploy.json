@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "mssql2": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/pekarjan/databases/Timesheet",
+      "type": "mssql.azure",
+      "connectionId": "Timesheet",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql3": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/pekarjan/databases/Timesheet",
+      "type": "mssql.azure",
+      "connectionId": "Identity",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql4": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/pekarjan/databases/Timesheet",
+      "type": "mssql.azure",
+      "connectionId": "Document",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}

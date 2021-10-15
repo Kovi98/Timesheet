@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,22 +59,30 @@ namespace Portal
 
         private async static Task CreateDbIfNotExistsAsync(IHost host)
         {
-            using var scope = host.Services.CreateScope();
-            var services = scope.ServiceProvider;
-            try
+            using (var scope = host.Services.CreateScope())
             {
-                var context = services.GetRequiredService<TimesheetContext>();
-                DbInitializer.Initialize(context);
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var contextTimesheet = services.GetRequiredService<TimesheetContext>();
+                    DbInitializer.InitializeAsync(contextTimesheet);
 
-                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                await ContextSeed.SeedRolesAsync(userManager, roleManager);
-                await ContextSeed.SeedAdminAsync(userManager, roleManager);
-            }
-            catch (Exception ex)
-            {
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "An error occurred creating the DB.");
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                    var contextIdentity = services.GetRequiredService<ApplicationDbContext>();
+                    contextIdentity.Database.EnsureCreated();
+                    await ContextSeed.SeedRolesAsync(userManager, roleManager);
+                    await ContextSeed.SeedAdminAsync(userManager, roleManager);
+
+                    var contextDoc = services.GetRequiredService<DocumentContext>();
+                    contextDoc.Database.EnsureCreated();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred creating the DB.");
+                }
             }
         }
     }
