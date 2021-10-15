@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Db.Migrations
 {
@@ -16,7 +16,7 @@ namespace Db.Migrations
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     DocumentSource = table.Column<byte[]>(nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2021, 10, 15, 5, 19, 29, 239, DateTimeKind.Local).AddTicks(3604)),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: false),
                     DocumentName = table.Column<string>(maxLength: 50, nullable: true),
                     IsDefault = table.Column<bool>(nullable: false)
                 },
@@ -206,6 +206,10 @@ namespace Db.Migrations
                 name: "IX_Timesheet_PersonId",
                 table: "Timesheet",
                 column: "PersonId");
+
+            migrationBuilder.Sql(@"
+                
+");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

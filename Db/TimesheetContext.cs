@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using Timesheet.Common;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
@@ -207,8 +206,7 @@ namespace Timesheet.Db
             modelBuilder.Entity<DocumentStorage>(entity =>
             {
                 entity.Property(e => e.CreateTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValue<DateTime>(DateTime.Now);
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.DocumentName).HasMaxLength(50);
 
