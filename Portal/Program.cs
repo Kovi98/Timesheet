@@ -58,27 +58,25 @@ namespace Portal
 
         private async static Task CreateDbIfNotExistsAsync(IHost host)
         {
-            using (var scope = host.Services.CreateScope())
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            try
             {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    var contextTimesheet = services.GetRequiredService<TimesheetContext>();
-                    await DbInitializer.InitializeAsync(contextTimesheet);
+                var contextTimesheet = services.GetRequiredService<TimesheetContext>();
+                await DbInitializer.InitializeAsync(contextTimesheet);
 
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var contextIdentity = services.GetRequiredService<ApplicationDbContext>();
+                await Initializer.InitializeAsync(contextIdentity);
 
-                    var contextIdentity = services.GetRequiredService<ApplicationDbContext>();
-                    contextIdentity.Database.EnsureCreated();
-                    await ContextSeed.SeedRolesAsync(userManager, roleManager);
-                    await ContextSeed.SeedAdminAsync(userManager, roleManager);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred creating the DB.");
-                }
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                await ContextSeed.SeedRolesAsync(userManager, roleManager);
+                await ContextSeed.SeedAdminAsync(userManager, roleManager);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred creating the DB.");
             }
         }
     }

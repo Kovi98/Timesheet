@@ -153,7 +153,7 @@ namespace Timesheet.Db
                     .IsConcurrencyToken();
             });
 
-            modelBuilder.Entity<Timesheet.Common.Timesheet>(entity =>
+            modelBuilder.Entity<Common.Timesheet>(entity =>
             {
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 

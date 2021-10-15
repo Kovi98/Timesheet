@@ -11,7 +11,7 @@ namespace Timesheet.Entity.Data
     {
         public static async Task InitializeAsync(TimesheetContext context)
         {
-            context.Database.EnsureCreated();
+            //context.Database.EnsureCreated();
             // Look for any migrations
             if (context.Database.GetPendingMigrations().Any())
                 await context.Database.MigrateAsync();
@@ -36,7 +36,7 @@ namespace Timesheet.Entity.Data
                 }
             }
 
-            
+
             context.SaveChanges();
         }
     }

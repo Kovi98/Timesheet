@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Timesheet.Common;
+using Timesheet.Common.Interfaces;
 using Timesheet.Db;
 
 namespace Timesheet.Business.Extensions
@@ -23,6 +24,7 @@ namespace Timesheet.Business.Extensions
             services.AddScoped<IFinanceService, FinanceService>();
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IRewardSummaryService, RewardSummaryService>();
+            services.AddScoped<IImportManager, ImportManager>();
             return services;
         }
         public static IServiceCollection RegisterDatabase(this IServiceCollection services, IConfiguration config)

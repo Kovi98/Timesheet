@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +15,11 @@ namespace Portal.Areas.Payments.Pages
     {
         private readonly IPaymentService _paymentService;
         private readonly ITimesheetService _timesheetService;
-        private readonly ILogger _logger;
 
-        public IndexModel(IPaymentService paymentService, ILogger logger, ITimesheetService timesheetService)
+        public IndexModel(IPaymentService paymentService, ITimesheetService timesheetService)
         {
             _paymentService = paymentService;
             _timesheetService = timesheetService;
-            _logger = logger;
         }
 
         public IList<Payment> Payment { get; set; }

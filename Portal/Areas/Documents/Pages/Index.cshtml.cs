@@ -18,10 +18,10 @@ namespace Portal.Areas.Documents.Pages
     public class IndexModel : PageModel
     {
         private readonly IDocumentManager _docManager;
-        private readonly ILogger _logger;
+        private readonly ILogger<IDocumentManager> _logger;
         private readonly string _errorText = $"Error in {typeof(IndexModel).Namespace} : {typeof(IndexModel).FullName}";
 
-        public IndexModel(IDocumentManager documentManager, ILogger logger)
+        public IndexModel(IDocumentManager documentManager, ILogger<IDocumentManager> logger)
         {
             _docManager = documentManager;
             _logger = logger;
