@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Novacode;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,8 +43,16 @@ namespace Timesheet.Business
         {
             return format switch
             {
-                ExportFormat.Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ExportFormat.Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                _ => string.Empty
+                //ExportFormat.Pdf => "application/pdf",
+                //ExportFormat.Rtf => "text/richtext"
             };
+        }
+        public string GetContentType(string format)
+        {
+            ExportFormat export = Enum.TryParse<ExportFormat>(format, out var result) ? result : default;
+            return GetContentType(export);
         }
         public async Task<DocumentStorage> GetDefaultDocumentAsync()
         {

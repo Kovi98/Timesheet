@@ -2,24 +2,29 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Common;
-using Timesheet.Db;
 
 namespace Portal.Areas.People.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly TimesheetContext _context;
+        private readonly IPersonService _personService;
         private readonly IDocumentManager _documentManager;
 
-        public IndexModel(TimesheetContext context, IDocumentManager docManager)
+        private readonly IJobService _jobService;
+        private readonly IFinanceService _financeService;
+        private readonly ISectionService _sectionService;
+
+        public IndexModel(IPersonService personService, IDocumentManager docManager, IJobService jobService, IFinanceService financeService, ISectionService sectionService)
         {
-            _context = context;
+            _personService = personService;
             _documentManager = docManager;
+            _jobService = jobService;
+            _financeService = financeService;
+            _sectionService = sectionService;
         }
 
         public IList<Person> Person { get; set; }
@@ -34,42 +39,15 @@ namespace Portal.Areas.People.Pages
 
         public async Task OnGetAsync(int id)
         {
-            Person = await _context.Person
-                .Include(p => p.Job)
-                .Include(p => p.PaidFrom)
-                .Include(p => p.Section)
-                .Include(p => p.Timesheet)
-                .AsNoTracking().ToListAsync();
-            var person = Person.FirstOrDefault(t => t.Id == id);
-            if (id > 0 && person != null)
-            {
-                PersonDetail = person;
-            }
-            ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
-            ViewData["PaidFromId"] = new SelectList(_context.Finance, "Id", "Name");
-            ViewData["SectionId"] = new SelectList(_context.Section, "Id", "Name");
+            await LoadData();
+            PersonDetail = await _personService.GetAsync(id);
             IsEditable = false;
         }
 
         public async Task OnGetEditAsync(int id)
         {
-            Person = await _context.Person
-                .Include(p => p.Job)
-                .Include(p => p.PaidFrom)
-                .Include(p => p.Section)
-                .Include(p => p.Timesheet).ToListAsync();
-            var person = Person.FirstOrDefault(t => t.Id == id);
-            if (id > 0)
-            {
-                PersonDetail = person;
-            }
-            else
-            {
-                PersonDetail = null;
-            }
-            ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
-            ViewData["PaidFromId"] = new SelectList(_context.Finance, "Id", "Name");
-            ViewData["SectionId"] = new SelectList(_context.Section, "Id", "Name");
+            await LoadData();
+            PersonDetail = await _personService.GetAsync(id);
             IsEditable = true;
         }
 
@@ -77,26 +55,17 @@ namespace Portal.Areas.People.Pages
         {
             if (!ModelState.IsValid)
             {
+                await LoadData();
                 return Page();
-            }
-
-            if (PersonDetail.Id > 0)
-            {
-                _context.Attach(PersonDetail).State = EntityState.Modified;
-            }
-            else
-            {
-                PersonDetail.CreateTime = DateTime.Now;
-                _context.Person.Add(PersonDetail);
             }
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _personService.SaveAsync(PersonDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PersonExists(PersonDetail.Id))
+                if (!await _personService.ExistsAsync(PersonDetail.Id))
                 {
                     return NotFound();
                 }
@@ -120,17 +89,17 @@ namespace Portal.Areas.People.Pages
             {
                 return NotFound();
             }
-            if (_context.Timesheet.Any(x => x.PersonId == id))
+
+            var personToDelete = await _personService.GetAsync(id);
+
+            if (personToDelete.Timesheet.Any())
             {
                 return BadRequest("Nelze smazat trenéra s existujícím výkazem.");
             }
 
-            var personToDelete = await _context.Person.FindAsync(id);
-
             if (personToDelete != null)
             {
-                _context.Person.Remove(personToDelete);
-                await _context.SaveChangesAsync();
+                await _personService.RemoveAsync(personToDelete);
             }
             else
             {
@@ -142,7 +111,7 @@ namespace Portal.Areas.People.Pages
 
         public async Task<IActionResult> OnPostDownloadContract(int id)
         {
-            string format = Format ?? "DOCX";
+            string format = Format ?? "Docx";
             var defaultDocument = await _documentManager.GetDefaultDocumentAsync();
 
             if (defaultDocument is null)
@@ -150,17 +119,20 @@ namespace Portal.Areas.People.Pages
                 ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
                 return Page();
             }
-            var person = await _context.Person.Include(x => x.Job).FirstAsync(x => x.Id == id);
+            var person = await _personService.GetAsync(id);
 
             if (person is null || defaultDocument is null)
                 return NotFound();
             var document = await _documentManager.GenerateContract(person, defaultDocument);
-            return File(document, documentManager.ContentType, string.Format("export.{0}", documentManager.Format.ToString()));
+            return File(document, _documentManager.GetContentType(format), $"export.{format}");
         }
 
-        private bool PersonExists(int id)
+        private async Task LoadData()
         {
-            return _context.Person.Any(e => e.Id == id);
+            Person = await _personService.GetAsync();
+            ViewData["JobId"] = new SelectList(await _jobService.GetAsync(), "Id", "Name");
+            ViewData["PaidFromId"] = new SelectList(await _financeService.GetAsync(), "Id", "Name");
+            ViewData["SectionId"] = new SelectList(await _sectionService.GetAsync(), "Id", "Name");
         }
     }
 }

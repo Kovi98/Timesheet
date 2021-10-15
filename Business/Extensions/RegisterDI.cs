@@ -21,6 +21,8 @@ namespace Timesheet.Business.Extensions
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<ISectionService, SectionService>();
             services.AddScoped<IFinanceService, FinanceService>();
+            services.AddScoped<IPersonService, PersonService>();
+            services.AddScoped<IRewardSummaryService, RewardSummaryService>();
             return services;
         }
         public static IServiceCollection RegisterDatabase(this IServiceCollection services, IConfiguration config)

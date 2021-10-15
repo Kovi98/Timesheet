@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,7 +64,7 @@ namespace Portal
                 try
                 {
                     var contextTimesheet = services.GetRequiredService<TimesheetContext>();
-                    DbInitializer.InitializeAsync(contextTimesheet);
+                    await DbInitializer.InitializeAsync(contextTimesheet);
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -74,9 +73,6 @@ namespace Portal
                     contextIdentity.Database.EnsureCreated();
                     await ContextSeed.SeedRolesAsync(userManager, roleManager);
                     await ContextSeed.SeedAdminAsync(userManager, roleManager);
-
-                    var contextDoc = services.GetRequiredService<DocumentContext>();
-                    contextDoc.Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {

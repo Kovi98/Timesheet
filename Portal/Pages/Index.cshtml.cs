@@ -1,47 +1,49 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Timesheet.Common;
 
 namespace Portal.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly ITimesheetService _timesheetService;
+        private readonly IPersonService _personService;
+        private readonly IRewardSummaryService _rewardSummaryService;
+        private readonly IPaymentService _paymentService;
 
-        public IndexModel(ILogger<IndexModel> logger, Timesheet.Entity.Entities.TimesheetContext context)
+        public IndexModel(ILogger<IndexModel> logger, ITimesheetService timesheetService, IPersonService personService, IRewardSummaryService rewardSummaryService, IPaymentService paymentService)
         {
             _logger = logger;
-            _context = context;
+            _timesheetService = timesheetService;
+            _personService = personService;
+            _rewardSummaryService = rewardSummaryService;
+            _paymentService = paymentService;
         }
 
         [BindProperty]
-        public IList<Timesheet.Entity.Entities.Timesheet> Timesheet { get; set; }
+        public IList<Timesheet.Common.Timesheet> Timesheet { get; set; }
         [BindProperty]
-        public IList<Timesheet.Entity.Entities.Person> Person { get; set; }
+        public IList<Person> Person { get; set; }
         [BindProperty]
-        public IList<Timesheet.Entity.Entities.RewardSummary> RewardSummary { get; set; }
+        public IList<RewardSummary> RewardSummary { get; set; }
         [BindProperty]
-        public IList<Timesheet.Entity.Entities.Payment> Payment { get; set; }
+        public IList<Payment> Payment { get; set; }
 
         public async Task OnGetAsync()
         {
-            Timesheet = await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.Payment)
-                .Include(t => t.Person).ToListAsync();
-            Person = await _context.Person
-                .Include(p => p.Job)
-                .Include(p => p.PaidFrom)
-                .Include(p => p.Section).ToListAsync();
-            Payment = await _context.Payment
-                .Include(p => p.Timesheet).ToListAsync();
-            //RewardSummary = await _context.RewardSummary.ToListAsync();
+            await LoadData();
+        }
+
+        public async Task LoadData()
+        {
+            Timesheet = await _timesheetService.GetAsync();
+            Person = await _personService.GetAsync();
+            Payment = await _paymentService.GetAsync();
+            RewardSummary = await _rewardSummaryService.GetAsync();
         }
     }
 }

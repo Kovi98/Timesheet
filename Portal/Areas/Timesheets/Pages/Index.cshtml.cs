@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Common;
 
@@ -14,9 +13,16 @@ namespace Portal.Areas.Timesheets.Pages
     {
         private readonly ITimesheetService _timesheetService;
 
-        public IndexModel(ITimesheetService timesheetService)
+        private readonly IJobService _jobService;
+        private readonly IFinanceService _financeService;
+        private readonly IPersonService _personService;
+
+        public IndexModel(ITimesheetService timesheetService, IJobService jobService, IFinanceService financeService, IPersonService personService)
         {
             _timesheetService = timesheetService;
+            _jobService = jobService;
+            _financeService = financeService;
+            _personService = personService;
         }
 
         public IList<Timesheet.Common.Timesheet> Timesheet { get; set; }
@@ -28,31 +34,24 @@ namespace Portal.Areas.Timesheets.Pages
         public async Task OnGetNotPayedAsync()
         {
             await LoadData();
-            Timesheet = Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).ToList();
+            Timesheet = await _timesheetService.GetFreesAsync();
             IsEditable = false;
         }
 
         public async Task OnGetAsync(int id)
         {
             await LoadData();
-            var timesheet = await _timesheetService.GetAsync(id);
-            if (id > 0 && timesheet != null)
-            {
-                TimesheetDetail = timesheet;
-            }
+            TimesheetDetail = await _timesheetService.GetAsync(id);
             IsEditable = false;
         }
 
         public async Task OnGetEditAsync(int id)
         {
-            LoadData();
+            await LoadData();
             var timesheet = await _timesheetService.GetAsync(id);
             if ((id > 0 && timesheet != null && !(timesheet.Payment?.IsPaid ?? false)) || (id == 0))
             {
                 TimesheetDetail = timesheet;
-                ViewData["JobId"] = new SelectList(_context.Job, "Id", "Name");
-                ViewData["PaymentId"] = new SelectList(_context.Payment, "Id", "PaymentDateTime");
-                ViewData["PersonId"] = new SelectList(_context.Person.Where(x => x.IsActive), "Id", "FullName");
                 IsEditable = true;
             }
             else
@@ -72,8 +71,8 @@ namespace Portal.Areas.Timesheets.Pages
             if (!TimesheetDetail.Hours.HasValue && TimesheetDetail.DateTimeFrom != null && TimesheetDetail.DateTimeTo != null)
                 TimesheetDetail.Hours = (decimal)(TimesheetDetail.DateTimeTo - TimesheetDetail.DateTimeFrom)?.TotalHours;
             if (!TimesheetDetail.Reward.HasValue)
-                TimesheetDetail.Reward = TimesheetDetail.Hours * (_context.Job.Find(TimesheetDetail.JobId).HourReward);
-            if (_context.Person.Find(TimesheetDetail.PersonId).HasTax)
+                TimesheetDetail.Reward = TimesheetDetail.Hours * (TimesheetDetail.Job.HourReward);
+            if (TimesheetDetail.Person.HasTax)
             {
                 TimesheetDetail.Tax = Math.Truncate((TimesheetDetail.Reward ?? 0) * (decimal)0.15);
             }
@@ -82,23 +81,13 @@ namespace Portal.Areas.Timesheets.Pages
                 TimesheetDetail.Tax = 0;
             }
 
-            if (TimesheetDetail.Id > 0)
-            {
-                _context.Attach(TimesheetDetail).State = EntityState.Modified;
-            }
-            else
-            {
-                TimesheetDetail.CreateTime = DateTime.Now;
-                _context.Timesheet.Add(TimesheetDetail);
-            }
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _timesheetService.SaveAsync(TimesheetDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TimesheetExists(TimesheetDetail.Id))
+                if (!await _timesheetService.ExistsAsync(TimesheetDetail.Id))
                 {
                     return NotFound();
                 }
@@ -144,6 +133,9 @@ namespace Portal.Areas.Timesheets.Pages
         private async Task LoadData()
         {
             Timesheet = await _timesheetService.GetAsync();
+            ViewData["JobId"] = new SelectList(await _jobService.GetAsync(), "Id", "Name");
+            ViewData["PaidFromId"] = new SelectList(await _financeService.GetAsync(), "Id", "Name");
+            ViewData["PersonId"] = new SelectList(await _personService.GetActiveAsync(), "Id", "FullName");
         }
     }
 }

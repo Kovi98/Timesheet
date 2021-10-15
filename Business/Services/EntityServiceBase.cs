@@ -6,28 +6,10 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public abstract class EntityServiceBase<T> : IEntityService<T> where T : class, IEntity
+    public abstract class EntityServiceBase<T> : EntityReadonlyServiceBase<T>, IEntityService<T> where T : class, IEntity
     {
-        protected readonly TimesheetContext _context;
-        public EntityServiceBase(TimesheetContext context)
+        public EntityServiceBase(TimesheetContext context) : base(context)
         {
-            _context = context;
-        }
-        public virtual async Task<bool> ExistsAsync(int id)
-        {
-            return await _context.Set<T>().AnyAsync(x => x.Id == id);
-        }
-
-        public virtual async Task<T> GetAsync(int id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
-
-        public virtual async Task<List<T>> GetAsync(bool asNoTracking = true)
-        {
-            return asNoTracking
-                ? await _context.Set<T>().AsNoTracking().ToListAsync()
-                : await _context.Set<T>().ToListAsync();
         }
 
         public async Task RemoveAsync(T entity)
@@ -52,6 +34,30 @@ namespace Timesheet.Business
         public void SetModified(T entity)
         {
             _context.Entry<T>(entity).State = EntityState.Modified;
+        }
+    }
+    public abstract class EntityReadonlyServiceBase<T> : IEntityReadonlyService<T> where T : class, IEntity
+    {
+        protected readonly TimesheetContext _context;
+        public EntityReadonlyServiceBase(TimesheetContext context)
+        {
+            _context = context;
+        }
+        public virtual async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Set<T>().AnyAsync(x => x.Id == id);
+        }
+
+        public virtual async Task<T> GetAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        public virtual async Task<List<T>> GetAsync(bool asNoTracking = true)
+        {
+            return asNoTracking
+                ? await _context.Set<T>().AsNoTracking().ToListAsync()
+                : await _context.Set<T>().ToListAsync();
         }
     }
 }
