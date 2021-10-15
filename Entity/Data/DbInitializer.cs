@@ -1,16 +1,21 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Timesheet.Entity.Entities;
 
 namespace Timesheet.Entity.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(TimesheetContext context)
+        public static async Task InitializeAsync(TimesheetContext context)
         {
             context.Database.EnsureCreated();
+            // Look for any migrations
+            if (context.Database.GetPendingMigrations().Any())
+                await context.Database.MigrateAsync();
 
             // Look for any jobs.
             if (context.Job.Any())
