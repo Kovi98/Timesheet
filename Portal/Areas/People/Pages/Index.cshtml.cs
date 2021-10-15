@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
-using Timesheet.DocManager.Models;
-using Timesheet.DocManager.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Timesheet.Common;
+using Timesheet.Db;
 
 namespace Portal.Areas.People.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
-        private readonly DocumentContext _docContext;
+        private readonly TimesheetContext _context;
+        private readonly IDocumentManager _documentManager;
 
-        public IndexModel(Timesheet.Entity.Entities.TimesheetContext context, DocumentContext docContext)
+        public IndexModel(TimesheetContext context, IDocumentManager docManager)
         {
             _context = context;
-            _docContext = docContext;
+            _documentManager = docManager;
         }
 
-        public IList<Person> Person { get;set; }
+        public IList<Person> Person { get; set; }
 
         [BindProperty]
         public Person PersonDetail { get; set; }
@@ -145,8 +143,8 @@ namespace Portal.Areas.People.Pages
         public async Task<IActionResult> OnPostDownloadContract(int id)
         {
             string format = Format ?? "DOCX";
-            var documentManager = new DocumentManager(format);
-            var defaultDocument = await _docContext.DocumentStorage.Where(x => x.IsDefault).FirstOrDefaultAsync();
+            var defaultDocument = await _documentManager.GetDefaultDocumentAsync();
+
             if (defaultDocument is null)
             {
                 ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
@@ -156,8 +154,7 @@ namespace Portal.Areas.People.Pages
 
             if (person is null || defaultDocument is null)
                 return NotFound();
-            var document = documentManager.GetContract(person, defaultDocument);
-
+            var document = await _documentManager.GenerateContract(person, defaultDocument);
             return File(document, documentManager.ContentType, string.Format("export.{0}", documentManager.Format.ToString()));
         }
 

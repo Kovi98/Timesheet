@@ -1,24 +1,23 @@
-using System;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Timesheet.Entity.Entities;
+using Timesheet.Common;
+using Timesheet.Db;
 
 namespace Portal.Areas.RewardSummaries.Pages
 {
     public class PrintModel : PageModel
     {
-        private readonly Timesheet.Entity.Entities.TimesheetContext _context;
+        private readonly TimesheetContext _context;
 
-        public PrintModel(Timesheet.Entity.Entities.TimesheetContext context)
+        public PrintModel(TimesheetContext context)
         {
             _context = context;
         }
 
-        public List<Timesheet.Entity.Entities.Timesheet> Timesheets { get; set; }
+        public List<Timesheet.Common.Timesheet> Timesheets { get; set; }
         public RewardSummary RewardSummaryDetail { get; set; }
 
         public async Task OnGetAsync(int year, int month, int personId)

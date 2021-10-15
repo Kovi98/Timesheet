@@ -10,8 +10,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using Timesheet.DocManager.Entities;
-using Timesheet.DocManager.Services;
+using Timesheet.Common;
 
 namespace Portal.Areas.Documents.Pages
 {
