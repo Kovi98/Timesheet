@@ -30,6 +30,7 @@ namespace Portal
                 options.DefaultRequestCulture = new RequestCulture("cs-CZ");
             });
 
+            //Identity
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Identity")));
@@ -50,7 +51,6 @@ namespace Portal
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
 
-            //Konfigurace IDENTITY - TODO dodìlat
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -62,7 +62,7 @@ namespace Portal
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
@@ -71,7 +71,6 @@ namespace Portal
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
 
-                //Potvrzení účtu
                 options.SignIn.RequireConfirmedEmail = false;
             });
 
@@ -79,7 +78,7 @@ namespace Portal
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
