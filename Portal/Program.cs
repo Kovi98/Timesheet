@@ -64,10 +64,26 @@ namespace Portal
             {
                 var contextTimesheet = services.GetRequiredService<TimesheetContext>();
                 await DbInitializer.InitializeAsync(contextTimesheet);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred creating the DB.");
+            }
 
+            try
+            {
                 var contextIdentity = services.GetRequiredService<ApplicationDbContext>();
                 await Initializer.InitializeAsync(contextIdentity);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred creating the DB.");
+            }
 
+            try
+            {
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 await ContextSeed.SeedRolesAsync(userManager, roleManager);

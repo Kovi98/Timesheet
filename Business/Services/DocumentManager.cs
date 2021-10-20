@@ -72,8 +72,16 @@ namespace Timesheet.Business
             }
             else
             {
+                document.CreateTime = DateTime.Now;
                 _context.DocumentStorage.Add(document);
             }
+
+            if (document.IsDefault && _context.DocumentStorage.Any(x => x.Id != document.Id && x.IsDefault))
+            {
+                var oldDefault = _context.DocumentStorage.FirstOrDefault(x => x.IsDefault);
+                oldDefault.IsDefault = false;
+            }
+
             await _context.SaveChangesAsync();
         }
         public async Task<DocumentStorage> GetAsync(int id)

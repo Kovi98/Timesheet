@@ -71,20 +71,14 @@ namespace Portal.Areas.Documents.Pages
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    await LoadData();
-                    return Page();
-                }
-
                 if (DocumentUpload != null && DocumentUpload.Length > 0 && DocumentUpload.ContentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
                 {
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        DocumentUpload.CopyTo(ms);
-                        DocumentStorageDetail.DocumentSource = ms.ToArray();
-                    }
+                    using MemoryStream ms = new MemoryStream();
+                    DocumentUpload.CopyTo(ms);
+                    DocumentStorageDetail.DocumentSource = ms.ToArray();
+                    DocumentStorageDetail.DocumentName = DocumentUpload.FileName;
                 }
+
                 await _docManager.SaveAsync(DocumentStorageDetail);
             }
             catch (DbUpdateConcurrencyException)
