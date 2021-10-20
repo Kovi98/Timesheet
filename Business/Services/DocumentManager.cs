@@ -16,6 +16,7 @@ namespace Timesheet.Business
         public async Task<byte[]> GenerateContract(Person person, DocumentStorage defaultDocument = null)
         {
             if (defaultDocument == null) defaultDocument = await GetDefaultDocumentAsync();
+            if (defaultDocument == null) return null;
             using (MemoryStream streamResult = new MemoryStream())
             {
                 using (MemoryStream streamLoad = new MemoryStream(defaultDocument.DocumentSource))

@@ -114,7 +114,7 @@ namespace Portal.Areas.People.Pages
             string format = Format ?? "Docx";
             var defaultDocument = await _documentManager.GetDefaultDocumentAsync();
 
-            if (defaultDocument is null)
+            if (defaultDocument == null)
             {
                 ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
                 return Page();
