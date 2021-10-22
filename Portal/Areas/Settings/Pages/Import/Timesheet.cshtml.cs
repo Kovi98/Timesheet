@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +20,7 @@ namespace Portal.Areas.Settings.Pages.Import
     public class TimesheetModel : PageModel
     {
         private readonly IImportManager _importManager;
+        private readonly ILogger<IImportManager> _logger;
         [BindProperty]
         [Required(ErrorMessage = "Soubor je povinný")]
         [DisplayName("Vložit excel...")]
@@ -32,9 +35,10 @@ namespace Portal.Areas.Settings.Pages.Import
         public bool OverrideErrors { get; set; }
 
 
-        public TimesheetModel(IImportManager importManager)
+        public TimesheetModel(IImportManager importManager, ILogger<IImportManager> logger)
         {
             _importManager = importManager;
+            _logger = logger;
         }
 
         public void OnGet()
@@ -69,8 +73,9 @@ namespace Portal.Areas.Settings.Pages.Import
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 });
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError(e, "Pøi importu nastala chyba");
                 ModelState.AddModelError("Error", "Pøi naèítání dat nastala chyba.");
                 return Page();
             }
@@ -85,8 +90,9 @@ namespace Portal.Areas.Settings.Pages.Import
                 await _importManager.Import(TimesheetImport, OverrideErrors);
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError(e, "Pøi importu nastala chyba");
                 ModelState.AddModelError("Error", "Záznamy se nepodaøilo uložit.");
                 return Page();
             }

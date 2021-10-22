@@ -71,7 +71,7 @@ namespace Timesheet.Business
                                 _context.Attach(person).State = EntityState.Detached;
                             if (person == null)
                                 timesheetImport.AddError(TimesheetImportError.PersonUndefined);
-                            timesheet.Person = person ?? new Person { Name = firstname, Surname = lastname, CreateTime = DateTime.Now, JobId = 1, PaidFromId = _context.Finance.Select(x => x.Id).First(), SectionId = _context.Section.Select(x => x.Id).First() };
+                            timesheet.Person = person ?? new Person { Name = firstname, Surname = lastname, CreateTime = DateTime.Now, JobId = 1, PaidFromId = _context.Finance.Select(x => x.Id).FirstOrDefault(), SectionId = _context.Section.Select(x => x.Id).FirstOrDefault() };
                             timesheet.PersonId = person?.Id ?? 0;
 
                             foreach (var col in mappedColumns)

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Timesheet.Common;
 using Timesheet.Db;
@@ -36,20 +34,6 @@ namespace Timesheet.Entity.Data
                 {
                     context.Job.Add(j);
                 }
-            }
-
-            //Check default document
-            if (!context.DocumentStorage.Any(x => x.IsDefault))
-            {
-                string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\default_template.docx");
-                context.DocumentStorage.Add(new DocumentStorage()
-                {
-                    Name = "Základní šablona smlouvy",
-                    IsDefault = true,
-                    DocumentName = "default_template.docx",
-                    DocumentSource = File.ReadAllBytes(path),
-                    CreateTime = DateTime.Now
-                });
             }
 
             context.SaveChanges();
