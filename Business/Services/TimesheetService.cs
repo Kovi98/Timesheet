@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,11 @@ namespace Timesheet.Business
     public class TimesheetService : EntityServiceBase<Common.Timesheet>, ITimesheetService
     {
         private readonly TimesheetContext _context;
-        public TimesheetService(TimesheetContext context) : base(context)
+        private readonly PaymentOptions _options;
+        public TimesheetService(IOptions<PaymentOptions> options, TimesheetContext context) : base(context)
         {
             _context = context;
+            _options = options.Value;
         }
 
         public override async Task<Common.Timesheet> GetAsync(int id)
@@ -75,7 +78,7 @@ namespace Timesheet.Business
                 entity.Reward = entity.Hours * (_context.Job.Find(entity.JobId)?.HourReward);
             if (_context.Person.Find(entity.PersonId)?.HasTax ?? false)
             {
-                entity.Tax = Math.Truncate((entity.Reward ?? 0) * (decimal)0.15);
+                entity.Tax = Math.Truncate((entity.Reward ?? 0) * _options.Tax ?? 0);
             }
             else
             {

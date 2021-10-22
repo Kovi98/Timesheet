@@ -46,5 +46,6 @@ namespace Timesheet.Business
     {
         public const string CONFIG_SECTION_NAME = "Payments";
         public string BankAccount { get; set; }
+        public decimal? Tax { get; set; }
     }
 }
