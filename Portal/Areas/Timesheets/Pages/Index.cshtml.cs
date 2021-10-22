@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Timesheet.Common;
@@ -66,19 +65,6 @@ namespace Portal.Areas.Timesheets.Pages
             if (!ModelState.IsValid || (TimesheetDetail?.Payment?.IsPaid ?? false))
             {
                 return RedirectToPage("./Index", new { id = TimesheetDetail?.Id, area = "Timesheets" });
-            }
-
-            if (!TimesheetDetail.Hours.HasValue && TimesheetDetail.DateTimeFrom != null && TimesheetDetail.DateTimeTo != null)
-                TimesheetDetail.Hours = (decimal)(TimesheetDetail.DateTimeTo - TimesheetDetail.DateTimeFrom)?.TotalHours;
-            if (!TimesheetDetail.Reward.HasValue)
-                TimesheetDetail.Reward = TimesheetDetail.Hours * (TimesheetDetail.Job.HourReward);
-            if (TimesheetDetail.Person.HasTax)
-            {
-                TimesheetDetail.Tax = Math.Truncate((TimesheetDetail.Reward ?? 0) * (decimal)0.15);
-            }
-            else
-            {
-                TimesheetDetail.Tax = 0;
             }
 
             try

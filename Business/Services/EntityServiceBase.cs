@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Timesheet.Common;
@@ -12,13 +13,13 @@ namespace Timesheet.Business
         {
         }
 
-        public async Task RemoveAsync(T entity)
+        public virtual async Task RemoveAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task SaveAsync(T entity)
+        public virtual async Task SaveAsync(T entity)
         {
             if (entity.Id > 0)
             {
@@ -26,17 +27,18 @@ namespace Timesheet.Business
             }
             else
             {
+                entity.CreateTime = DateTime.Now;
                 _context.Set<T>().Add(entity);
             }
             await _context.SaveChangesAsync();
         }
 
-        public void SetModified(T entity)
+        public virtual void SetModified(T entity)
         {
             _context.Entry<T>(entity).State = EntityState.Modified;
         }
     }
-    public abstract class EntityReadonlyServiceBase<T> : IEntityReadonlyService<T> where T : class, IEntity
+    public abstract class EntityReadonlyServiceBase<T> : IEntityReadonlyService<T> where T : class, IEntityView
     {
         protected readonly TimesheetContext _context;
         public EntityReadonlyServiceBase(TimesheetContext context)

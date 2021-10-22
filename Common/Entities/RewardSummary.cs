@@ -6,7 +6,7 @@
 
 namespace Timesheet.Common
 {
-    public partial class RewardSummary : IEntity
+    public partial class RewardSummary : IEntityView
     {
         public int Id { get; set; }
         public int PersonId { get; set; }

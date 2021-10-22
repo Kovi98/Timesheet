@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,6 +65,23 @@ namespace Timesheet.Business
                     .Include(t => t.Person.PaidFrom)
                     .Where(x => (x.PaymentId == 0 || x.PaymentId == null))
                     .AsNoTracking().ToListAsync();
+        }
+
+        public override Task SaveAsync(Common.Timesheet entity)
+        {
+            if (!entity.Hours.HasValue && entity.DateTimeFrom != null && entity.DateTimeTo != null)
+                entity.Hours = (decimal)(entity.DateTimeTo - entity.DateTimeFrom)?.TotalHours;
+            if (!entity.Reward.HasValue)
+                entity.Reward = entity.Hours * (_context.Job.Find(entity.JobId)?.HourReward);
+            if (_context.Person.Find(entity.PersonId)?.HasTax ?? false)
+            {
+                entity.Tax = Math.Truncate((entity.Reward ?? 0) * (decimal)0.15);
+            }
+            else
+            {
+                entity.Tax = 0;
+            }
+            return base.SaveAsync(entity);
         }
     }
 }
