@@ -30,10 +30,32 @@ namespace Timesheet.Entity.Data
                 new Job{Name = "redaktor", HourReward = null, CreateTime = DateTime.Now},
                 new Job{Name = "grafik", HourReward = null, CreateTime = DateTime.Now}
                 };
-                foreach (Job j in jobs)
+                context.AddRange(jobs);
+            }
+
+            // Look for any finances
+            if (!context.Finance.Any())
+            {
+                var finances = new Finance[]
                 {
-                    context.Job.Add(j);
-                }
+                new Finance{Name = "MŠMT", CreateTime = DateTime.Now},
+                new Finance{Name = "Provoz", CreateTime = DateTime.Now},
+                new Finance{Name = "Vedení", CreateTime = DateTime.Now},
+                new Finance{Name = "PP3", CreateTime = DateTime.Now}
+                };
+                context.Finance.AddRange(finances);
+            }
+
+            // Look for any finances
+            if (!context.Section.Any())
+            {
+                var sections = new Section[]
+                {
+                new Section{Name = "mužská", CreateTime = DateTime.Now},
+                new Section{Name = "ženská", CreateTime = DateTime.Now},
+                new Section{Name = "vedoucí týmů", CreateTime = DateTime.Now}
+                };
+                context.Section.AddRange(sections);
             }
 
             context.SaveChanges();
