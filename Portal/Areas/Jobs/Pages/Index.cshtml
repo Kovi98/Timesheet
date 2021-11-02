@@ -1,0 +1,266 @@
+﻿@page
+@model Portal.Areas.Jobs.Pages.IndexModel
+<!--AJAX POST needed-->
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(HttpContext).RequestToken;
+    }
+}
+
+@{
+    ViewData["Title"] = "Pozice";
+}
+@{
+    if (ViewData.ModelState["Error"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Error"].Errors)
+        {
+            <script>
+                toastr.error("@item.ErrorMessage");
+            </script>
+        }
+    }
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="dataTable" class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th style="width:30%">
+                                @Html.DisplayNameFor(model => model.Job[0].Name)
+                            </th>
+                            <th style="width:30%">
+                                @Html.DisplayNameFor(model => model.Job[0].HourReward)
+                            </th>
+                            <th style="width:20%">
+                                @Html.DisplayNameFor(model => model.Job[0].CreateTime)
+                            </th>
+                            <th style="width:20%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Job)
+                        {
+                        <tr id="rowId-@Html.DisplayFor(modelItem => item.Id)">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.HourReward)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreateTime)
+                            </td>
+                            <td class="project-actions text-right">
+                                <a class="btn btn-info btn-sm" asp-page="" asp-page-handler="Edit" asp-route-id="@item.Id" asp-fragment="card-edit">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    Upravit
+                                </a>
+                                <a id="href-delete-@item.Id" class="btn btn-danger btn-sm" onclick="deleteJobsDetail(@item.Id)">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    Smazat
+                                </a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.IsEditable)
+{
+    <div id="row-edit" class="row">
+        <div class="col-12">
+            <div id="card-edit" class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Editace pozice</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        @{
+                            if (Model.JobDetail != null)
+                            {
+                                <input type="hidden" asp-for="JobDetail.Id" />
+                                <input type="hidden" asp-for="JobDetail.CreateTime" />
+                                <input type="hidden" asp-for="JobDetail.RowVersion" />
+                            }
+                        }
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card card-info">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Základní informace</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="JobDetail.Name" class="control-label"></label>
+                                                    <input asp-for="JobDetail.Name" class="form-control" />
+                                                    <span asp-validation-for="JobDetail.Name" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label asp-for="JobDetail.HourReward" class="control-label"></label>
+                                                    <input asp-for="JobDetail.HourReward" class="form-control" />
+                                                    <span asp-validation-for="JobDetail.HourReward" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Tlačítka dole-->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input type="submit" value="Uložit" class="btn btn-info float-right" style="margin-right: 5px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+}
+
+<!-- Modal - potvrzení smazání záznamu -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Odstranění pozice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Opravdu chcete odstranit pozici?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zpět</button>
+                <button id="delete-confirm" type="button" class="btn btn-danger" data-dismiss="modal">Odstranit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @foreach (var item in Model.Job)
+    {
+        @if (item.Person?.Count != 0 || item.Timesheet?.Count != 0)
+        {
+            <script>
+            $(document).ready(function () {
+                $('#href-delete-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
+            });
+            </script>
+        }
+    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var dataTableJob;
+        $(document).ready(function () {
+            dataTableJob = $('#dataTable').DataTable({
+                "language": {
+                    "url": '/lib/datatables-language/cs.json'
+                },
+                "ordering": true,
+                "searching": true,
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "info": false,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [4],
+                        "orderable": false,
+                        "searchable": false
+                    }],
+                "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
+                "initComplete": function (settings, json) {
+                    $("div.toolbar").html('<a href="/Jobs?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nová pozice</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                }
+            });
+        });
+    </script>
+
+    <script>
+    function deleteJobsDetail(deleteId) {
+        $('#delete-confirm').unbind('click').on('click', function (id) {
+            $.ajax({
+                type: "POST",
+                url: "Jobs/Index?handler=Delete",
+                data: { id: deleteId },
+                headers: {
+                    "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
+                },
+                statusCode: {
+                    404: function () {
+                        toastr.error("Záznam nebyl nalezen.");
+                    }
+                },
+                success: function (response) {
+                    var inputText = "#rowId-".concat(String(deleteId));
+                    dataTableJob.row(inputText).remove().draw();
+                    toastr.success('Pozice byla úspěšně odstraněna.');
+                },
+            });
+        });
+        $('#delete-modal').modal('show');
+        };
+        function resetTable() {
+            dataTableJob.state.clear();
+            window.location.reload();
+        }
+    </script>
+    @if (ViewData.ModelState["Success"] != null)
+    {
+        foreach (var item in ViewData.ModelState["Success"].Errors)
+        {
+            <script>
+                    toastr.success("@item.ErrorMessage");
+            </script>
+        }
+    }
+}
+

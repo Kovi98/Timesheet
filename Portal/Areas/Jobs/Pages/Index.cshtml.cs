@@ -9,21 +9,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Common;
 
-namespace Portal.Areas.Sections.Pages
+namespace Portal.Areas.Jobs.Pages
 {
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly ISectionService _sectionService;
+        private readonly IJobService _jobService;
 
-        public IndexModel(ISectionService sectionService)
+        public IndexModel(IJobService jobService)
         {
-            _sectionService = sectionService;
+            _jobService = jobService;
         }
 
-        public IList<Section> Section { get; set; }
+        public IList<Job> Job { get; set; }
         [BindProperty]
-        public Section SectionDetail { get; set; }
+        public Job JobDetail { get; set; }
         public bool IsEditable { get; set; }
 
         public async Task OnGetAsync()
@@ -34,14 +34,13 @@ namespace Portal.Areas.Sections.Pages
         public async Task OnGetEditAsync(int id)
         {
             await LoadData();
-            var section = Section.FirstOrDefault(t => t.Id == id);
             if (id > 0)
             {
-                SectionDetail = section;
+                JobDetail = Job.FirstOrDefault(t => t.Id == id);
             }
             else
             {
-                SectionDetail = null;
+                JobDetail = null;
             }
             IsEditable = true;
         }
@@ -52,24 +51,23 @@ namespace Portal.Areas.Sections.Pages
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToPage("./Index", new { id = SectionDetail?.Id, area = "Sections" });
+                return RedirectToPage("./Index", new { id = JobDetail?.Id, area = "Jobs" });
             }
 
             try
             {
-                await _sectionService.SaveAsync(SectionDetail);
+                await _jobService.SaveAsync(JobDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
                 await LoadData();
-                if (SectionDetail.Id > 0)
+                if (JobDetail.Id > 0)
                 {
-                    var section = Section.FirstOrDefault(t => t.Id == SectionDetail.Id);
-                    SectionDetail = section;
+                    JobDetail = Job.FirstOrDefault(t => t.Id == JobDetail.Id);
                 }
                 else
                 {
-                    SectionDetail = null;
+                    JobDetail = null;
                 }
                 IsEditable = true;
                 ModelState.AddModelError("Error", "Tento záznam byl změněn jiným uživatelem. Aktualizujte si záznam.");
@@ -83,7 +81,7 @@ namespace Portal.Areas.Sections.Pages
         }
 
         /// <summary>
-        /// Smazání objektu Section
+        /// Smazání objektu Job
         /// </summary>
         /// <param name="id">Id objektu</param>
         /// <returns>404 - NotFound / OkResult</returns>
@@ -94,16 +92,22 @@ namespace Portal.Areas.Sections.Pages
                 return NotFound();
             }
 
-            var sectionToDelete = await _sectionService.GetAsync(id);
+            var JobToDelete = await _jobService.GetAsync(id);
 
-            if (sectionToDelete?.Person?.Count != 0)
+            if (JobToDelete.Person?.Count != 0)
             {
-                return await this.PageWithError("Nelze smazat sekci, kterou již má vyplněnou trenér.");
+                return await this.PageWithError("Nelze smazat pozici, kterou již má vyplněnou trenér.");
+
             }
 
-            if (sectionToDelete != null)
+            if (JobToDelete.Timesheet.Count != 0)
             {
-                await _sectionService.RemoveAsync(sectionToDelete);
+                return await this.PageWithError("Nelze smazat pozici, kterou již má vyplněnou výkaz práce.");
+            }
+
+            if (JobToDelete != null)
+            {
+                await _jobService.RemoveAsync(JobToDelete);
             }
             else
             {
@@ -115,7 +119,7 @@ namespace Portal.Areas.Sections.Pages
 
         public async Task LoadData()
         {
-            Section = await _sectionService.GetAsync();
+            Job = await _jobService.GetAsync();
         }
     }
 }

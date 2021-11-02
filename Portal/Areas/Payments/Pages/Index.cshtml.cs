@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Portal.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using Timesheet.Common;
 
 namespace Portal.Areas.Payments.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : PageModel, ILoadablePage
     {
         private readonly IPaymentService _paymentService;
         private readonly ITimesheetService _timesheetService;
@@ -126,38 +127,48 @@ namespace Portal.Areas.Payments.Pages
                     throw;
                 }
             }
+            catch (Exception)
+            {
+                return await this.PageWithError();
+            }
 
             return RedirectToPage("Index", new { id = PaymentDetail.Id, area = "Payments" });
         }
 
         public async Task<IActionResult> OnPostPayAsync(int id)
         {
-            if (!await _paymentService.ExistsAsync(id))
+            try
             {
-                return NotFound();
-            }
-
-            var paymentToPay = await _paymentService.GetAsync(id);
-
-            if (paymentToPay != null)
-            {
-                try
+                if (!await _paymentService.ExistsAsync(id))
                 {
-                    if (_paymentService.TryPay(paymentToPay))
-                        await _paymentService.SaveAsync(paymentToPay);
-                    else
+                    return NotFound();
+                }
+
+                var paymentToPay = await _paymentService.GetAsync(id);
+
+                if (paymentToPay != null)
+                {
+                    try
+                    {
+                        if (_paymentService.TryPay(paymentToPay))
+                            await _paymentService.SaveAsync(paymentToPay);
+                        else
+                            return BadRequest();
+                    }
+                    catch
+                    {
                         return BadRequest();
+                    }
                 }
-                catch
+                else
                 {
-                    return BadRequest();
+                    return NotFound();
                 }
             }
-            else
+            catch (Exception)
             {
-                return NotFound();
+                return await this.PageWithError();
             }
-
             return RedirectToPage("Index", new { id = PaymentDetail.Id, area = "Payments" });
         }
 
@@ -166,7 +177,7 @@ namespace Portal.Areas.Payments.Pages
             var payment = await _paymentService.GetAsync(id);
             if (payment is null)
             {
-                return BadRequest();
+                return await this.PageWithError();
             }
 
             return File(Encoding.UTF8.GetBytes(payment.PaymentXml), "application/xml", payment.PaymentDateTime.Value.ToString("ddMMyyyy") + ".xml");
@@ -187,7 +198,7 @@ namespace Portal.Areas.Payments.Pages
 
             if (paymentToDelete.IsPaid)
             {
-                return BadRequest();
+                return await this.PageWithError();
             }
 
             if (paymentToDelete != null)
@@ -201,7 +212,7 @@ namespace Portal.Areas.Payments.Pages
 
             return new OkResult();
         }
-        private async Task LoadData()
+        public async Task LoadData()
         {
             Payment = await _paymentService.GetAsync();
         }

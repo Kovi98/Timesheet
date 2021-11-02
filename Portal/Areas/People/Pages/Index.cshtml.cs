@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Portal.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ using Timesheet.Common;
 
 namespace Portal.Areas.People.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : PageModel, ILoadablePage
     {
         private readonly IPersonService _personService;
         private readonly IDocumentManager _documentManager;
@@ -74,6 +76,10 @@ namespace Portal.Areas.People.Pages
                     throw;
                 }
             }
+            catch (Exception)
+            {
+                return await this.PageWithError();
+            }
 
             return RedirectToPage("./Index", new { id = PersonDetail.Id });
         }
@@ -94,7 +100,7 @@ namespace Portal.Areas.People.Pages
 
             if (personToDelete.Timesheet.Any())
             {
-                return BadRequest("Nelze smazat trenéra s existujícím výkazem.");
+                return await this.PageWithError("Nelze smazat trenéra s existujícím výkazem.");
             }
 
             if (personToDelete != null)
@@ -111,23 +117,30 @@ namespace Portal.Areas.People.Pages
 
         public async Task<IActionResult> OnPostDownloadContract(int id)
         {
-            string format = Format ?? "Docx";
-            var defaultDocument = await _documentManager.GetDefaultDocumentAsync();
-
-            if (defaultDocument == null)
+            try
             {
-                ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
-                return Page();
-            }
-            var person = await _personService.GetAsync(id);
+                string format = Format ?? "Docx";
+                var defaultDocument = await _documentManager.GetDefaultDocumentAsync();
 
-            if (person is null || defaultDocument is null)
-                return NotFound();
-            var document = await _documentManager.GenerateContract(person, defaultDocument);
-            return File(document, _documentManager.GetContentType(format), $"export.{format}");
+                if (defaultDocument == null)
+                {
+                    ModelState.AddModelError("Error", "Neexistuje žádná primární šablona smlouvy!");
+                    return Page();
+                }
+                var person = await _personService.GetAsync(id);
+
+                if (person is null || defaultDocument is null)
+                    return NotFound();
+                var document = await _documentManager.GenerateContract(person, defaultDocument);
+                return File(document, _documentManager.GetContentType(format), $"export.{format}");
+            }
+            catch (Exception)
+            {
+                return await this.PageWithError();
+            }
         }
 
-        private async Task LoadData()
+        public async Task LoadData()
         {
             Person = await _personService.GetAsync();
             ViewData["JobId"] = new SelectList(await _jobService.GetAsync(), "Id", "Name");

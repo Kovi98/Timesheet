@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Portal.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ using Timesheet.Common;
 namespace Portal.Areas.Documents.Pages
 {
     [Authorize(Policy = "AdminPolicy")]
-    public class IndexModel : PageModel
+    public class IndexModel : PageModel, ILoadablePage
     {
         private readonly IDocumentManager _docManager;
         private readonly ILogger<IDocumentManager> _logger;
@@ -89,7 +90,7 @@ namespace Portal.Areas.Documents.Pages
             catch (Exception e)
             {
                 _logger.LogError(e, _errorText);
-                return RedirectToPage("Index");
+                return await this.PageWithError();
             }
 
             return RedirectToPage("Index");
@@ -120,7 +121,7 @@ namespace Portal.Areas.Documents.Pages
             catch (Exception e)
             {
                 _logger.LogError(e, _errorText);
-                return RedirectToPage("Index");
+                return await this.PageWithError();
             }
 
             return new OkResult();
@@ -134,7 +135,7 @@ namespace Portal.Areas.Documents.Pages
             return File(document.DocumentSource, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", document.DocumentName);
         }
 
-        private async Task LoadData()
+        public async Task LoadData()
         {
             DocumentStorage = await _docManager.GetDocumentsAsync();
         }

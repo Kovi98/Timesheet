@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Portal.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +12,7 @@ using Timesheet.Common;
 namespace Portal.Areas.Finances.Pages
 {
     [Authorize(Policy = "AdminPolicy")]
-    public class IndexModel : PageModel
+    public class IndexModel : PageModel, ILoadablePage
     {
         private readonly IFinanceService _financeService;
 
@@ -71,6 +73,10 @@ namespace Portal.Areas.Finances.Pages
                 ModelState.AddModelError("Error", "Tento záznam byl změněn jiným uživatelem. Aktualizujte si záznam.");
                 return Page();
             }
+            catch (Exception)
+            {
+                return await this.PageWithError();
+            }
             return RedirectToPage("Index");
         }
 
@@ -105,7 +111,7 @@ namespace Portal.Areas.Finances.Pages
             return new OkResult();
         }
 
-        private async Task LoadData()
+        public async Task LoadData()
         {
             Finance = await _financeService.GetAsync();
         }

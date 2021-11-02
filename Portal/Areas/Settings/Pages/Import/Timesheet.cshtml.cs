@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Portal.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -76,8 +77,7 @@ namespace Portal.Areas.Settings.Pages.Import
             catch (Exception e)
             {
                 _logger.LogError(e, "Pøi importu nastala chyba");
-                ModelState.AddModelError("Error", "Pøi naèítání dat nastala chyba.");
-                return Page();
+                return await this.PageWithError();
             }
 
             return Page();
@@ -93,8 +93,7 @@ namespace Portal.Areas.Settings.Pages.Import
             catch (Exception e)
             {
                 _logger.LogError(e, "Pøi importu nastala chyba");
-                ModelState.AddModelError("Error", "Záznamy se nepodaøilo uložit.");
-                return Page();
+                return await this.PageWithError("Pøi naèítání dat nastala chyba.");
             }
             TimesheetImport = null;
             return Page();

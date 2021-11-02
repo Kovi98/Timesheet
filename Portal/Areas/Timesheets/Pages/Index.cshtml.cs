@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Portal.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Timesheet.Common;
 
 namespace Portal.Areas.Timesheets.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : PageModel, ILoadablePage
     {
         private readonly ITimesheetService _timesheetService;
 
@@ -82,6 +84,10 @@ namespace Portal.Areas.Timesheets.Pages
                     throw;
                 }
             }
+            catch (Exception)
+            {
+                return await this.PageWithError();
+            }
 
             return RedirectToPage("./Index", new { id = TimesheetDetail.Id, area = "Timesheets" });
         }
@@ -102,7 +108,7 @@ namespace Portal.Areas.Timesheets.Pages
 
             if (timesheetToDelete != null && timesheetToDelete.PaymentId.HasValue && timesheetToDelete.PaymentId > 0)
             {
-                return BadRequest("Nelze smazat výkaz s existující platbou.");
+                return await this.PageWithError("Nelze smazat výkaz s existující platbou.");
             }
 
             if (timesheetToDelete != null)
@@ -116,7 +122,7 @@ namespace Portal.Areas.Timesheets.Pages
 
             return new OkResult();
         }
-        private async Task LoadData()
+        public async Task LoadData()
         {
             Timesheet = await _timesheetService.GetAsync();
             ViewData["JobId"] = new SelectList(await _jobService.GetAsync(), "Id", "Name");
