@@ -23,6 +23,6 @@ namespace Timesheet.Common
         public Payment Payment { get; set; }
 
         public decimal? RewardToPay { get => Reward - Tax; }
-        //public virtual IList<Timesheet> Timesheet { get; set; }
+        //public virtual List<Timesheet> Timesheet { get; set; }
     }
 }

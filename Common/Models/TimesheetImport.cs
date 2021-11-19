@@ -8,8 +8,8 @@ namespace Timesheet.Common.Models
         public bool Success { get; set; }
         public bool CanPassErrors => !(Errors.Contains(TimesheetImportError.DateTimeFromMissing) || Errors.Contains(TimesheetImportError.DateTimeToMissing) || Errors.Contains(TimesheetImportError.JobMissing) || Errors.Contains(TimesheetImportError.PersonMissing) || Errors.Contains(TimesheetImportError.TimesheetNotUnique));
         public Timesheet Timesheet { get; set; }
-        public IList<TimesheetImportError> Errors { get; set; }
-        public TimesheetImport(Timesheet timesheet, IList<TimesheetImportError> errors = null)
+        public List<TimesheetImportError> Errors { get; set; }
+        public TimesheetImport(Timesheet timesheet, List<TimesheetImportError> errors = null)
         {
             Timesheet = timesheet;
             Success = errors == null || errors.Count == 0;

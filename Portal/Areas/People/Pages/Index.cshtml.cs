@@ -29,7 +29,7 @@ namespace Portal.Areas.People.Pages
             _sectionService = sectionService;
         }
 
-        public IList<Person> Person { get; set; }
+        public List<Person> Person { get; set; }
 
         [BindProperty]
         public Person PersonDetail { get; set; }

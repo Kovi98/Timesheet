@@ -20,9 +20,9 @@ namespace Timesheet.Business
         {
             _context = context;
         }
-        public IList<TimesheetImport> ConvertPeople(byte[] source)
+        public List<TimesheetImport> ConvertPeople(byte[] source)
         {
-            IList<TimesheetImport> import = new List<TimesheetImport>();
+            List<TimesheetImport> import = new List<TimesheetImport>();
             using (MemoryStream stream = new MemoryStream(source))
             {
                 using (ExcelPackage excelPackage = new ExcelPackage(stream))
@@ -120,7 +120,7 @@ namespace Timesheet.Business
             return import;
         }
 
-        public async Task Import(IList<TimesheetImport> imports, bool overrideErrors)
+        public async Task Import(List<TimesheetImport> imports, bool overrideErrors)
         {
             var defaultList = imports;
             var transaction = _context.Database.BeginTransaction();
@@ -197,5 +197,7 @@ namespace Timesheet.Business
                 .FirstOrDefault(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.Name == timesheet.Person.Name && x.Person.Surname == timesheet.Person.Surname);
             return ts == null;
         }
+
+        public List<>
     }
 }

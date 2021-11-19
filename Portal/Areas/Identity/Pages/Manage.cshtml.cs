@@ -17,7 +17,7 @@ namespace Portal.Areas.Identity.Pages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public IList<ApplicationUser> Users;
+        public List<ApplicationUser> Users;
 
         public ManageModel(
             UserManager<ApplicationUser> userManager,

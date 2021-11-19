@@ -26,7 +26,7 @@ namespace Portal.Areas.Timesheets.Pages
             _personService = personService;
         }
 
-        public IList<Timesheet.Common.Timesheet> Timesheet { get; set; }
+        public List<Timesheet.Common.Timesheet> Timesheet { get; set; }
         [BindProperty]
         public Timesheet.Common.Timesheet TimesheetDetail { get; set; }
         public bool IsEditable { get; set; }

@@ -28,7 +28,7 @@ namespace Portal.Areas.Documents.Pages
             _logger = logger;
         }
 
-        public IList<DocumentStorage> DocumentStorage { get; set; }
+        public List<DocumentStorage> DocumentStorage { get; set; }
 
         [BindProperty]
         public DocumentStorage DocumentStorageDetail { get; set; }

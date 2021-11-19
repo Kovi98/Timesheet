@@ -21,7 +21,7 @@ namespace Portal.Areas.Finances.Pages
             _financeService = financeService;
         }
 
-        public IList<Finance> Finance { get; set; }
+        public List<Finance> Finance { get; set; }
         [BindProperty]
         public Finance FinanceDetail { get; set; }
         public bool IsEditable { get; set; }

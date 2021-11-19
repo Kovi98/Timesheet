@@ -14,7 +14,7 @@ namespace Portal.Areas.RewardSummaries.Pages
             _rewardSummaryService = rewardSummaryService;
         }
 
-        public IList<RewardSummary> RewardSummary { get; set; }
+        public List<RewardSummary> RewardSummary { get; set; }
 
         public async Task OnGetAsync()
         {

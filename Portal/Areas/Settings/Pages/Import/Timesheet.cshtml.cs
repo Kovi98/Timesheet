@@ -27,7 +27,7 @@ namespace Portal.Areas.Settings.Pages.Import
         [DisplayName("Vložit excel...")]
         public IFormFile ExcelUpload { get; set; }
 
-        public IList<TimesheetImport> TimesheetImport { get; set; }
+        public List<TimesheetImport> TimesheetImport { get; set; }
         [BindProperty]
         public string TimesheetImportJSON { get; set; }
 
@@ -84,7 +84,7 @@ namespace Portal.Areas.Settings.Pages.Import
         }
         public async Task<IActionResult> OnPostSaveAsync()
         {
-            TimesheetImport = JsonConvert.DeserializeObject<IList<TimesheetImport>>(TimesheetImportJSON);
+            TimesheetImport = JsonConvert.DeserializeObject<List<TimesheetImport>>(TimesheetImportJSON);
             try
             {
                 await _importManager.Import(TimesheetImport, OverrideErrors);

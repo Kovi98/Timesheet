@@ -23,7 +23,7 @@ namespace Portal.Areas.Payments.Pages
             _timesheetService = timesheetService;
         }
 
-        public IList<Payment> Payment { get; set; }
+        public List<Payment> Payment { get; set; }
         [BindProperty]
         public Payment PaymentDetail { get; set; }
         public bool IsEditable { get; set; }

@@ -21,7 +21,7 @@ namespace Portal.Areas.Sections.Pages
             _sectionService = sectionService;
         }
 
-        public IList<Section> Section { get; set; }
+        public List<Section> Section { get; set; }
         [BindProperty]
         public Section SectionDetail { get; set; }
         public bool IsEditable { get; set; }

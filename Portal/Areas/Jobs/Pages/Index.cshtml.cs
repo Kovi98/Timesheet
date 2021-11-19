@@ -21,7 +21,7 @@ namespace Portal.Areas.Jobs.Pages
             _jobService = jobService;
         }
 
-        public IList<Job> Job { get; set; }
+        public List<Job> Job { get; set; }
         [BindProperty]
         public Job JobDetail { get; set; }
         public bool IsEditable { get; set; }

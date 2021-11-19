@@ -25,13 +25,13 @@ namespace Portal.Pages
         }
 
         [BindProperty]
-        public IList<Timesheet.Common.Timesheet> Timesheet { get; set; }
+        public List<Timesheet.Common.Timesheet> Timesheet { get; set; }
         [BindProperty]
-        public IList<Person> Person { get; set; }
+        public List<Person> Person { get; set; }
         [BindProperty]
-        public IList<RewardSummary> RewardSummary { get; set; }
+        public List<RewardSummary> RewardSummary { get; set; }
         [BindProperty]
-        public IList<Payment> Payment { get; set; }
+        public List<Payment> Payment { get; set; }
 
         public async Task OnGetAsync()
         {
