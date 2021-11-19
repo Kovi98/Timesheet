@@ -13,7 +13,7 @@ namespace Timesheet.Common.Models
         {
             Timesheet = timesheet;
             Success = errors == null || errors.Count == 0;
-            Errors = errors == null ? new List<TimesheetImportError>() : errors;
+            Errors = errors ?? new List<TimesheetImportError>();
         }
         public void AddError(TimesheetImportError error)
         {
