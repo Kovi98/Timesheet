@@ -20,7 +20,7 @@ namespace Timesheet.Business
         {
             _context = context;
         }
-        public List<TimesheetImport> ConvertPeople(byte[] source)
+        public List<TimesheetImport> ConvertTimesheets(byte[] source)
         {
             List<TimesheetImport> import = new List<TimesheetImport>();
             using (MemoryStream stream = new MemoryStream(source))
@@ -138,31 +138,31 @@ namespace Timesheet.Business
                     //Hledání undefined jobs/people
                     foreach (var import in imports)
                     {
-                        if (import.Errors.Contains(TimesheetImportError.PersonUndefined) && !people.Any(x => x.FullName == import.Timesheet.Person.FullName))
+                        if (import.Errors.Contains(TimesheetImportError.PersonUndefined) && !people.Any(x => x.FullName == import.Entity.Person.FullName))
                         {
-                            people.Add(import.Timesheet.Person);
+                            people.Add(import.Entity.Person);
                         }
-                        if (import.Errors.Contains(TimesheetImportError.JobUndefined) && !jobs.Any(x => x.Name == import.Timesheet.Job.Name))
+                        if (import.Errors.Contains(TimesheetImportError.JobUndefined) && !jobs.Any(x => x.Name == import.Entity.Job.Name))
                         {
-                            jobs.Add(import.Timesheet.Job);
+                            jobs.Add(import.Entity.Job);
                         }
                     }
                     //Nahrazování undefined people
                     foreach (var person in people)
                     {
                         _context.Person.Add(person);
-                        foreach (var item in imports.Where(x => x.Timesheet.Person.FullName == person.FullName).ToList())
+                        foreach (var item in imports.Where(x => x.Entity.Person.FullName == person.FullName).ToList())
                         {
-                            item.Timesheet.Person = person;
+                            item.Entity.Person = person;
                         }
                     }
                     //Nahrazování undefined jobs
                     foreach (var job in jobs)
                     {
                         _context.Job.Add(job);
-                        foreach (var item in imports.Where(x => x.Timesheet.Job.Name == job.Name).ToList())
+                        foreach (var item in imports.Where(x => x.Entity.Job.Name == job.Name).ToList())
                         {
-                            item.Timesheet.Job = job;
+                            item.Entity.Job = job;
                         }
                     }
                     await _context.SaveChangesAsync();
@@ -170,7 +170,7 @@ namespace Timesheet.Business
 
                 //Samotné ukládání timesheetu do DB
                 //await _context.Timesheet.AddRangeAsync(TimesheetImport.Select(x => x.Timesheet));
-                foreach (var timesheet in imports.Select(x => x.Timesheet))
+                foreach (var timesheet in imports.Select(x => x.Entity))
                 {
                     //_context.Timesheet.Add(timesheet);
                     _context.Entry(timesheet).State = EntityState.Added;
@@ -196,6 +196,11 @@ namespace Timesheet.Business
                 .Include(x => x.Person)
                 .FirstOrDefault(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.Name == timesheet.Person.Name && x.Person.Surname == timesheet.Person.Surname);
             return ts == null;
+        }
+
+        public List<PersonImport> ConvertPeople(byte[] source)
+        {
+            throw new NotImplementedException();
         }
     }
 }

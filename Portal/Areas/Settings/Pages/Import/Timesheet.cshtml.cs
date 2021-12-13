@@ -65,7 +65,7 @@ namespace Portal.Areas.Settings.Pages.Import
 
             try
             {
-                TimesheetImport = _importManager.ConvertPeople(source);
+                TimesheetImport = _importManager.ConvertTimesheets(source);
                 ModelState.AddModelError("Success", string.Format("Bylo naèteno {0} záznamù.", TimesheetImport.Count()));
                 if (TimesheetImport.Any(x => !x.Success))
                     ModelState.AddModelError("Error", string.Format("Pøi naèítání bylo nalezeno {0} chybných záznamù.", TimesheetImport.Where(x => !x.Success).Count()));
