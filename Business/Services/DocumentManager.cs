@@ -65,34 +65,14 @@ namespace Timesheet.Business
 
             return await (asNoTracking ? storage.AsNoTracking().ToListAsync() : storage.AsTracking().ToListAsync());
         }
-        public async Task SaveAsync(DocumentStorage document)
+        public override async Task SaveAsync(DocumentStorage document)
         {
-            if (document.Id > 0)
-            {
-                _context.Entry<DocumentStorage>(document).State = EntityState.Modified;
-            }
-            else
-            {
-                document.CreateTime = DateTime.Now;
-                _context.DocumentStorage.Add(document);
-            }
-
             if (document.IsDefault && _context.DocumentStorage.Any(x => x.Id != document.Id && x.IsDefault))
             {
                 var oldDefault = _context.DocumentStorage.FirstOrDefault(x => x.IsDefault);
                 oldDefault.IsDefault = false;
             }
-
-            await _context.SaveChangesAsync();
-        }
-        public async Task<DocumentStorage> GetAsync(int id)
-        {
-            return await _context.DocumentStorage.FindAsync(id);
-        }
-        public async Task RemoveAsync(DocumentStorage document)
-        {
-            _context.DocumentStorage.Remove(document);
-            await _context.SaveChangesAsync();
+            await base.SaveAsync(document);
         }
     }
 }
