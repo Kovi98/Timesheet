@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.Documents.Pages
@@ -18,11 +19,11 @@ namespace Portal.Areas.Documents.Pages
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly IDocumentManager _docManager;
-        private readonly ILogger<IDocumentManager> _logger;
+        private readonly DocumentManager _docManager;
+        private readonly ILogger<DocumentManager> _logger;
         private readonly string _errorText = $"Error in {typeof(IndexModel).Namespace} : {typeof(IndexModel).FullName}";
 
-        public IndexModel(IDocumentManager documentManager, ILogger<IDocumentManager> logger)
+        public IndexModel(DocumentManager documentManager, ILogger<DocumentManager> logger)
         {
             _docManager = documentManager;
             _logger = logger;

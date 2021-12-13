@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Pages
@@ -10,12 +11,12 @@ namespace Portal.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly ITimesheetService _timesheetService;
-        private readonly IPersonService _personService;
-        private readonly IRewardSummaryService _rewardSummaryService;
-        private readonly IPaymentService _paymentService;
+        private readonly TimesheetService _timesheetService;
+        private readonly PersonService _personService;
+        private readonly RewardSummaryService _rewardSummaryService;
+        private readonly PaymentService _paymentService;
 
-        public IndexModel(ILogger<IndexModel> logger, ITimesheetService timesheetService, IPersonService personService, IRewardSummaryService rewardSummaryService, IPaymentService paymentService)
+        public IndexModel(ILogger<IndexModel> logger, TimesheetService timesheetService, PersonService personService, RewardSummaryService rewardSummaryService, PaymentService paymentService)
         {
             _logger = logger;
             _timesheetService = timesheetService;

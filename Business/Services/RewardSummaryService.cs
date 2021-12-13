@@ -7,7 +7,7 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class RewardSummaryService : EntityReadonlyServiceBase<RewardSummary>, IRewardSummaryService
+    public class RewardSummaryService : EntityReadonlyServiceBase<RewardSummary>
     {
         public RewardSummaryService(TimesheetContext context) : base(context)
         {

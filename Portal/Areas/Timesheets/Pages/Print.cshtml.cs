@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
-using Timesheet.Common;
+using Timesheet.Business;
 
 namespace Portal.Pages.Timesheets
 {
     public class PrintModel : PageModel
     {
-        private readonly ITimesheetService _timesheetService;
+        private readonly TimesheetService _timesheetService;
 
-        public PrintModel(ITimesheetService timesheetService)
+        public PrintModel(TimesheetService timesheetService)
         {
             _timesheetService = timesheetService;
         }

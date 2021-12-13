@@ -10,7 +10,7 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class DocumentManager : IDocumentManager
+    public class DocumentManager : EntityServiceBase<DocumentStorage>
     {
         private readonly TimesheetContext _context;
         public async Task<byte[]> GenerateContract(Person person, DocumentStorage defaultDocument = null)
@@ -36,7 +36,7 @@ namespace Timesheet.Business
                 return streamResult.ToArray();
             }
         }
-        public DocumentManager(TimesheetContext dbContext)
+        public DocumentManager(TimesheetContext dbContext) : base(dbContext)
         {
             _context = dbContext;
         }

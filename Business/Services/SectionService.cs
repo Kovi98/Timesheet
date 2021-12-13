@@ -6,7 +6,7 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class SectionService : EntityServiceBase<Section>, ISectionService
+    public class SectionService : EntityServiceBase<Section>
     {
         public SectionService(TimesheetContext context) : base(context)
         {

@@ -4,18 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Timesheet.Common;
 using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class TimesheetService : EntityServiceBase<Common.Timesheet>, ITimesheetService
+    public class TimesheetService : EntityServiceBase<Common.Timesheet>
     {
-        private readonly TimesheetContext _context;
         private readonly PaymentOptions _options;
         public TimesheetService(IOptions<PaymentOptions> options, TimesheetContext context) : base(context)
         {
-            _context = context;
             _options = options.Value;
         }
 

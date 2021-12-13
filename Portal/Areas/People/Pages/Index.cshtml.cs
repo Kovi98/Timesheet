@@ -7,20 +7,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.People.Pages
 {
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly IPersonService _personService;
-        private readonly IDocumentManager _documentManager;
+        private readonly PersonService _personService;
+        private readonly DocumentManager _documentManager;
 
-        private readonly IJobService _jobService;
-        private readonly IFinanceService _financeService;
-        private readonly ISectionService _sectionService;
+        private readonly JobService _jobService;
+        private readonly FinanceService _financeService;
+        private readonly SectionService _sectionService;
 
-        public IndexModel(IPersonService personService, IDocumentManager docManager, IJobService jobService, IFinanceService financeService, ISectionService sectionService)
+        public IndexModel(PersonService personService, DocumentManager docManager, JobService jobService, FinanceService financeService, SectionService sectionService)
         {
             _personService = personService;
             _documentManager = docManager;

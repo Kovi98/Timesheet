@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.RewardSummaries.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IRewardSummaryService _rewardSummaryService;
+        private readonly RewardSummaryService _rewardSummaryService;
 
-        public IndexModel(IRewardSummaryService rewardSummaryService)
+        public IndexModel(RewardSummaryService rewardSummaryService)
         {
             _rewardSummaryService = rewardSummaryService;
         }

@@ -6,19 +6,19 @@ using Portal.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Timesheet.Common;
+using Timesheet.Business;
 
 namespace Portal.Areas.Timesheets.Pages
 {
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly ITimesheetService _timesheetService;
+        private readonly TimesheetService _timesheetService;
 
-        private readonly IJobService _jobService;
-        private readonly IFinanceService _financeService;
-        private readonly IPersonService _personService;
+        private readonly JobService _jobService;
+        private readonly FinanceService _financeService;
+        private readonly PersonService _personService;
 
-        public IndexModel(ITimesheetService timesheetService, IJobService jobService, IFinanceService financeService, IPersonService personService)
+        public IndexModel(TimesheetService timesheetService, JobService jobService, FinanceService financeService, PersonService personService)
         {
             _timesheetService = timesheetService;
             _jobService = jobService;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Timesheet.Common;
 using Timesheet.Common.Interfaces;
 using Timesheet.Db;
 
@@ -16,14 +15,14 @@ namespace Timesheet.Business.Extensions
         }
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<IDocumentManager, DocumentManager>();
-            services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<ITimesheetService, TimesheetService>();
-            services.AddScoped<IJobService, JobService>();
-            services.AddScoped<ISectionService, SectionService>();
-            services.AddScoped<IFinanceService, FinanceService>();
-            services.AddScoped<IPersonService, PersonService>();
-            services.AddScoped<IRewardSummaryService, RewardSummaryService>();
+            services.AddScoped<DocumentManager>();
+            services.AddScoped<PaymentService>();
+            services.AddScoped<TimesheetService>();
+            services.AddScoped<JobService>();
+            services.AddScoped<SectionService>();
+            services.AddScoped<FinanceService>();
+            services.AddScoped<PersonService>();
+            services.AddScoped<RewardSummaryService>();
             services.AddScoped<IImportManager, ImportManager>();
             return services;
         }

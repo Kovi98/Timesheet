@@ -197,7 +197,5 @@ namespace Timesheet.Business
                 .FirstOrDefault(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.Name == timesheet.Person.Name && x.Person.Surname == timesheet.Person.Surname);
             return ts == null;
         }
-
-        public List<>
     }
 }

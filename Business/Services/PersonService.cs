@@ -7,7 +7,7 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class PersonService : EntityServiceBase<Person>, IPersonService
+    public class PersonService : EntityServiceBase<Person>
     {
         public PersonService(TimesheetContext context) : base(context)
         {

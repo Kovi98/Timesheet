@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.Finances.Pages
@@ -14,9 +15,9 @@ namespace Portal.Areas.Finances.Pages
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly IFinanceService _financeService;
+        private readonly FinanceService _financeService;
 
-        public IndexModel(IFinanceService financeService)
+        public IndexModel(FinanceService financeService)
         {
             _financeService = financeService;
         }

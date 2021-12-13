@@ -6,7 +6,7 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class JobService : EntityServiceBase<Job>, IJobService
+    public class JobService : EntityServiceBase<Job>
     {
         public JobService(TimesheetContext context) : base(context)
         {

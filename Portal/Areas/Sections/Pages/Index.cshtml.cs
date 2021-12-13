@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.Sections.Pages
@@ -14,9 +15,9 @@ namespace Portal.Areas.Sections.Pages
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly ISectionService _sectionService;
+        private readonly SectionService _sectionService;
 
-        public IndexModel(ISectionService sectionService)
+        public IndexModel(SectionService sectionService)
         {
             _sectionService = sectionService;
         }

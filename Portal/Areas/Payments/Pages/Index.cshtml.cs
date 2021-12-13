@@ -8,16 +8,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.Payments.Pages
 {
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly IPaymentService _paymentService;
-        private readonly ITimesheetService _timesheetService;
+        private readonly PaymentService _paymentService;
+        private readonly TimesheetService _timesheetService;
 
-        public IndexModel(IPaymentService paymentService, ITimesheetService timesheetService)
+        public IndexModel(PaymentService paymentService, TimesheetService timesheetService)
         {
             _paymentService = paymentService;
             _timesheetService = timesheetService;

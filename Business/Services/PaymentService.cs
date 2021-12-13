@@ -7,14 +7,12 @@ using Timesheet.Db;
 
 namespace Timesheet.Business
 {
-    public class PaymentService : EntityServiceBase<Payment>, IPaymentService
+    public class PaymentService : EntityServiceBase<Payment>
     {
         private readonly PaymentOptions _paymentOptions;
-        private readonly TimesheetContext _context;
         public PaymentService(IOptions<PaymentOptions> paymentOptions, TimesheetContext context) : base(context)
         {
             _paymentOptions = paymentOptions.Value;
-            _context = context;
         }
 
         public override async Task<Payment> GetAsync(int id)

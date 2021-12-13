@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
 
 namespace Portal.Areas.Jobs.Pages
@@ -14,9 +15,9 @@ namespace Portal.Areas.Jobs.Pages
     [Authorize(Policy = "AdminPolicy")]
     public class IndexModel : PageModel, ILoadablePage
     {
-        private readonly IJobService _jobService;
+        private readonly JobService _jobService;
 
-        public IndexModel(IJobService jobService)
+        public IndexModel(JobService jobService)
         {
             _jobService = jobService;
         }
