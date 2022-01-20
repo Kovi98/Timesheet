@@ -13,17 +13,7 @@
 @{
     ViewData["Title"] = "Platby";
 }
-@{
-    if (ViewData.ModelState["Error"] != null)
-    {
-        foreach (var item in ViewData.ModelState["Error"].Errors)
-        {
-            <script>
-                toastr.error("@item.ErrorMessage");
-            </script>
-        }
-    }
-}
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -411,4 +401,15 @@
             window.location.reload();
         }
     </script>
+    @{
+        if (ViewData.ModelState["Error"] != null)
+        {
+            foreach (var item in ViewData.ModelState["Error"].Errors)
+            {
+                    <script>
+                toastr.error("@item.ErrorMessage");
+                    </script>
+            }
+        }
+    }
 }

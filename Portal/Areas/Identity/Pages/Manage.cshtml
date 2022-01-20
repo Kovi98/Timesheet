@@ -4,26 +4,6 @@
     ViewData["Title"] = "Správa uživatelů";
 }
 
-@{
-    if (ViewData.ModelState["Error"] != null)
-    {
-        foreach (var item in ViewData.ModelState["Error"].Errors)
-        {
-            <script>
-                toastr.error("@item.ErrorMessage");
-            </script>
-        }
-    }
-    if (ViewData.ModelState["Success"] != null)
-    {
-        foreach (var item in ViewData.ModelState["Success"].Errors)
-        {
-            <script>
-                toastr.success("@item.ErrorMessage");
-            </script>
-        }
-    }
-}
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -67,15 +47,15 @@
                                 <td class="project-state">
                                     @if (await Model.IsAdminAsync(item))
                                     {
-                                    <span class="badge badge-warning">Správce</span>
+                                        <span class="badge badge-warning">Správce</span>
                                     }
                                     else if (await Model.IsActiveAsync(item))
                                     {
-                                    <span class="badge badge-success">Aktivní</span>
+                                        <span class="badge badge-success">Aktivní</span>
                                     }
                                     else
                                     {
-                                    <span class="badge badge-danger">Neaktivní</span>
+                                        <span class="badge badge-danger">Neaktivní</span>
                                     }
                                 </td>
                                 <td>
@@ -157,4 +137,25 @@
             });
         });
     </script>
+
+    @{
+        if (ViewData.ModelState["Error"] != null)
+        {
+            foreach (var item in ViewData.ModelState["Error"].Errors)
+            {
+        <script>
+                toastr.error("@item.ErrorMessage");
+        </script>
+            }
+        }
+        if (ViewData.ModelState["Success"] != null)
+        {
+            foreach (var item in ViewData.ModelState["Success"].Errors)
+            {
+                <script>
+                    toastr.success("@item.ErrorMessage");
+                </script>
+            }
+        }
+    }
 }

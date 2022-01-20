@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Portal.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Portal.Areas.Identity.Pages
 {
@@ -54,6 +52,15 @@ namespace Portal.Areas.Identity.Pages
                 var user = await _userManager.FindByIdAsync(id.ToString());
                 if (user == null)
                     return Page();
+
+                var numberOfAdmins = (await _userManager.GetUsersInRoleAsync(Roles.Member.ToString())).Count;
+                if (numberOfAdmins <= 1)
+                {
+                    ModelState.AddModelError("Error", "Není možné odebrat posledního správce!");
+                    Users = await _userManager.Users.AsNoTracking().ToListAsync();
+                    return Page();
+                }
+
                 await _userManager.RemoveFromRoleAsync(user, Roles.Member.ToString());
             }
             catch
@@ -87,6 +94,15 @@ namespace Portal.Areas.Identity.Pages
                 var user = await _userManager.FindByIdAsync(id.ToString());
                 if (user == null)
                     return Page();
+
+                var numberOfAdmins = (await _userManager.GetUsersInRoleAsync(Roles.Member.ToString())).Count;
+                if (numberOfAdmins <= 1)
+                {
+                    ModelState.AddModelError("Error", "Není možné odebrat posledního správce!");
+                    Users = await _userManager.Users.AsNoTracking().ToListAsync();
+                    return Page();
+                }
+
                 await _userManager.RemoveFromRoleAsync(user, Roles.Admin.ToString());
             }
             catch
