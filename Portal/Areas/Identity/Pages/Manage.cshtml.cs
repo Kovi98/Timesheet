@@ -53,10 +53,9 @@ namespace Portal.Areas.Identity.Pages
                 if (user == null)
                     return Page();
 
-                var numberOfAdmins = (await _userManager.GetUsersInRoleAsync(Roles.Member.ToString())).Count;
-                if (numberOfAdmins <= 1)
+                if (await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(id.ToString()), Roles.Admin.ToString()))
                 {
-                    ModelState.AddModelError("Error", "Není možné deaktivovat posledního správce!");
+                    ModelState.AddModelError("Error", "Není možné deaktivovat správce!");
                     Users = await _userManager.Users.AsNoTracking().ToListAsync();
                     return Page();
                 }
@@ -95,8 +94,8 @@ namespace Portal.Areas.Identity.Pages
                 if (user == null)
                     return Page();
 
-                var numberOfAdmins = (await _userManager.GetUsersInRoleAsync(Roles.Member.ToString())).Count;
-                if (numberOfAdmins <= 1)
+                var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin.ToString());
+                if (admins.Count <= 1)
                 {
                     ModelState.AddModelError("Error", "Není možné odebrat posledního správce!");
                     Users = await _userManager.Users.AsNoTracking().ToListAsync();

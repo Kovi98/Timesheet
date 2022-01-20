@@ -81,11 +81,20 @@
 
                                     @if (await Model.IsActiveAsync(item))
                                     {
-                                        <form class="ml-2" method="post" asp-route-id="@item.Id" asp-page-handler="Deactivate">
-                                            <button class="btn btn-danger" type="submit">
-                                                <i class="fas fa-times"></i> Deaktivovat
-                                            </button>
-                                        </form>
+                                <form class="ml-2" method="post" asp-route-id="@item.Id" asp-page-handler="Deactivate">
+                                    @if (await Model.IsAdminAsync(item))
+                                    {
+                                        <button class="btn btn-danger" type="submit" disabled title="Není možné deaktivovat správce">
+                                            <i class="fas fa-times"></i> Deaktivovat
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-danger" type="submit">
+                                            <i class="fas fa-times"></i> Deaktivovat
+                                        </button>
+                                    }
+                                </form>
                                     }
                                     else
                                     {
