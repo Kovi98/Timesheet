@@ -9,5 +9,6 @@ namespace Timesheet.Common.Interfaces
         List<TimesheetImport> ConvertTimesheets(byte[] source);
         List<PersonImport> ConvertPeople(byte[] source);
         Task Import(List<TimesheetImport> import, bool overrideErrors);
+        Task Import(List<PersonImport> imports, bool overrideErrors);
     }
 }

@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CsvHelper;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -200,7 +202,131 @@ namespace Timesheet.Business
 
         public List<PersonImport> ConvertPeople(byte[] source)
         {
-            throw new NotImplementedException();
+            using var memoryStream = new MemoryStream(source);
+            using var streamReader = new StreamReader(memoryStream);
+            using var csvReader = new CsvReader(streamReader, System.Globalization.CultureInfo.InvariantCulture);
+
+            var records = csvReader.GetRecords<PersonImportDto>();
+            var imports = new List<PersonImport>();
+
+            foreach (var record in records)
+            {
+                List<PersonImportError> errors = new List<PersonImportError>();
+
+                DateTime dateBirth = DateTime.MinValue;
+                try
+                {
+                    dateBirth = DateTime.Parse(record.DateBirth, new CultureInfo("cs-CZ"));
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(PersonImportError.DateBirthBadFormat);
+                }
+
+                bool isActive = false;
+                if (record.IsActive == "Y" || record.IsActive == "N")
+                    isActive = record.IsActive == "A";
+                else if (string.IsNullOrEmpty(record.IsActive))
+                    errors.Add(PersonImportError.IsActiveMissing);
+                else
+                    errors.Add(PersonImportError.IsActiveBadFormat);
+
+                bool hasTax = false;
+                if (record.HasTax == "Y" || record.HasTax == "N")
+                    hasTax = record.HasTax == "A";
+                else if (string.IsNullOrEmpty(record.HasTax))
+                    errors.Add(PersonImportError.HasTaxMissing);
+                else
+                    errors.Add(PersonImportError.HasTaxBadFormat);
+
+                int? job = null;
+                if (string.IsNullOrEmpty(record.Job))
+                    errors.Add(PersonImportError.JobMissing);
+                else
+                {
+                    var jobExists = _context.Job.Where(x => x.Name.ToLower() == record.Job.ToLower()).Any();
+                    if (jobExists)
+                        job = _context.Job.Where(x => x.Name.ToLower() == record.Job.ToLower()).Select(x => x.Id).FirstOrDefault();
+                    else
+                        errors.Add(PersonImportError.JobUndefined);
+                }
+
+                int? paidFrom = null;
+                if (string.IsNullOrEmpty(record.PaidFrom))
+                    errors.Add(PersonImportError.PaidFromMissing);
+                else
+                {
+                    var financeExists = _context.Finance.Where(x => x.Name.ToLower() == record.PaidFrom.ToLower()).Any();
+                    if (financeExists)
+                        paidFrom = _context.Finance.Where(x => x.Name.ToLower() == record.PaidFrom.ToLower()).Select(x => x.Id).FirstOrDefault();
+                    else
+                        errors.Add(PersonImportError.PaidFromUndefined);
+                }
+
+                int? section = null;
+                if (string.IsNullOrEmpty(record.Section))
+                    errors.Add(PersonImportError.SectionMissing);
+                else
+                {
+                    var sectionExists = _context.Section.Where(x => x.Name.ToLower() == record.Section.ToLower()).Any();
+                    if (sectionExists)
+                        section = _context.Section.Where(x => x.Name.ToLower() == record.Section.ToLower()).Select(x => x.Id).FirstOrDefault();
+                    else
+                        errors.Add(PersonImportError.SectionUndefined);
+                }
+
+                var person = new Person()
+                {
+                    Name = record.Name,
+                    Surname = record.Surname,
+                    DateBirth = dateBirth,
+                    BankAccount = record.BankAccount,
+                    BankCode = record.BankCode,
+                    Street = record.Street,
+                    HouseNumber = record.HouseNumber,
+                    State = record.State,
+                    PostalCode = record.PostalCode,
+                    IdentityDocument = record.IdentityDocument,
+                    IsActive = isActive,
+                    HasTax = hasTax,
+                    SectionId = section ?? 0,
+                    PaidFromId = paidFrom ?? 0,
+                    JobId = job ?? 0
+                };
+
+                if (string.IsNullOrEmpty(person.Name))
+                    errors.Add(PersonImportError.NameMissing);
+                if (string.IsNullOrEmpty(person.Surname))
+                    errors.Add(PersonImportError.SurnameMissing);
+
+                var import = new PersonImport(person, errors);
+                imports.Add(import);
+            }
+            return imports;
+        }
+        public async Task Import(List<PersonImport> imports, bool overrideErrors)
+        {
+            var defaultList = imports;
+            var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                if (!overrideErrors)
+                {
+                    imports = imports.Where(x => x.Success).ToList();
+                }
+                else
+                {
+                    imports = imports.Where(x => x.CanPassErrors).ToList();
+                }
+                await _context.Person.AddRangeAsync(imports.Select(x => x.Entity));
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                imports = defaultList;
+                throw e;
+            }
         }
     }
 }

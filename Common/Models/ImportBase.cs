@@ -1,20 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Timesheet.Common.Models
 {
     public abstract class ImportBase<TEntity, TError>
         where TEntity : class, IEntity
-        where TError : struct
+        where TError : struct, Enum
     {
         public bool Success { get; set; }
         public abstract bool CanPassErrors { get; }
         public TEntity Entity { get; set; }
-        public List<TError> Errors { get; set; }
-        public ImportBase(TEntity entity, List<TError> errors = null)
+        public ICollection<TError> Errors { get; set; }
+        public ImportBase(TEntity entity, ICollection<TError> errors = null)
         {
             Entity = entity;
             Success = errors == null || errors.Count == 0;
-            Errors = errors ?? new List<TError>();
+            Errors = errors ?? new HashSet<TError>();
         }
         public void AddError(TError error)
         {
