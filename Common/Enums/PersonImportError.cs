@@ -15,6 +15,7 @@
         PaidFromMissing,
         PaidFromUndefined,
         JobMissing,
-        JobUndefined
+        JobUndefined,
+        PersonNotUnique
     }
 }

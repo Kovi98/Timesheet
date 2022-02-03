@@ -2,14 +2,14 @@
 @model Portal.Areas.Settings.Pages.Import.PersonModel
 @using Timesheet.Common.Enums;
 @{
-    ViewData["Title"] = "Import";
+    ViewData["Title"] = "Import trenérů";
 }
 
 <div id="row-edit" class="row">
     <div class="col-12">
         <div id="card-edit" class="card card-success">
             <div class="card-header">
-                <h3 class="card-title">Excel</h3>
+                <h3 class="card-title">Csv</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
@@ -40,7 +40,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Načtené výkazy práce</h3>
+                    <h3 class="card-title">Načtení trenéři</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                             <i class="fas fa-minus"></i>
@@ -57,19 +57,49 @@
 
                                         </th>
                                         <th>
-                                            Trenér
+                                            Aktivní
                                         </th>
                                         <th>
-                                            Začátek
+                                            Jméno
                                         </th>
                                         <th>
-                                            Konec
+                                            Datum narození
                                         </th>
                                         <th>
-                                            Funkce
+                                            Sekce
                                         </th>
                                         <th>
-                                            Upozornění
+                                            Dotace
+                                        </th>
+                                        <th>
+                                            Pozice
+                                        </th>
+                                        <th>
+                                            Daň
+                                        </th>
+                                        <th>
+                                            Ulice
+                                        </th>
+                                        <th>
+                                            č. p. 
+                                        </th>
+                                        <th>
+                                            Město
+                                        </th>
+                                        <th>
+                                            PSČ
+                                        </th>
+                                        <th>
+                                            Stát
+                                        </th>
+                                        <th>
+                                            Číslo účtu
+                                        </th>
+                                        <th>
+                                            Číslo osobního dokladu
+                                        </th>
+                                        <th>
+
                                         </th>
                                     </tr>
                                 </thead>
@@ -95,16 +125,64 @@
                                                 }
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Entity.Person.FullName)
+                                                @{
+                                                    if (item.Entity.IsActive)
+                                                    {
+                                                        <span class="badge badge-success">Aktivní</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-warning">Neaktivní</span>
+                                                    }
+                                                }
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Entity.DateTimeFrom)
+                                                @Html.DisplayFor(modelItem => item.Entity.FullName)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Entity.DateTimeTo)
+                                                @Html.DisplayFor(modelItem => item.Entity.DateBirth)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.Section.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.PaidFrom.Name)
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Entity.Job.Name)
+                                            </td>
+                                            <td>
+                                                @{
+                                                    if (item.Entity.HasTax)
+                                                    {
+                                                        <span class="badge badge-warning">Plátce</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-success">Podepsané prohlášení</span>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.Street)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.HouseNumber)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.City)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.PostalCode)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.State)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.FullBankAccount)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Entity.IdentityDocument)
                                             </td>
                                             <td>
                                                 @{
@@ -112,26 +190,38 @@
                                                     {
                                                         switch (x)
                                                         {
+                                                            case PersonImportError.DateBirthMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o datu narození chybí">Datum narození</span>
+                                                                break;
+                                                            case PersonImportError.DateBirthBadFormat:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o datu narození má chybný format">Datum narození</span>
+                                                                break;
+                                                            case PersonImportError.IsActiveMissing:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o aktivnosti chybí">Aktivní</span>
+                                                                break;
+                                                            case PersonImportError.IsActiveBadFormat:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o aktivností má chybný formát">Aktivní</span>
+                                                                break;
+                                                            case PersonImportError.HasTaxMissing:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o placení daní chybí">Daň</span>
+                                                                break;
+                                                            case PersonImportError.HasTaxBadFormat:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o placení daní má chybný formát">Daň</span>
+                                                                break;
+                                                            case PersonImportError.NameMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o jménu chybí">Jméno</span>
+                                                                break;
+                                                            case PersonImportError.SurnameMissing:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o příjmení chybí">Příjmení</span>
+                                                                break;
                                                             case PersonImportError.JobMissing:
                                                                 <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o pozici chybí">Pozice</span>
                                                                 break;
                                                             case PersonImportError.JobUndefined:
-                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněná pozice neexistuje">Pozice</span>
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Vyplněná pozice neexistuje">Pozice</span>
                                                                 break;
-                                                            case PersonImportError.PersonMissing:
-                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o trenérovi chybí">Trenér</span>
-                                                                break;
-                                                            case PersonImportError.PersonUndefined:
-                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněný trenér neexistuje">Trenér</span>
-                                                                break;
-                                                            case PersonImportError.DateTimeFromMissing:
-                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o začátku chybí">Začátek</span>
-                                                                break;
-                                                            case PersonImportError.DateTimeToMissing:
-                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o konci chybí">Konec</span>
-                                                                break;
-                                                            case PersonImportError.TimesheetNotUnique:
-                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Takový výkaz již existuje">Duplicitní</span>
+                                                            case PersonImportError.PersonNotUnique:
+                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Takový trenér již existuje">Duplicitní</span>
                                                                 break;
                                                         }
                                                     }
@@ -145,7 +235,7 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12">
-                            <a asp-page="./Import/Timesheet" class="btn btn-default">
+                            <a asp-page="./Import/Person" class="btn btn-default">
                                  Zrušit
                             </a>
                             <div class="float-right">

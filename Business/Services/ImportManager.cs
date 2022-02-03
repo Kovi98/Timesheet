@@ -298,6 +298,12 @@ namespace Timesheet.Business
                     errors.Add(PersonImportError.NameMissing);
                 if (string.IsNullOrEmpty(person.Surname))
                     errors.Add(PersonImportError.SurnameMissing);
+                var isSamePerson = _context.Person.Where(
+                    x => x.Name.ToLower() == person.Name.ToLower()
+                    && x.Surname.ToLower() == person.Surname.ToLower()
+                    && x.DateBirth == person.DateBirth).Any();
+                if (isSamePerson)
+                    errors.Add(PersonImportError.PersonNotUnique);
 
                 var import = new PersonImport(person, errors);
                 imports.Add(import);
