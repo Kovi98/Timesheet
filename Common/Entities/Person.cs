@@ -93,7 +93,7 @@ namespace Timesheet.Common
         public string FullName => Name + " " + Surname;
 
         [Display(Name = "Číslo bankovního účtu")]
-        public string FullBankAccount => $"{BankAccount ?? "XXX"}/{BankCode ?? "XXX"}";
+        public string FullBankAccount => $"{BankAccount}/{BankCode}";
 
         [Display(Name = "Adresa")]
         public string FullAddress => Street + " " + HouseNumber + ", " + PostalCode + " " + City;
