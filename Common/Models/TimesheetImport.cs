@@ -9,7 +9,13 @@ namespace Timesheet.Common.Models
         {
         }
 
-        public override bool CanPassErrors => !(Errors.Contains(TimesheetImportError.DateTimeFromMissing) || Errors.Contains(TimesheetImportError.DateTimeToMissing) || Errors.Contains(TimesheetImportError.JobMissing) || Errors.Contains(TimesheetImportError.PersonMissing) || Errors.Contains(TimesheetImportError.TimesheetNotUnique));
-
+        public override ICollection<TimesheetImportError> NotPassableErrors => new[]
+        {
+            TimesheetImportError.DateTimeFromMissing,
+            TimesheetImportError.DateTimeToMissing,
+            TimesheetImportError.JobMissing,
+            TimesheetImportError.PersonMissing,
+            TimesheetImportError.TimesheetNotUnique
+        };
     }
 }

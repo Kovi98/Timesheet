@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Timesheet.Common.Models
 {
@@ -8,7 +9,8 @@ namespace Timesheet.Common.Models
         where TError : struct, Enum
     {
         public bool Success { get; set; }
-        public abstract bool CanPassErrors { get; }
+        public abstract ICollection<TError> NotPassableErrors { get; }
+        public virtual bool CanPassErrors => !Errors.Any(x => NotPassableErrors.Contains(x));
         public TEntity Entity { get; set; }
         public ICollection<TError> Errors { get; set; }
         public ImportBase(TEntity entity, ICollection<TError> errors = null)

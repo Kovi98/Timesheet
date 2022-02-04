@@ -9,6 +9,12 @@ namespace Timesheet.Common.Models
         {
         }
 
-        public override bool CanPassErrors => throw new System.NotImplementedException();
+        public override ICollection<PersonImportError> NotPassableErrors => new[]
+        {
+            PersonImportError.NameMissing,
+            PersonImportError.SurnameMissing,
+            PersonImportError.DateBirthBadFormat,
+            PersonImportError.DateBirthMissing
+        };
     }
 }

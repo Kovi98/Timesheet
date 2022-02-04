@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System;
@@ -204,9 +205,15 @@ namespace Timesheet.Business
         {
             using var memoryStream = new MemoryStream(source);
             using var streamReader = new StreamReader(memoryStream);
-            using var csvReader = new CsvReader(streamReader, System.Globalization.CultureInfo.InvariantCulture);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                Delimiter = ";"
+            };
+            using var csvReader = new CsvReader(streamReader, config);
+            csvReader.Context.RegisterClassMap<PersonImportMap>();
 
-            var records = csvReader.GetRecords<PersonImportDto>();
+            var records = csvReader.GetRecords<PersonImportDto>().ToList();
             var imports = new List<PersonImport>();
 
             foreach (var record in records)
