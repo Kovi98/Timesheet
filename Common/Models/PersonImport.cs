@@ -15,6 +15,7 @@ namespace Timesheet.Common.Models
             PersonImportError.SurnameMissing,
             PersonImportError.DateBirthBadFormat,
             PersonImportError.DateBirthMissing,
+            PersonImportError.PersonNotUnique
         };
     }
 }

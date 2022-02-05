@@ -93,9 +93,29 @@ namespace Timesheet.Common
         public string FullName => Name + " " + Surname;
 
         [Display(Name = "Číslo bankovního účtu")]
-        public string FullBankAccount => $"{BankAccount}/{BankCode}";
+        public string FullBankAccount
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(BankAccount))
+                    return BankCode;
+                else if (string.IsNullOrEmpty(BankCode))
+                    return BankAccount;
+                return $"{BankAccount}/{BankCode}";
+            }
+        }
 
         [Display(Name = "Adresa")]
-        public string FullAddress => Street + " " + HouseNumber + ", " + PostalCode + " " + City;
+        public string FullAddress
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Street) || string.IsNullOrEmpty(HouseNumber))
+                    return $"{PostalCode} {City}".Trim();
+                else if (string.IsNullOrEmpty(PostalCode) || string.IsNullOrEmpty(City))
+                    return $"{Street} {HouseNumber}".Trim();
+                return $"{Street} {HouseNumber}, {PostalCode} {City}";
+            }
+        }
     }
 }

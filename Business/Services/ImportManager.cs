@@ -195,10 +195,13 @@ namespace Timesheet.Business
 
         private bool IsUnique(Common.Timesheet timesheet)
         {
-            var ts = _context.Timesheet
+            return !_context.Timesheet
                 .Include(x => x.Person)
-                .FirstOrDefault(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.Name == timesheet.Person.Name && x.Person.Surname == timesheet.Person.Surname);
-            return ts == null;
+                .Any(x => x.DateTimeFrom == timesheet.DateTimeFrom && x.DateTimeTo == timesheet.DateTimeTo && x.Person.Name.ToLower() == timesheet.Person.Name.ToLower() && x.Person.Surname.ToLower() == timesheet.Person.Surname.ToLower());
+        }
+        private bool IsUnique(Person person)
+        {
+            return !_context.Person.Any(x => x.Name.ToLower() == person.Name.ToLower() && x.Surname.ToLower() == person.Surname.ToLower());
         }
 
         public List<PersonImport> ConvertPeople(byte[] source)
@@ -305,11 +308,7 @@ namespace Timesheet.Business
                     errors.Add(PersonImportError.NameMissing);
                 if (string.IsNullOrEmpty(person.Surname))
                     errors.Add(PersonImportError.SurnameMissing);
-                var isSamePerson = _context.Person.Where(
-                    x => x.Name.ToLower() == person.Name.ToLower()
-                    && x.Surname.ToLower() == person.Surname.ToLower()
-                    && x.DateBirth == person.DateBirth).Any();
-                if (isSamePerson)
+                if (!IsUnique(person))
                     errors.Add(PersonImportError.PersonNotUnique);
 
                 var import = new PersonImport(person, errors);
