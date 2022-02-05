@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Common;
@@ -56,6 +58,37 @@ namespace Timesheet.Entity.Data
                 new Section{Name = "vedoucí týmů", CreateTime = DateTime.Now}
                 };
                 context.Section.AddRange(sections);
+            }
+
+            context.SaveChanges();
+        }
+
+        public static async Task InitializeContractAsync(TimesheetContext context, IConfiguration config)
+        {
+            //context.Database.EnsureCreated();
+            // Look for any migrations
+            if (context.Database.GetPendingMigrations().Any())
+                await context.Database.MigrateAsync();
+
+            var path = config.GetValue<string>("Contracts:DefaultTemplatePath");
+            if (!File.Exists(path))
+                return;
+            var file = new FileInfo(path);
+            using var fileStream = file.OpenRead();
+            using var ms = new MemoryStream();
+            fileStream.CopyTo(ms);
+
+            if (!context.DocumentStorage.Any())
+            {
+                var contract = new DocumentStorage()
+                {
+                    IsDefault = true,
+                    DocumentName = file.Name,
+                    Name = "Primární pracovní smlouva",
+                    DocumentSource = ms.ToArray(),
+                    CreateTime = DateTime.Now
+                };
+                context.Add(contract);
             }
 
             context.SaveChanges();

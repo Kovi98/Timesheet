@@ -9,7 +9,7 @@ namespace Timesheet.Common.Models
         {
         }
 
-        public override ICollection<TimesheetImportError> NotPassableErrors => new[]
+        public override ICollection<TimesheetImportError> NotPassableErrors => new List<TimesheetImportError>()
         {
             TimesheetImportError.DateTimeFromMissing,
             TimesheetImportError.DateTimeToMissing,

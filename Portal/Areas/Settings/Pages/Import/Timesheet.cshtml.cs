@@ -84,15 +84,16 @@ namespace Portal.Areas.Settings.Pages.Import
         }
         public async Task<IActionResult> OnPostSaveAsync()
         {
-            TimesheetImport = JsonConvert.DeserializeObject<List<TimesheetImport>>(TimesheetImportJSON);
             try
             {
+                TimesheetImport = JsonConvert.DeserializeObject<List<TimesheetImport>>(TimesheetImportJSON);
                 await _importManager.Import(TimesheetImport, OverrideErrors);
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Pøi importu nastala chyba");
+                TimesheetImport = null;
                 return await this.PageWithError("Pøi naèítání dat nastala chyba.");
             }
             TimesheetImport = null;

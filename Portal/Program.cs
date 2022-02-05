@@ -60,6 +60,7 @@ namespace Portal
         {
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
+            //timesheet data
             try
             {
                 var contextTimesheet = services.GetRequiredService<TimesheetContext>();
@@ -70,7 +71,19 @@ namespace Portal
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError(ex, "An error occurred creating the DB.");
             }
-
+            //default contract
+            try
+            {
+                var contextTimesheet = services.GetRequiredService<TimesheetContext>();
+                var config = services.GetRequiredService<IConfiguration>();
+                await DbInitializer.InitializeContractAsync(contextTimesheet, config);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred creating the DB.");
+            }
+            //users data
             try
             {
                 var contextIdentity = services.GetRequiredService<ApplicationDbContext>();
@@ -81,7 +94,6 @@ namespace Portal
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError(ex, "An error occurred creating the DB.");
             }
-
             try
             {
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();

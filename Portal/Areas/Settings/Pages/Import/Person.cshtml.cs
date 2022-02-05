@@ -84,15 +84,16 @@ namespace Portal.Areas.Settings.Pages.Import
         }
         public async Task<IActionResult> OnPostSaveAsync()
         {
-            PersonImport = JsonConvert.DeserializeObject<List<PersonImport>>(PersonImportJSON);
             try
             {
+                PersonImport = JsonConvert.DeserializeObject<List<PersonImport>>(PersonImportJSON);
                 await _importManager.Import(PersonImport, OverrideErrors);
                 ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", PersonImport.Count()));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Pøi importu nastala chyba");
+                PersonImport = null;
                 return await this.PageWithError("Pøi importu nastala chyba");
             }
             PersonImport = null;

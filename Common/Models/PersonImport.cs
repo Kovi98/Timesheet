@@ -9,12 +9,12 @@ namespace Timesheet.Common.Models
         {
         }
 
-        public override ICollection<PersonImportError> NotPassableErrors => new[]
+        public override ICollection<PersonImportError> NotPassableErrors => new List<PersonImportError>()
         {
             PersonImportError.NameMissing,
             PersonImportError.SurnameMissing,
             PersonImportError.DateBirthBadFormat,
-            PersonImportError.DateBirthMissing
+            PersonImportError.DateBirthMissing,
         };
     }
 }

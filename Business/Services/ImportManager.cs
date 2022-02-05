@@ -18,7 +18,7 @@ namespace Timesheet.Business
 {
     public class ImportManager : IImportManager
     {
-        private TimesheetContext _context { get; set; }
+        private TimesheetContext _context;
         public ImportManager(TimesheetContext context)
         {
             _context = context;
@@ -246,38 +246,38 @@ namespace Timesheet.Business
                 else
                     errors.Add(PersonImportError.HasTaxBadFormat);
 
-                int? job = null;
+                Job job = null;
                 if (string.IsNullOrEmpty(record.Job))
                     errors.Add(PersonImportError.JobMissing);
                 else
                 {
                     var jobExists = _context.Job.Where(x => x.Name.ToLower() == record.Job.ToLower()).Any();
                     if (jobExists)
-                        job = _context.Job.Where(x => x.Name.ToLower() == record.Job.ToLower()).Select(x => x.Id).FirstOrDefault();
+                        job = _context.Job.Where(x => x.Name.ToLower() == record.Job.ToLower()).AsNoTracking().FirstOrDefault();
                     else
                         errors.Add(PersonImportError.JobUndefined);
                 }
 
-                int? paidFrom = null;
+                Finance paidFrom = null;
                 if (string.IsNullOrEmpty(record.PaidFrom))
                     errors.Add(PersonImportError.PaidFromMissing);
                 else
                 {
                     var financeExists = _context.Finance.Where(x => x.Name.ToLower() == record.PaidFrom.ToLower()).Any();
                     if (financeExists)
-                        paidFrom = _context.Finance.Where(x => x.Name.ToLower() == record.PaidFrom.ToLower()).Select(x => x.Id).FirstOrDefault();
+                        paidFrom = _context.Finance.Where(x => x.Name.ToLower() == record.PaidFrom.ToLower()).AsNoTracking().FirstOrDefault();
                     else
                         errors.Add(PersonImportError.PaidFromUndefined);
                 }
 
-                int? section = null;
+                Section section = null;
                 if (string.IsNullOrEmpty(record.Section))
                     errors.Add(PersonImportError.SectionMissing);
                 else
                 {
                     var sectionExists = _context.Section.Where(x => x.Name.ToLower() == record.Section.ToLower()).Any();
                     if (sectionExists)
-                        section = _context.Section.Where(x => x.Name.ToLower() == record.Section.ToLower()).Select(x => x.Id).FirstOrDefault();
+                        section = _context.Section.Where(x => x.Name.ToLower() == record.Section.ToLower()).AsNoTracking().FirstOrDefault();
                     else
                         errors.Add(PersonImportError.SectionUndefined);
                 }
@@ -296,9 +296,9 @@ namespace Timesheet.Business
                     IdentityDocument = record.IdentityDocument,
                     IsActive = isActive,
                     HasTax = hasTax,
-                    SectionId = section ?? 0,
-                    PaidFromId = paidFrom ?? 0,
-                    JobId = job ?? 0
+                    Section = section,
+                    PaidFrom = paidFrom,
+                    Job = job
                 };
 
                 if (string.IsNullOrEmpty(person.Name))
@@ -320,7 +320,6 @@ namespace Timesheet.Business
         public async Task Import(List<PersonImport> imports, bool overrideErrors)
         {
             var defaultList = imports;
-            var transaction = _context.Database.BeginTransaction();
             try
             {
                 if (!overrideErrors)
@@ -331,12 +330,19 @@ namespace Timesheet.Business
                 {
                     imports = imports.Where(x => x.CanPassErrors).ToList();
                 }
-                await _context.Person.AddRangeAsync(imports.Select(x => x.Entity));
+
+                imports.ForEach(x =>
+                {
+                    x.Entity.CreateTime = DateTime.Now;
+                    _context.Entry(x.Entity).State = EntityState.Added;
+                    x.Entity.Job = _context.Job.FirstOrDefault();
+                    x.Entity.PaidFrom = _context.Finance.FirstOrDefault();
+                    x.Entity.Section = _context.Section.FirstOrDefault();
+                });
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                transaction.Rollback();
                 imports = defaultList;
                 throw e;
             }

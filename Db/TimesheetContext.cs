@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Timesheet.Common;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
@@ -9,13 +10,15 @@ namespace Timesheet.Db
 {
     public partial class TimesheetContext : DbContext
     {
+        private ILoggerFactory _loggerFactory;
         public TimesheetContext()
         {
         }
 
-        public TimesheetContext(DbContextOptions<TimesheetContext> options)
+        public TimesheetContext(DbContextOptions<TimesheetContext> options, ILoggerFactory loggerFactory)
             : base(options)
         {
+            _loggerFactory = loggerFactory;
         }
 
         public virtual DbSet<Finance> Finance { get; set; }
@@ -33,6 +36,11 @@ namespace Timesheet.Db
             {
                 optionsBuilder.UseSqlServer("Name=ConnectionStrings:Timesheet");
             }
+
+#if DEBUG
+            optionsBuilder.UseLoggerFactory(_loggerFactory)  //tie-up DbContext with LoggerFactory object
+            .EnableSensitiveDataLogging();
+#endif
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
