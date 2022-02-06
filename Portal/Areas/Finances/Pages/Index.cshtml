@@ -62,11 +62,24 @@
                                         </i>
                                         Upravit
                                     </a>
-                                    <a id="href-delete-@item.Id" class="btn btn-danger btn-sm" onclick="deleteFinancesDetail(@item.Id)">
+                                    @{
+                                        if (item.Person?.Count != 0)
+                                        {
+                                            <button id="href-delete-@item.Id" class="btn btn-danger btn-sm" disabled title="Nelze smazat záznam, na který je navázán jiný záznam">
+                                        <i class="fas fa-trash">
+                                        </i>
+                                        Smazat
+                                    </button>
+                                        }
+                                        else
+                                        {
+                                            <a id="href-delete-@item.Id" class="btn btn-danger btn-sm" onclick="deleteFinancesDetail(@item.Id)">
                                         <i class="fas fa-trash">
                                         </i>
                                         Smazat
                                     </a>
+                                        }
+                                    }
                                 </td>
                             </tr>
                         }
@@ -166,17 +179,6 @@
 </div>
 
 @section Scripts {
-    @foreach (var item in Model.Finance)
-    {
-        @if (item.Person?.Count != 0)
-        {
-            <script>
-            $(document).ready(function () {
-                $('#href-delete-@item.Id').removeAttr('href').addClass('disabled').attr('aria-disabled', 'true');
-            });
-            </script>
-        }
-    }
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var dataTableFinance;

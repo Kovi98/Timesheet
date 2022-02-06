@@ -108,6 +108,9 @@ namespace Portal.Areas.Documents.Pages
 
             var documentStorageToDelete = await _docManager.GetAsync(id);
 
+            if (documentStorageToDelete?.IsDefault ?? false)
+                return BadRequest("Nelze smazat primární šablonu");
+
             try
             {
                 if (documentStorageToDelete != null)

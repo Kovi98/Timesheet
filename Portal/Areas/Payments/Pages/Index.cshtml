@@ -192,15 +192,28 @@
                                 }
                                 else
                                 {
-                                    string disabled = string.Empty;
-                                    @if (Model.PaymentDetail.Timesheet?.Count == 0)
-                                    {
-                                        disabled = "disabled";
-                                    }
                                     <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="Pay">
-                                        <button class="btn btn-success" type="submit" @disabled>
+                                        
+                                        @{
+                                            if (!Model.PaymentDetail.Timesheet.Any())
+                                            {
+                                                <button class="btn btn-success" type="submit" disabled title="Platba neobsahuje žádné výkazy">
                                             <i class="fas fa-money-check-alt"></i> Vygenerovat platební příkaz
                                         </button>
+                                            }
+                                            else if (Model.PaymentDetail.Timesheet.Any(x => string.IsNullOrEmpty(x.Person.BankAccount) || string.IsNullOrEmpty(x.Person.BankCode)))
+                                            {
+                                                <button class="btn btn-success" type="submit" disabled title="Platba obsahuje výkaz, jehož trenér nemá vyplněné údaje o bankovním účtu">
+                                            <i class="fas fa-money-check-alt"></i> Vygenerovat platební příkaz
+                                        </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-success" type="submit" >
+                                            <i class="fas fa-money-check-alt"></i> Vygenerovat platební příkaz
+                                        </button>
+                                            }
+                                        }
                                     </form>
                                 }
                             }

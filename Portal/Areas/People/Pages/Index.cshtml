@@ -157,15 +157,26 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Bankovní účet</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PersonDetail.BankAccount)/@Html.DisplayFor(model => model.PersonDetail.BankCode)</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PersonDetail.FullBankAccount)</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-4">
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">XXX</span>
-                                                <span class="info-box-number text-center text-muted mb-0">XXX</span>
+                                                <span class="info-box-text text-center text-muted">Daň</span>
+                                                <span class="info-box-number text-center text-muted mb-0">
+                                                    @{
+                                                        if (Model.PersonDetail.HasTax)
+                                                        {
+                                                            <span class="badge badge-warning">Plátce</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge badge-success">Podepsané prohlášení</span>
+                                                        }
+                                                    }
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

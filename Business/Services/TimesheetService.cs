@@ -67,6 +67,27 @@ namespace Timesheet.Business
                     .AsNoTracking().ToListAsync();
         }
 
+        public async Task<List<Common.Timesheet>> GetPaymentTimesheets(int paymentId, bool asNoTracking = true)
+        {
+            return asNoTracking
+                ? await _context.Timesheet
+                    .Include(t => t.Job)
+                    .Include(t => t.Payment)
+                    .Include(t => t.Person)
+                    .Include(t => t.Person.Section)
+                    .Include(t => t.Person.PaidFrom)
+                    .Where(x => x.PaymentId == paymentId)
+                    .AsNoTracking().ToListAsync()
+                : await _context.Timesheet
+                    .Include(t => t.Job)
+                    .Include(t => t.Payment)
+                    .Include(t => t.Person)
+                    .Include(t => t.Person.Section)
+                    .Include(t => t.Person.PaidFrom)
+                    .Where(x => x.PaymentId == paymentId)
+                    .AsNoTracking().ToListAsync();
+        }
+
         public override Task SaveAsync(Common.Timesheet entity)
         {
             if (!entity.Hours.HasValue && entity.DateTimeFrom != null && entity.DateTimeTo != null)
@@ -75,7 +96,7 @@ namespace Timesheet.Business
                 entity.Reward = entity.Hours * (_context.Job.Find(entity.JobId)?.HourReward);
             if (_context.Person.Find(entity.PersonId)?.HasTax ?? false)
             {
-                entity.Tax = Math.Truncate((entity.Reward ?? 0) * _options.Tax ?? 0);
+                entity.Tax = Math.Truncate((entity.Reward ?? 0) * (_options.Tax / 100) ?? 0);
             }
             else
             {
