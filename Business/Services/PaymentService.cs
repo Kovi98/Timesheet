@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Common;
 using Timesheet.Db;
@@ -37,6 +39,15 @@ namespace Timesheet.Business
         public bool TryPay(Payment payment)
         {
             return payment.TryCreatePaymentOrder(_paymentOptions.BankAccount);
+        }
+
+        public decimal GetPayedAmountInCurrentMonth()
+        {
+            return _context.Payment
+                .Include(x => x.Timesheet)
+                    .ThenInclude(x => x.Person)
+                    .ThenInclude(x => x.PaidFrom)
+                    .Where(p => p.PaymentDateTime != null && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Month == DateTime.Now.Month).Select(p => p.RewardToPay).ToList().Sum();
         }
     }
 

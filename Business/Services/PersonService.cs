@@ -58,5 +58,10 @@ namespace Timesheet.Business
                     .Where(p => p.IsActive)
                     .ToListAsync();
         }
+
+        public int GetNumberOfActive()
+        {
+            return _context.Person.Where(x => x.IsActive).Count();
+        }
     }
 }

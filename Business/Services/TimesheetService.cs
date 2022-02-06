@@ -104,5 +104,36 @@ namespace Timesheet.Business
             }
             return base.SaveAsync(entity);
         }
+
+        public int GetNumberOfNotPayed()
+        {
+            return _context.Timesheet
+                .Include(t => t.Job)
+                    .Include(t => t.Payment)
+                    .Include(t => t.Person)
+                    .Include(t => t.Person.Section)
+                    .Include(t => t.Person.PaidFrom)
+                .Where(t => t.Payment == null || t.Payment.PaymentDateTime == null).Count();
+        }
+        public decimal GetHoursThisMonth()
+        {
+            return _context.Timesheet
+                .Include(t => t.Job)
+                    .Include(t => t.Payment)
+                    .Include(t => t.Person)
+                    .Include(t => t.Person.Section)
+                    .Include(t => t.Person.PaidFrom)
+                    .Where(t => t.DateTimeTo.HasValue && t.DateTimeTo.Value.Year == DateTime.Now.Year && t.DateTimeTo.Value.Month == DateTime.Now.Month && t.Hours.HasValue).Select(t => t.Hours.Value).Sum();
+        }
+        public List<Timesheet.Common.Timesheet> GetLastFive()
+        {
+            return _context.Timesheet.AsNoTracking()
+                .Include(t => t.Job)
+                    .Include(t => t.Payment)
+                    .Include(t => t.Person)
+                    .Include(t => t.Person.Section)
+                    .Include(t => t.Person.PaidFrom)
+                    .Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5).ToList();
+        }
     }
 }

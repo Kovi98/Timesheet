@@ -9,7 +9,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>@Model.Timesheet.Where(t => t.DateTimeTo.HasValue && t.DateTimeTo.Value.Year == DateTime.Now.Year && t.DateTimeTo.Value.Month == DateTime.Now.Month && t.Hours.HasValue).Select(t => t.Hours.Value).Sum() <sup style="font-size: 20px"> h</sup></h3>
+                <h3>@Model.TimesheetsHoursInCurrentMonth <sup style="font-size: 20px"> h</sup></h3>
 
                 <p>Vykázaných hodin v aktuálním měsíci</p>
             </div>
@@ -24,7 +24,7 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>@Model.Payment.Where(p => p.IsPaid && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Year == DateTime.Now.Month).Select(p => p.RewardToPay).Sum() <sup style="font-size: 20px"> Kč</sup></h3>
+                <h3>@Model.PayedAmountInCurrentAmount <sup style="font-size: 20px"> Kč</sup></h3>
 
                 <p>Vyplacených odměn v aktuálním měsíci</p>
             </div>
@@ -39,7 +39,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>@Model.Person.Where(p => p.IsActive).Count()</h3>
+                <h3>@Model.ActivePeopleCount</h3>
 
                 <p>Aktivních trenérů</p>
             </div>
@@ -54,7 +54,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>@Model.Timesheet.Where(t => t.Payment == null || !t.Payment.IsPaid).Count()</h3>
+                <h3>@Model.TimesheetsWithoutPayedPayment</h3>
 
                 <p>Výkazů práce bez zaplacené odměny</p>
             </div>
@@ -99,7 +99,7 @@
                         </thead>
                         <tbody>
                             @{ 
-                                foreach (var item in Model.Timesheet.Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5))
+                                foreach (var item in Model.LastFiveTimesheets)
                                 {
                                     <tr>
                                         <td>

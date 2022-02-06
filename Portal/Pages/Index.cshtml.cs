@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Timesheet.Business;
-using Timesheet.Common;
 
 namespace Portal.Pages
 {
@@ -25,14 +23,11 @@ namespace Portal.Pages
             _paymentService = paymentService;
         }
 
-        [BindProperty]
-        public List<Timesheet.Common.Timesheet> Timesheet { get; set; }
-        [BindProperty]
-        public List<Person> Person { get; set; }
-        [BindProperty]
-        public List<RewardSummary> RewardSummary { get; set; }
-        [BindProperty]
-        public List<Payment> Payment { get; set; }
+        public int ActivePeopleCount { get; set; }
+        public decimal PayedAmountInCurrentAmount { get; set; }
+        public int TimesheetsWithoutPayedPayment { get; set; }
+        public decimal TimesheetsHoursInCurrentMonth { get; set; }
+        public List<Timesheet.Common.Timesheet> LastFiveTimesheets { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -41,10 +36,11 @@ namespace Portal.Pages
 
         public async Task LoadData()
         {
-            Timesheet = await _timesheetService.GetAsync();
-            Person = await _personService.GetAsync();
-            Payment = await _paymentService.GetAsync();
-            RewardSummary = await _rewardSummaryService.GetAsync();
+            PayedAmountInCurrentAmount = _paymentService.GetPayedAmountInCurrentMonth();
+            ActivePeopleCount = _personService.GetNumberOfActive();
+            TimesheetsWithoutPayedPayment = _timesheetService.GetNumberOfNotPayed();
+            TimesheetsHoursInCurrentMonth = _timesheetService.GetHoursThisMonth();
+            LastFiveTimesheets = _timesheetService.GetLastFive();
         }
     }
 }
