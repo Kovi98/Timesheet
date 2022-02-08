@@ -54,6 +54,10 @@ namespace Timesheet.Business
         {
             _context.Entry<T>(entity).State = EntityState.Modified;
         }
+        public virtual void SetUnchanged(T entity)
+        {
+            _context.Entry<T>(entity).State = EntityState.Unchanged;
+        }
     }
     public abstract class EntityReadonlyServiceBase<T> : IEntityReadonlyService<T> where T : class, IEntityView
     {

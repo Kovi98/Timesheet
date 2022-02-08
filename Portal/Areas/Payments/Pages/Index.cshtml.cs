@@ -55,18 +55,18 @@ namespace Portal.Areas.Payments.Pages
         {
             await LoadData();
             var payment = await _paymentService.GetAsync(id);
+            var freeTimesheets = await _timesheetService.GetFreesAsync();
             if (id > 0)
             {
                 PaymentDetail = payment;
                 TimesheetsSelected = payment.Timesheet.Select(x => x.Id).ToArray();
+                freeTimesheets.AddRange(payment.Timesheet);
             }
             else
             {
                 PaymentDetail = null;
             }
             IsEditable = true;
-            var freeTimesheets = await _timesheetService.GetFreesAsync();
-            freeTimesheets.AddRange(payment.Timesheet);
             Timesheets = new SelectList(freeTimesheets, "Id", "FriendlyName");
         }
 
@@ -113,6 +113,13 @@ namespace Portal.Areas.Payments.Pages
                         await _timesheetService.SaveAsync(timesheet);
                     }
                 }
+                else
+                {
+                    foreach (var timesheet in PaymentDetail.Timesheet)
+                    {
+                        _timesheetService.SetUnchanged(timesheet);
+                    }
+                }
                 await _paymentService.SaveAsync(PaymentDetail);
             }
             catch (DbUpdateConcurrencyException)
@@ -126,7 +133,7 @@ namespace Portal.Areas.Payments.Pages
                     throw;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return await this.PageWithError();
             }
