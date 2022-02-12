@@ -235,7 +235,7 @@ namespace Timesheet.Business
 
                 bool isActive = false;
                 if (record.IsActive == "Y" || record.IsActive == "N")
-                    isActive = record.IsActive == "A";
+                    isActive = record.IsActive == "Y";
                 else if (string.IsNullOrEmpty(record.IsActive))
                     errors.Add(PersonImportError.IsActiveMissing);
                 else
@@ -243,7 +243,7 @@ namespace Timesheet.Business
 
                 bool hasTax = false;
                 if (record.HasTax == "Y" || record.HasTax == "N")
-                    hasTax = record.HasTax == "A";
+                    hasTax = record.HasTax == "Y";
                 else if (string.IsNullOrEmpty(record.HasTax))
                     errors.Add(PersonImportError.HasTaxMissing);
                 else
