@@ -294,6 +294,7 @@ namespace Timesheet.Business
                     BankCode = record.BankCode,
                     Street = record.Street,
                     HouseNumber = record.HouseNumber,
+                    City = record.City,
                     State = record.State,
                     PostalCode = record.PostalCode,
                     IdentityDocument = record.IdentityDocument,
