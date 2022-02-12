@@ -336,9 +336,12 @@ namespace Timesheet.Business
                 {
                     x.Entity.CreateTime = DateTime.Now;
                     _context.Entry(x.Entity).State = EntityState.Added;
-                    x.Entity.Job = _context.Job.FirstOrDefault();
-                    x.Entity.PaidFrom = _context.Finance.FirstOrDefault();
-                    x.Entity.Section = _context.Section.FirstOrDefault();
+                    if (x.Entity.Job == null)
+                        x.Entity.Job = _context.Job.FirstOrDefault();
+                    if (x.Entity.PaidFrom == null)
+                        x.Entity.PaidFrom = _context.Finance.FirstOrDefault();
+                    if (x.Entity.Section == null)
+                        x.Entity.Section = _context.Section.FirstOrDefault();
                 });
                 await _context.SaveChangesAsync();
                 return imports.Count;
