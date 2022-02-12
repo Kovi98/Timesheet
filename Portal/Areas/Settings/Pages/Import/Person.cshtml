@@ -191,10 +191,22 @@
                                                                 <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o příjmení chybí">Příjmení</span>
                                                                 break;
                                                             case PersonImportError.JobMissing:
-                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Informace o pozici chybí">Pozice</span>
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o pozici chybí">Pozice</span>
                                                                 break;
                                                             case PersonImportError.JobUndefined:
-                                                                <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Vyplněná pozice neexistuje">Pozice</span>
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněná pozice neexistuje">Pozice</span>
+                                                                break;
+                                                            case PersonImportError.PaidFromMissing:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o dotaci chybí">Dotace</span>
+                                                                break;
+                                                            case PersonImportError.PaidFromUndefined:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněná dotace neexistuje">Dotace</span>
+                                                                break;
+                                                            case PersonImportError.SectionMissing:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Informace o sekci chybí">Sekce</span>
+                                                                break;
+                                                            case PersonImportError.SectionUndefined:
+                                                                <span class="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Vyplněná sekce neexistuje">Sekce</span>
                                                                 break;
                                                             case PersonImportError.PersonNotUnique:
                                                                 <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Takový trenér již existuje">Duplicitní</span>
