@@ -123,7 +123,7 @@ namespace Timesheet.Business
             return import;
         }
 
-        public async Task Import(List<TimesheetImport> imports, bool overrideErrors)
+        public async Task<int> Import(List<TimesheetImport> imports, bool overrideErrors)
         {
             var defaultList = imports;
             var transaction = _context.Database.BeginTransaction();
@@ -184,6 +184,7 @@ namespace Timesheet.Business
                     await _context.SaveChangesAsync();
                 }
                 transaction.Commit();
+                return imports.Count;
             }
             catch (Exception e)
             {
@@ -317,7 +318,7 @@ namespace Timesheet.Business
             }
             return imports;
         }
-        public async Task Import(List<PersonImport> imports, bool overrideErrors)
+        public async Task<int> Import(List<PersonImport> imports, bool overrideErrors)
         {
             var defaultList = imports;
             try
@@ -340,6 +341,7 @@ namespace Timesheet.Business
                     x.Entity.Section = _context.Section.FirstOrDefault();
                 });
                 await _context.SaveChangesAsync();
+                return imports.Count;
             }
             catch (Exception e)
             {

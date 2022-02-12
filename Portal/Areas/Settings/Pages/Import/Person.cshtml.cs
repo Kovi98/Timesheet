@@ -87,8 +87,8 @@ namespace Portal.Areas.Settings.Pages.Import
             try
             {
                 PersonImport = JsonConvert.DeserializeObject<List<PersonImport>>(PersonImportJSON);
-                await _importManager.Import(PersonImport, OverrideErrors);
-                ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", PersonImport.Count()));
+                var count = await _importManager.Import(PersonImport, OverrideErrors);
+                ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", count));
             }
             catch (Exception e)
             {

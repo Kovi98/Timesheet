@@ -87,8 +87,8 @@ namespace Portal.Areas.Settings.Pages.Import
             try
             {
                 TimesheetImport = JsonConvert.DeserializeObject<List<TimesheetImport>>(TimesheetImportJSON);
-                await _importManager.Import(TimesheetImport, OverrideErrors);
-                ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", TimesheetImport.Count()));
+                var count = await _importManager.Import(TimesheetImport, OverrideErrors);
+                ModelState.AddModelError("Success", string.Format("Bylo uloženo {0} záznamù.", count));
             }
             catch (Exception e)
             {
