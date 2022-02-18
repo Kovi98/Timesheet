@@ -23,37 +23,37 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Timesheet.Business.FinanceService" Collapsed="true">
-    <Position X="14.5" Y="5" Width="1.5" />
+  <Class Name="Timesheet.Business.FinanceService">
+    <Position X="9.5" Y="5.75" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\FinanceService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Timesheet.Business.ImportManager">
-    <Position X="19.5" Y="0.5" Width="2" />
+    <Position X="17.5" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAABAAAoAAAAAAAAAAIAAAAgAAAAAAAAAA=</HashCode>
       <FileName>Services\ImportManager.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Timesheet.Business.JobService" Collapsed="true">
-    <Position X="9.5" Y="3.5" Width="1.5" />
+  <Class Name="Timesheet.Business.JobService">
+    <Position X="9.5" Y="3.5" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\JobService.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Timesheet.Business.PaymentService" Collapsed="true">
-    <Position X="10" Y="5" Width="1.5" />
+  <Class Name="Timesheet.Business.PaymentService">
+    <Position X="3.25" Y="6.25" Width="5.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAQAAAgAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\PaymentService.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Timesheet.Business.PaymentOptions" Collapsed="true">
-    <Position X="23.25" Y="0.5" Width="1.5" />
+  <Class Name="Timesheet.Business.PaymentOptions">
+    <Position X="21.25" Y="4" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>Services\PaymentService.cs</FileName>
@@ -73,26 +73,30 @@
       <FileName>Services\RewardSummaryService.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Timesheet.Business.SectionService" Collapsed="true">
-    <Position X="12.25" Y="5" Width="1.5" />
+  <Class Name="Timesheet.Business.SectionService">
+    <Position X="13.75" Y="7" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\SectionService.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Timesheet.Business.TimesheetService" Collapsed="true">
-    <Position X="16.75" Y="5" Width="1.5" />
+  <Class Name="Timesheet.Business.TimesheetService">
+    <Position X="14.25" Y="3.5" Width="5.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQAABIAAAEAAAAAAAIAAAAAAAAAAIAgAAAA=</HashCode>
       <FileName>Services\TimesheetService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Timesheet.Common.IEntityService&lt;T&gt;">
-    <Position X="0.5" Y="2.75" Width="1.75" />
+    <Position X="0.5" Y="2.75" Width="2.25" />
     <TypeIdentifier />
   </Interface>
   <Interface Name="Timesheet.Common.IEntityReadonlyService&lt;T&gt;">
-    <Position X="0.5" Y="1" Width="1.75" />
+    <Position X="0.5" Y="1" Width="2.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Timesheet.Common.Interfaces.IImportManager">
+    <Position X="0.5" Y="9.25" Width="3" />
     <TypeIdentifier />
   </Interface>
   <Font Name="Segoe UI" Size="9" />
