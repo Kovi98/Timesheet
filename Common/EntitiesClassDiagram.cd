@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Timesheet.Common.DocumentStorage" BaseTypeListCollapsed="true">
+    <Position X="17" Y="0.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAQAAAAAAAAAAAAAABAQAAAEAAAAAAAAACAAAAgA=</HashCode>
+      <FileName>Entities\DocumentStorage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.Finance" BaseTypeListCollapsed="true">
+    <Position X="16" Y="5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAAAAAAAAAAAAAAAABAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Finance.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.Job" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="5.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AIACAAAAAAAAAgAAAAAABAQAAAEAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Job.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.Payment" BaseTypeListCollapsed="true">
+    <Position X="5" Y="0.75" Width="3.5" />
+    <NestedTypes>
+      <Class Name="Timesheet.Common.Payment.TimesheetGroup" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Entities\Payment.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAACAAACAgAgAAAAAAAABAAAAAEAQQgACAAAAAAAAQI=</HashCode>
+      <FileName>Entities\Payment.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.Person" BaseTypeListCollapsed="true">
+    <Position X="13.25" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAASAAAAAQAgAYAIMAAEBARABEECAAgAAAIABKAQgAA=</HashCode>
+      <FileName>Entities\Person.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Job" />
+      <Property Name="PaidFrom" />
+      <Property Name="Section" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.RewardSummary" BaseTypeListCollapsed="true">
+    <Position X="5" Y="6" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AIACAAACAAAwAQAEAIAEIAAAAAAAQBAAAAAAAAAAAQA=</HashCode>
+      <FileName>Entities\RewardSummary.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Person" />
+      <Property Name="Payment" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.118" />
+  </Class>
+  <Class Name="Timesheet.Common.Section" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="0.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AIACAAAAAAAAAAAAAAAABAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Section.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.Timesheet" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="0.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AIASAACAAgAwAAAEAIAABAQAAAECABAAAAAQAAAAASQ=</HashCode>
+      <FileName>Entities\Timesheet.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Job" />
+      <Property Name="Payment" />
+      <Property Name="Person" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Timesheet.Common.IEntity">
+    <Position X="0.75" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\IEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Timesheet.Common.IEntityView">
+    <Position X="0.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\IEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

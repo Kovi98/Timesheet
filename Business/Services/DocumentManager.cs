@@ -12,7 +12,6 @@ namespace Timesheet.Business
 {
     public class DocumentManager : EntityServiceBase<DocumentStorage>
     {
-        private readonly TimesheetContext _context;
         public async Task<byte[]> GenerateContract(Person person, DocumentStorage defaultDocument = null)
         {
             if (defaultDocument == null) defaultDocument = await GetDefaultDocumentAsync();
@@ -38,7 +37,6 @@ namespace Timesheet.Business
         }
         public DocumentManager(TimesheetContext dbContext) : base(dbContext)
         {
-            _context = dbContext;
         }
         public string GetContentType(ExportFormat format)
         {
