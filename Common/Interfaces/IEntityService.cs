@@ -7,7 +7,6 @@ namespace Timesheet.Common
     {
         Task SaveAsync(T entity);
         Task RemoveAsync(T entity);
-        void SetModified(T entity);
     }
     public interface IEntityReadonlyService<T> where T : class, IEntityView
     {
