@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Timesheet.Common.DocumentStorage" BaseTypeListCollapsed="true">
-    <Position X="13.5" Y="0.75" Width="2.75" />
+    <Position X="5" Y="15.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAACAQAAAAAAAAAAAAAABAQAAAEAAAAAAAAACAAAAgA=</HashCode>
       <FileName>Entities\DocumentStorage.cs</FileName>
@@ -9,7 +9,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Finance" BaseTypeListCollapsed="true">
-    <Position X="12.5" Y="5.5" Width="2.5" />
+    <Position X="5" Y="9.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AIACAAAAAAAAAAAAAAAABAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Finance.cs</FileName>
@@ -17,7 +17,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Job" BaseTypeListCollapsed="true">
-    <Position X="8.5" Y="5.75" Width="3.25" />
+    <Position X="9" Y="14" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AIACAAAAAAAAAgAAAAAABAQAAAEAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Job.cs</FileName>
@@ -40,7 +40,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Person" BaseTypeListCollapsed="true">
-    <Position X="16.25" Y="4" Width="3.25" />
+    <Position X="9.25" Y="6.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAASAAAAAQAgAYAIMAAEBARABEECAAgAAAIABKAQgAA=</HashCode>
       <FileName>Entities\Person.cs</FileName>
@@ -65,7 +65,7 @@
     <Lollipop Position="0.118" />
   </Class>
   <Class Name="Timesheet.Common.Section" BaseTypeListCollapsed="true">
-    <Position X="16.5" Y="0.75" Width="3" />
+    <Position X="5" Y="12.5" Width="3" />
     <TypeIdentifier>
       <HashCode>AIACAAAAAAAAAAAAAAAABAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Section.cs</FileName>
@@ -73,7 +73,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Timesheet" BaseTypeListCollapsed="true">
-    <Position X="9.5" Y="0.75" Width="3.5" />
+    <Position X="9.5" Y="0.75" Width="4.25" />
     <TypeIdentifier>
       <HashCode>AIASAACAAgAwAAAEAIAABAQAAAECABAAAAAQAAAAASQ=</HashCode>
       <FileName>Entities\Timesheet.cs</FileName>
@@ -86,14 +86,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Timesheet.Common.IEntity">
-    <Position X="0.75" Y="2.5" Width="2.25" />
+    <Position X="19.75" Y="2.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\IEntity.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Timesheet.Common.IEntityView">
-    <Position X="0.75" Y="0.5" Width="2.25" />
+    <Position X="16" Y="2.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\IEntity.cs</FileName>
