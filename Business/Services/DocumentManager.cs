@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Novacode;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,12 +55,6 @@ namespace Timesheet.Business
         public async Task<DocumentStorage> GetDefaultDocumentAsync()
         {
             return await _context.DocumentStorage.Where(x => x.IsDefault).FirstOrDefaultAsync();
-        }
-        public async Task<List<DocumentStorage>> GetDocumentsAsync(bool asNoTracking = true)
-        {
-            var storage = _context.DocumentStorage;
-
-            return await (asNoTracking ? storage.AsNoTracking().ToListAsync() : storage.AsTracking().ToListAsync());
         }
         public override async Task SaveAsync(DocumentStorage document)
         {

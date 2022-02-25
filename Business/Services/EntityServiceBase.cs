@@ -33,23 +33,6 @@ namespace Timesheet.Business
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task SaveAsync(IEnumerable<T> entities)
-        {
-            foreach (var entity in entities)
-            {
-                if (entity.Id > 0)
-                {
-                    SetModified(entity);
-                }
-                else
-                {
-                    entity.CreateTime = DateTime.Now;
-                    _context.Set<T>().Add(entity);
-                }
-            }
-            await _context.SaveChangesAsync();
-        }
-
         public virtual void SetModified(T entity)
         {
             _context.Entry<T>(entity).State = EntityState.Modified;

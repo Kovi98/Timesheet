@@ -141,7 +141,7 @@ namespace Portal.Areas.Documents.Pages
 
         public async Task LoadData()
         {
-            DocumentStorage = await _docManager.GetDocumentsAsync();
+            DocumentStorage = await _docManager.GetAsync();
         }
     }
 }
