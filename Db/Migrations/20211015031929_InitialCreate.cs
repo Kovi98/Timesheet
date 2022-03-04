@@ -210,16 +210,15 @@ namespace Db.Migrations
             migrationBuilder.Sql(@"
                 CREATE OR ALTER VIEW [dbo].[RewardSummary]
                 AS
-                SELECT        dbo.Person.Id AS PersonId, SUM(dbo.Timesheet.Hours) AS Hours, SUM(dbo.Timesheet.Reward) AS Reward, dbo.Person.HasTax, SUM(dbo.Timesheet.Tax) AS Tax, YEAR(dbo.Timesheet.CreateTime) AS CreateDateTimeYear, 
-                                         MONTH(dbo.Timesheet.CreateTime) AS CreateDateTimeMonth, dbo.Timesheet.PaymentId AS PaymentId, CASE dbo.Timesheet.PaymentId WHEN NULL THEN NULL WHEN 0 THEN NULL 
-                                         ELSE dbo.Payment.PaymentDateTime END AS PaymentDateTime, CAST(ROW_NUMBER() OVER (ORDER BY 
+                SELECT        dbo.Person.Id AS PersonId, SUM(dbo.Timesheet.Hours) AS Hours, SUM(dbo.Timesheet.Reward) AS Reward, dbo.Person.HasTax, SUM(dbo.Timesheet.Tax) AS Tax, YEAR(dbo.Timesheet.DateTimeTo) AS CreateDateTimeYear, 
+                                         MONTH(dbo.Timesheet.DateTimeTo) AS CreateDateTimeMonth, CAST(ROW_NUMBER() OVER (ORDER BY 
                                              (SELECT        1)) AS INT) AS Id
                 FROM            dbo.Timesheet INNER JOIN
                                          dbo.Person ON dbo.Timesheet.PersonId = dbo.Person.Id INNER JOIN
                                          dbo.Job ON dbo.Job.Id = dbo.Timesheet.JobId LEFT OUTER JOIN
                                          dbo.Payment ON dbo.Timesheet.PaymentId = dbo.Payment.Id
-                GROUP BY dbo.Person.Id, YEAR(dbo.Timesheet.CreateTime), MONTH(dbo.Timesheet.CreateTime), dbo.Person.HasTax, dbo.Timesheet.PaymentId, CASE dbo.Timesheet.PaymentId WHEN NULL THEN NULL WHEN 0 THEN NULL 
-                                         ELSE dbo.Payment.PaymentDateTime END
+                WHERE dbo.Payment.PaymentDateTime IS NOT NULL
+                GROUP BY dbo.Person.Id, YEAR(dbo.Timesheet.DateTimeTo), MONTH(dbo.Timesheet.DateTimeTo), dbo.Person.HasTax
                 GO
             ");
         }

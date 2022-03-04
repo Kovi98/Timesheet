@@ -33,9 +33,6 @@
                             <th>
                                 Výplata
                             </th>
-                            <th>
-                                Platba
-                            </th>
                             <th></th>
                         </tr>
                     </thead>
@@ -62,23 +59,6 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.RewardToPay)
-                                </td>
-                                <td class="project-state">
-                                    @{
-                                        if (item.Payment != null && item.Payment.IsPaid)
-                                        {
-                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
-
-                                        }
-                                        else if (item.Payment != null)
-                                        {
-                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge badge-danger">Neexistuje</span>
-                                        }
-                                    }
                                 </td>
                                 <td class="project-actions text-right">
                                     <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth">

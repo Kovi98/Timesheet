@@ -1,6 +1,4 @@
-﻿using System;
-
-// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
+﻿// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
 // #nullable disable
 
@@ -16,11 +14,8 @@ namespace Timesheet.Common
         public decimal? Tax { get; set; }
         public int? CreateDateTimeYear { get; set; }
         public int? CreateDateTimeMonth { get; set; }
-        public int? PaymentId { get; set; }
-        public DateTime? PaymentDateTime { get; set; }
 
         public Person Person { get; set; }
-        public Payment Payment { get; set; }
 
         public decimal? RewardToPay { get => Reward - Tax; }
         //public virtual List<Timesheet> Timesheet { get; set; }

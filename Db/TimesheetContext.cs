@@ -207,9 +207,6 @@ namespace Timesheet.Db
                 entity.HasOne(r => r.Person)
                     .WithMany()
                     .HasForeignKey(r => r.PersonId);
-                entity.HasOne(r => r.Payment)
-                    .WithMany()
-                    .HasForeignKey(r => r.PaymentId);
             });
             modelBuilder.Entity<DocumentStorage>(entity =>
             {

@@ -74,7 +74,7 @@ namespace Timesheet.Business
                                 _context.Attach(person).State = EntityState.Detached;
                             if (person == null)
                                 timesheetImport.AddError(TimesheetImportError.PersonUndefined);
-                            timesheet.Person = person ?? new Person { Name = firstname, Surname = lastname, CreateTime = DateTime.Now, JobId = 1, PaidFromId = _context.Finance.Select(x => x.Id).FirstOrDefault(), SectionId = _context.Section.Select(x => x.Id).FirstOrDefault() };
+                            timesheet.Person = person ?? new Person { Name = firstname, Surname = lastname, CreateTime = DateTime.Now, JobId = 1, PaidFromId = _context.Finance.Select(x => x.Id).FirstOrDefault(), SectionId = _context.Section.Select(x => x.Id).FirstOrDefault(), HasTax = true };
                             timesheet.PersonId = person?.Id ?? 0;
 
                             foreach (var col in mappedColumns)
@@ -107,6 +107,11 @@ namespace Timesheet.Business
                                         if (job == null)
                                             timesheetImport.AddError(TimesheetImportError.JobUndefined);
                                         timesheet.Job = job ?? new Job { Name = ws.Cells[i, col.Key].Value.ToString(), CreateTime = DateTime.Now };
+                                        break;
+                                    case "Odměna":
+                                        value = ws.Cells[i, col.Key].Value?.ToString().Trim();
+                                        if (value != string.Empty && value != "0")
+                                            timesheet.Reward = decimal.Parse(value.Replace("Kč", string.Empty).Trim());
                                         break;
                                 }
                             }

@@ -48,7 +48,8 @@ namespace Timesheet.Common
                 decimal? value = 0;
                 foreach (var item in Timesheet)
                 {
-                    value += item.Reward;
+                    if (item.Reward != null)
+                        value += item.Reward;
                 }
                 return value;
             }

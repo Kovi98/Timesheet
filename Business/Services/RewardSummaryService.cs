@@ -18,7 +18,6 @@ namespace Timesheet.Business
         {
             return await _context.RewardSummary
             .Include(r => r.Person)
-            .Include(r => r.Payment)
             .OrderByDescending(r => r.CreateDateTimeYear)
             .OrderByDescending(r => r.CreateDateTimeMonth)
             .Where(r => r.Id == id)
@@ -29,7 +28,6 @@ namespace Timesheet.Business
         {
             return await _context.RewardSummary
             .Include(r => r.Person)
-            .Include(r => r.Payment)
             .OrderByDescending(r => r.CreateDateTimeYear)
             .OrderByDescending(r => r.CreateDateTimeMonth).ToListAsync();
         }
