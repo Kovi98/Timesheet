@@ -32,5 +32,19 @@ namespace Timesheet.Business
             .OrderByDescending(r => r.CreateDateTimeMonth).ToListAsync();
         }
 
+        public async Task<List<RewardSummary>> GetAsync(int year = 0, int month = 0, int personId = 0)
+        {
+            var query = _context.RewardSummary
+                .Include(r => r.Person)
+                .AsQueryable();
+            if (year != 0)
+                query = query.Where(x => x.CreateDateTimeYear == year);
+            if (month != 0)
+                query = query.Where(x => x.CreateDateTimeMonth == month);
+            if (personId != 0)
+                query = query.Where(x => x.PersonId == personId);
+            return await query.ToListAsync();
+        }
+
     }
 }

@@ -1,62 +1,55 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Timesheet.Business;
 using Timesheet.Common;
-using Timesheet.Db;
 
 namespace Portal.Areas.RewardSummaries.Pages
 {
     public class PrintModel : PageModel
     {
-        private readonly TimesheetContext _context;
+        private readonly RewardSummaryService _rewardSummaryService;
+        private readonly PersonService _personService;
 
-        public PrintModel(TimesheetContext context)
+        public PrintModel(RewardSummaryService rewardSummaryService, PersonService personService)
         {
-            _context = context;
+            _rewardSummaryService = rewardSummaryService;
+            _personService = personService;
         }
 
-        public List<Timesheet.Common.Timesheet> Timesheets { get; set; }
+        public List<RewardSummary> Lines { get; set; }
         public RewardSummary RewardSummaryDetail { get; set; }
 
         public async Task OnGetAsync(int year, int month, int personId)
         {
+            Lines = await _rewardSummaryService.GetAsync(year, month, personId);
             if (personId == 0)
             {
-                if (year == 0)
-                {
-                    Timesheets = await _context.Timesheet
-                        .Include(x => x.Person)
-                        .Include(x => x.Payment)
-                        .ToListAsync();
-                }
-                else if (month == 0)
-                {
-                    Timesheets = await _context.Timesheet
-                        .Include(x => x.Person)
-                        .Include(x => x.Payment)
-                        .Where(x => (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Year : 0) == year)
-                        .ToListAsync();
-                }
-                else
-                {
-                    Timesheets = await _context.Timesheet
-                        .Include(x => x.Person)
-                        .Include(x => x.Payment)
-                        .Where(x => (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Year : 0) == year && (x.DateTimeFrom.HasValue ? x.DateTimeFrom.Value.Month : 0) == month)
-                        .ToListAsync();
-                }
+                Lines = Lines
+                    .GroupBy(x => x.PersonId)
+                    .Select(x =>
+                    {
+                        return new RewardSummary()
+                        {
+                            Hours = x.Select(x => x.Hours).Sum(),
+                            Reward = x.Select(x => x.Reward).Sum(),
+                            Tax = x.Select(x => x.Tax).Sum(),
+                            PersonId = x.Key,
+                            Person = _personService.GetAsync(x.Key).GetAwaiter().GetResult()
+                        };
+                    })
+                    .ToList();
             }
             RewardSummaryDetail = new RewardSummary
             {
-                Hours = Timesheets.Select(x => x.Hours).Sum(),
-                Reward = Timesheets.Select(x => x.Reward).Sum(),
-                Tax = Timesheets.Select(x => x.Tax).Sum(),
+                Hours = Lines.Select(x => x.Hours).Sum(),
+                Reward = Lines.Select(x => x.Reward).Sum(),
+                Tax = Lines.Select(x => x.Tax).Sum(),
                 CreateDateTimeYear = year,
                 CreateDateTimeMonth = month,
                 PersonId = personId,
-                Person = await _context.Person.FindAsync(personId)
+                Person = await _personService.GetAsync(personId)
             };
         }
     }
