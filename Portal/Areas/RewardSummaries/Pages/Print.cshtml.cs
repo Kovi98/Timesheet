@@ -23,10 +23,8 @@ namespace Portal.Areas.RewardSummaries.Pages
 
         public async Task OnGetAsync(int year, int month, int personId)
         {
-            Lines = await _rewardSummaryService.GetAsync(year, month, personId);
-            if (personId == 0)
-            {
-                Lines = Lines
+            var lines = await _rewardSummaryService.GetAsync(year, month, personId);
+            Lines = lines
                     .GroupBy(x => x.PersonId)
                     .Select(x =>
                     {
@@ -40,7 +38,6 @@ namespace Portal.Areas.RewardSummaries.Pages
                         };
                     })
                     .ToList();
-            }
             RewardSummaryDetail = new RewardSummary
             {
                 Hours = Lines.Select(x => x.Hours).Sum(),

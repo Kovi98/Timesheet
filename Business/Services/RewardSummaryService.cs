@@ -19,7 +19,7 @@ namespace Timesheet.Business
             return await _context.RewardSummary
             .Include(r => r.Person)
             .OrderByDescending(r => r.CreateDateTimeYear)
-            .OrderByDescending(r => r.CreateDateTimeMonth)
+            .ThenByDescending(r => r.CreateDateTimeMonth)
             .Where(r => r.Id == id)
             .FirstOrDefaultAsync();
         }
@@ -29,10 +29,10 @@ namespace Timesheet.Business
             return await _context.RewardSummary
             .Include(r => r.Person)
             .OrderByDescending(r => r.CreateDateTimeYear)
-            .OrderByDescending(r => r.CreateDateTimeMonth).ToListAsync();
+            .ThenByDescending(r => r.CreateDateTimeMonth).ToListAsync();
         }
 
-        public async Task<List<RewardSummary>> GetAsync(int year = 0, int month = 0, int personId = 0)
+        public async Task<List<RewardSummary>> GetAsync(int year, int month = 0, int personId = 0)
         {
             var query = _context.RewardSummary
                 .Include(r => r.Person)
@@ -43,7 +43,10 @@ namespace Timesheet.Business
                 query = query.Where(x => x.CreateDateTimeMonth == month);
             if (personId != 0)
                 query = query.Where(x => x.PersonId == personId);
-            return await query.ToListAsync();
+            return await query
+                .OrderByDescending(r => r.CreateDateTimeYear)
+                .ThenByDescending(r => r.CreateDateTimeMonth)
+                .ToListAsync();
         }
 
     }
