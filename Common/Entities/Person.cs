@@ -90,7 +90,7 @@ namespace Timesheet.Common
 
         //Ručně přidáno
         [Display(Name = "Jméno")]
-        public string FullName => Name + " " + Surname;
+        public string FullName => $"{Surname} {Name}";
 
         [Display(Name = "Číslo bankovního účtu")]
         public string FullBankAccount

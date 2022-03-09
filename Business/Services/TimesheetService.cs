@@ -90,18 +90,8 @@ namespace Timesheet.Business
 
         public override Task SaveAsync(Common.Timesheet entity)
         {
-            if (!entity.Hours.HasValue && entity.DateTimeFrom != null && entity.DateTimeTo != null)
-                entity.Hours = (decimal)(entity.DateTimeTo - entity.DateTimeFrom)?.TotalHours;
-            if (!entity.Reward.HasValue)
-                entity.Reward = entity.Hours * (_context.Job.Find(entity.JobId)?.HourReward);
-            if (_context.Person.Find(entity.PersonId)?.HasTax ?? false)
-            {
-                entity.Tax = Math.Truncate((entity.Reward ?? 0) * (_options.Tax / 100) ?? 0);
-            }
-            else
-            {
-                entity.Tax = 0;
-            }
+            if (entity.DateTimeFrom > entity.DateTimeTo) throw new InvalidOperationException("Začátek výkazu nemůže být později než konec výkazu");
+            entity.CalculateReward((_options.Tax / 100) ?? null, _context.Job.Find(entity.JobId)?.HourReward, _context.Person.Find(entity.PersonId)?.HasTax);
             return base.SaveAsync(entity);
         }
 

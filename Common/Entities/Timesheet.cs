@@ -76,25 +76,20 @@ namespace Timesheet.Common
             }
         }
 
-        public void CalculateReward(bool overridePreviousReward = false)
+        public void CalculateReward(decimal? tax = null, decimal? hourReward = null, bool? hasTax = null, bool overridePreviousReward = false)
         {
-            if (Job != null && Person != null)
+            if (tax == null) tax = (decimal)0.15;
+            if ((!Hours.HasValue || overridePreviousReward) && DateTimeFrom != null && DateTimeTo != null)
+                Hours = (decimal)(DateTimeTo - DateTimeFrom)?.TotalHours;
+            if (!Reward.HasValue || overridePreviousReward)
+                Reward = Hours * (hourReward ?? Job?.HourReward ?? 0);
+            if (hasTax ?? Person?.HasTax ?? false)
             {
-                //Hours
-                if ((!Hours.HasValue || overridePreviousReward) && DateTimeFrom != null && DateTimeTo != null)
-                    Hours = (decimal)(DateTimeTo - DateTimeFrom)?.TotalHours;
-                //Reward
-                if (!Reward.HasValue || overridePreviousReward)
-                    Reward = Hours * Job.HourReward;
-                //Tax
-                if (Person.HasTax)
-                {
-                    Tax = Math.Truncate((Reward ?? 0) * (decimal)0.15);
-                }
-                else
-                {
-                    Tax = 0;
-                }
+                Tax = Math.Truncate((Reward ?? 0) * tax.Value);
+            }
+            else
+            {
+                Tax = 0;
             }
         }
 

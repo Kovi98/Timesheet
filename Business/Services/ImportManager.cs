@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,11 @@ namespace Timesheet.Business
     public class ImportManager : IImportManager
     {
         private TimesheetContext _context;
-        public ImportManager(TimesheetContext context)
+        private PaymentOptions _options;
+        public ImportManager(TimesheetContext context, IOptions<PaymentOptions> options)
         {
             _context = context;
+            _options = options.Value;
         }
         public List<TimesheetImport> ConvertTimesheets(byte[] source)
         {
@@ -118,7 +121,7 @@ namespace Timesheet.Business
                             if (!IsUnique(timesheet))
                                 timesheetImport.AddError(TimesheetImportError.TimesheetNotUnique);
 
-                            timesheet.CalculateReward();
+                            timesheet.CalculateReward(_options.Tax / 100);
                             import.Add(timesheetImport);
                         }
 
