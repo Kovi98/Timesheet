@@ -59,8 +59,8 @@
             <div class="col-sm-4 invoice-col">
                 Finance<br>
                 Odměna: @Html.DisplayFor(model => model.Timesheet.Reward)<br>
-                Daň: @Html.DisplayFor(model => model.Timesheet.Tax)<br>
-                <b>Výplata:</b> @Html.DisplayFor(model => model.Timesheet.ToPay)
+                Daň: @Html.DisplayFor(model => model.TimesheetSummary.Tax)<br>
+                <b>Výplata:</b> @Html.DisplayFor(model => model.TimesheetSummary.RewardToPay)
             </div>
             <!-- /.col -->
         </div>

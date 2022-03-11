@@ -25,6 +25,7 @@ namespace Portal.Areas.Payments.Pages
         }
 
         public List<Payment> Payment { get; set; }
+        public PaymentSummary PaymentSummary { get; set; }
         [BindProperty]
         public Payment PaymentDetail { get; set; }
         public bool IsEditable { get; set; }
@@ -40,6 +41,7 @@ namespace Portal.Areas.Payments.Pages
             if (id > 0 && payment != null)
             {
                 PaymentDetail = payment;
+                PaymentSummary = _paymentService.GenerateSummary(PaymentDetail);
             }
             IsEditable = false;
         }
@@ -221,6 +223,7 @@ namespace Portal.Areas.Payments.Pages
         public async Task LoadData()
         {
             Payment = await _paymentService.GetAsync();
+            if (PaymentSummary != null) PaymentSummary = null;
         }
     }
 }

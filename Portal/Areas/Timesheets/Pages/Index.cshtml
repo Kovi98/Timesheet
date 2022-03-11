@@ -170,7 +170,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Daň</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.Tax)</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetSummary.Tax)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -178,7 +178,7 @@
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">K výplatě</span>
-                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.ToPay)</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetSummary.RewardToPay)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -208,8 +208,8 @@
                                         }
                                         <br />
                                         <strong>Odměna</strong> @Html.DisplayFor(model => model.TimesheetDetail.Reward) <br />
-                                        <strong>Daň</strong> @Html.DisplayFor(model => model.TimesheetDetail.Tax) <br />
-                                        <strong>Výplata</strong> @Html.DisplayFor(model => model.TimesheetDetail.ToPay) <br />
+                                        <strong>Daň</strong> @Html.DisplayFor(model => model.TimesheetSummary.Tax) <br />
+                                        <strong>Výplata</strong> @Html.DisplayFor(model => model.TimesheetSummary.RewardToPay) <br />
                                     </div>
                                     <div class="col-sm-4">
                                         <h4 class="ml-1"><i class="fas fa-align-left mr-2"></i> Ostatní</h4>
@@ -295,7 +295,6 @@
                                     <input type="hidden" asp-for="TimesheetDetail.CreateTime" />
                                     <input type="hidden" asp-for="TimesheetDetail.RowVersion" />
                                     <input type="hidden" asp-for="TimesheetDetail.PaymentId" />
-                                    <input type="hidden" asp-for="TimesheetDetail.Tax" />
                                 }
                             }
                             <div class="row">

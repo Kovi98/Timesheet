@@ -29,6 +29,7 @@ namespace Portal.Areas.Timesheets.Pages
         public List<Timesheet.Common.Timesheet> Timesheet { get; set; }
         [BindProperty]
         public Timesheet.Common.Timesheet TimesheetDetail { get; set; }
+        public TimesheetSummary TimesheetSummary { get; set; }
         public bool IsEditable { get; set; }
 
 
@@ -43,6 +44,7 @@ namespace Portal.Areas.Timesheets.Pages
         {
             await LoadData();
             TimesheetDetail = await _timesheetService.GetAsync(id);
+            TimesheetSummary = _timesheetService.GenerateSummary(TimesheetDetail);
             IsEditable = false;
         }
 

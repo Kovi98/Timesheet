@@ -10,10 +10,10 @@ namespace Timesheet.Business
 {
     public class TimesheetService : EntityServiceBase<Common.Timesheet>
     {
-        private readonly PaymentOptions _options;
-        public TimesheetService(IOptions<PaymentOptions> options, TimesheetContext context) : base(context)
+        private readonly PaymentOptions _paymentOptions;
+        public TimesheetService(TimesheetContext context, IOptions<PaymentOptions> paymentOptions) : base(context)
         {
-            _options = options.Value;
+            _paymentOptions = paymentOptions.Value;
         }
 
         public override async Task<Common.Timesheet> GetAsync(int id)
@@ -88,10 +88,15 @@ namespace Timesheet.Business
                     .AsNoTracking().ToListAsync();
         }
 
+        public TimesheetSummary GenerateSummary(Common.Timesheet timesheet)
+        {
+            return new TimesheetSummary(timesheet, _paymentOptions.Tax / 100);
+        }
+
         public override Task SaveAsync(Common.Timesheet entity)
         {
             if (entity.DateTimeFrom > entity.DateTimeTo) throw new InvalidOperationException("Začátek výkazu nemůže být později než konec výkazu");
-            entity.CalculateReward((_options.Tax / 100) ?? null, _context.Job.Find(entity.JobId)?.HourReward, _context.Person.Find(entity.PersonId)?.HasTax);
+            entity.CalculateReward(_context.Job.Find(entity.JobId)?.HourReward);
             return base.SaveAsync(entity);
         }
 
@@ -124,6 +129,16 @@ namespace Timesheet.Business
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
                     .Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5).ToList();
+        }
+    }
+    public class TimesheetSummary
+    {
+        public decimal Tax { get; private set; }
+        public decimal RewardToPay { get; private set; }
+        public TimesheetSummary(Common.Timesheet timesheet, decimal tax)
+        {
+            Tax = Math.Round((timesheet?.Reward ?? 0) * tax, 2);
+            RewardToPay = (timesheet?.Reward ?? 0) - Tax;
         }
     }
 }
