@@ -8,7 +8,6 @@ namespace Portal.Pages.Timesheets
     public class PrintModel : PageModel
     {
         private readonly TimesheetService _timesheetService;
-        public TimesheetSummary TimesheetSummary { get; set; }
 
         public PrintModel(TimesheetService timesheetService)
         {
@@ -24,7 +23,6 @@ namespace Portal.Pages.Timesheets
                 return NotFound();
             }
             Timesheet = await _timesheetService.GetAsync(id);
-            TimesheetSummary = _timesheetService.GenerateSummary(Timesheet);
             return Page();
         }
     }

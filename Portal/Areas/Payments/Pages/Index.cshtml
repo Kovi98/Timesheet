@@ -101,7 +101,7 @@
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Odměna</span>
-                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentSummary.Reward)</span>
+                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentDetail.Reward)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -109,7 +109,7 @@
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Daň</span>
-                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentSummary.Tax)</span>
+                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentDetail.Tax)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Celkem k výplatě</span>
-                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentSummary.RewardToPay)</span>
+                                            <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.PaymentDetail.RewardToPay)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -158,35 +158,27 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Trenér</th>
-                                                        <th>Počet výkazů práce</th>
+                                                        <th>Datum</th>
                                                         <th>Čas</th>
                                                         <th>Odměna</th>
-                                                        <th>Daň</th>
-                                                        <th>Celkem k výplatě</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @{
-                                                        foreach (var item in Model.PaymentSummary.Summaries)
+                                                        foreach (var item in Model.PaymentDetail.Timesheet.Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo))
                                                         {
                                                             <tr>
                                                                 <td>
                                                                     @Html.DisplayFor(modelItem => item.Person.FullName)
                                                                 </td>
                                                                 <td>
-                                                                    @Model.PaymentDetail.Timesheet.Where(x => x.PersonId == item.PersonId).Count()
+                                                                    @item.DateTimeTo.Value.ToString("dd. MM. yyyy")
                                                                 </td>
                                                                 <td>
-                                                                    @Html.DisplayFor(modelItem => item.Hours)
+                                                                    @Html.DisplayFor(modelItem => item.HoursTime)
                                                                 </td>
                                                                 <td>
                                                                     @Html.DisplayFor(modelItem => item.Reward)
-                                                                </td>
-                                                                <td>
-                                                                    @Html.DisplayFor(modelItem => item.Tax)
-                                                                </td>
-                                                                <td>
-                                                                    @Html.DisplayFor(modelItem => item.RewardToPay)
                                                                 </td>
                                                             </tr>
                                                         }

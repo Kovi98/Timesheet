@@ -300,6 +300,9 @@ namespace Db.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<decimal>("Tax")
+                        .HasColumnType("decimal(19, 2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");

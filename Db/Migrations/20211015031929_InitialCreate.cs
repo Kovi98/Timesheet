@@ -151,7 +151,8 @@ namespace Db.Migrations
                     DateTimeTo = table.Column<DateTime>(type: "datetime", nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     PaymentId = table.Column<int>(nullable: true),
-                    Reward = table.Column<decimal>(type: "decimal(19, 2)", nullable: true)
+                    Reward = table.Column<decimal>(type: "decimal(19, 2)", nullable: true),
+                    Tax = table.Column<decimal>(type: "decimal(19, 2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -209,7 +210,7 @@ namespace Db.Migrations
             migrationBuilder.Sql(@"
                 CREATE OR ALTER VIEW [dbo].[RewardSummary]
                 AS
-                SELECT        dbo.Person.Id AS PersonId, SUM(dbo.Timesheet.Hours) AS Hours, SUM(dbo.Timesheet.Reward) AS Reward, dbo.Person.HasTax, YEAR(dbo.Timesheet.DateTimeTo) AS CreateDateTimeYear, 
+                SELECT        dbo.Person.Id AS PersonId, SUM(dbo.Timesheet.Hours) AS Hours, SUM(dbo.Timesheet.Reward) AS Reward, dbo.Person.HasTax, SUM(dbo.Timesheet.Tax) AS Tax, YEAR(dbo.Timesheet.DateTimeTo) AS CreateDateTimeYear, 
                                          MONTH(dbo.Timesheet.DateTimeTo) AS CreateDateTimeMonth, CAST(ROW_NUMBER() OVER (ORDER BY 
                                              (SELECT        1)) AS INT) AS Id
                 FROM            dbo.Timesheet INNER JOIN

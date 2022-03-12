@@ -182,6 +182,8 @@ namespace Timesheet.Db
                     .IsRowVersion()
                     .IsConcurrencyToken();
 
+                entity.Property(e => e.Tax).HasColumnType("decimal(19, 2)");
+
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Timesheet)
                     .HasForeignKey(d => d.JobId)
