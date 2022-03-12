@@ -38,26 +38,19 @@ namespace Timesheet.Common
         [MaxLength(50, ErrorMessage = "{0} může mít maximálně {1} znaků")]
         public string Name { get; set; }
 
-        [Display(Name = "Platba")]
-        public int? PaymentId { get; set; }
 
         [Display(Name = "Odměna", Description = "Odměna za práci")]
         [DataType(DataType.Currency)]
         [RegularExpression(@"^[0-9]\d{0,16}(\,\d{1,2})?%?$", ErrorMessage = "Pole {0} musí být desetinné číslo")]
         public decimal? Reward { get; set; }
 
-        [Display(Name = "Daň", Description = "Srážková daň")]
-        [DataType(DataType.Currency)]
-        public decimal Tax { get; set; }
 
         public virtual Job Job { get; set; }
-        public virtual Payment Payment { get; set; }
+        public virtual PaymentItem PaymentItem { get; set; }
+        public int? PaymentItemId { get; set; }
         public virtual Person Person { get; set; }
 
         //Ručně přidáno
-        [DataType(DataType.Currency)]
-        [Display(Name = "K vyplacení", Description = "Odměna k vyplacení")]
-        public decimal ToPay { get { return (Reward ?? 0) - Tax; } }
 
         [Display(Name = "Hodiny", Description = "Vykázaný čas")]
         public TimeSpan HoursTime
@@ -76,26 +69,13 @@ namespace Timesheet.Common
             }
         }
 
-        public void CalculateReward(decimal? tax = null, decimal? hourReward = null, bool? hasTax = null, bool overridePreviousReward = false)
-        {
-            if (tax == null) tax = (decimal)0.15;
-            if ((!Hours.HasValue || overridePreviousReward) && DateTimeFrom != null && DateTimeTo != null)
-                Hours = (decimal)(DateTimeTo - DateTimeFrom)?.TotalHours;
-            if (!Reward.HasValue || overridePreviousReward)
-                Reward = Hours * (hourReward ?? Job?.HourReward ?? 0);
-            if (hasTax ?? Person?.HasTax ?? false)
-            {
-                Tax = Math.Truncate((Reward ?? 0) * tax.Value);
-            }
-            else
-            {
-                Tax = 0;
-            }
-        }
-
         public override string ToString()
         {
             return (this.Person?.FullName ?? "Nevyplněno") + " (" + (this.DateTimeFrom?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + " - " + (this.DateTimeTo?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + ")";
         }
+        public decimal Tax => 0;
+        public decimal ToPay => 0;
+        public int? Year => DateTimeTo?.Year;
+        public int? Month => DateTimeTo?.Month;
     }
 }

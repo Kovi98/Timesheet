@@ -25,6 +25,7 @@ namespace Portal.Areas.Payments.Pages
         }
 
         public List<Payment> Payment { get; set; }
+        public PaymentSummary PaymentSummary { get; set; }
         [BindProperty]
         public Payment PaymentDetail { get; set; }
         public bool IsEditable { get; set; }
@@ -40,6 +41,7 @@ namespace Portal.Areas.Payments.Pages
             if (id > 0 && payment != null)
             {
                 PaymentDetail = payment;
+                PaymentSummary = _paymentService.GenerateSummary(PaymentDetail);
             }
             IsEditable = false;
         }
@@ -86,40 +88,10 @@ namespace Portal.Areas.Payments.Pages
             {
                 return RedirectToPage("./Index", new { id = PaymentDetail?.Id, area = "Payments" });
             }
-            PaymentDetail.Timesheet = (await _timesheetService.GetAsync()).Where(x => TimesheetsSelected.Any(y => y == x.Id)).ToList();
 
             try
             {
-                if (PaymentDetail.Id > 0)
-                {
-                    var oldTimesheets = (await _timesheetService.GetPaymentTimesheets(PaymentDetail.Id));
-                    var timesheetsToRemove = new List<Timesheet.Common.Timesheet>();
-                    foreach (var timesheet in oldTimesheets)
-                    {
-                        if (!PaymentDetail.Timesheet.Any(x => x.Id == timesheet.Id))
-                        {
-                            timesheetsToRemove.Add(timesheet);
-                        }
-                    }
-                    foreach (var timesheet in timesheetsToRemove)
-                    {
-                        timesheet.Payment = null;
-                        timesheet.PaymentId = null;
-                        await _timesheetService.SaveAsync(timesheet);
-                    }
-                    foreach (var timesheet in PaymentDetail.Timesheet)
-                    {
-                        timesheet.Payment = PaymentDetail;
-                        await _timesheetService.SaveAsync(timesheet);
-                    }
-                }
-                else
-                {
-                    foreach (var timesheet in PaymentDetail.Timesheet)
-                    {
-                        _timesheetService.SetUnchanged(timesheet);
-                    }
-                }
+                _paymentService.GenerateItemsAsync(PaymentDetail, TimesheetsSelected);
                 await _paymentService.SaveAsync(PaymentDetail);
             }
             catch (DbUpdateConcurrencyException)

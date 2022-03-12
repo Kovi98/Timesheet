@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -14,7 +13,7 @@ namespace Timesheet.Common
     {
         public Payment()
         {
-            Timesheet = new HashSet<Timesheet>();
+            PaymentItem = new HashSet<PaymentItem>();
         }
 
         public int Id { get; set; }
@@ -33,7 +32,9 @@ namespace Timesheet.Common
         public byte[] RowVersion { get; set; }
 
         [Display(Name = "Výkazy práce")]
-        public virtual ICollection<Timesheet> Timesheet { get; set; }
+        public virtual ICollection<Timesheet> Timesheet => PaymentItem.SelectMany(x => x.Timesheet).ToList();
+        [Display(Name = "Položky platby")]
+        public virtual ICollection<PaymentItem> PaymentItem { get; set; }
 
         //Ručně přidáno
         [Display(Name = "Stav", Description = "Stav platby?")]
@@ -45,92 +46,8 @@ namespace Timesheet.Common
         {
             get
             {
-                decimal? value = 0;
-                foreach (var item in Timesheet)
-                {
-                    if (item.Reward != null)
-                        value += item.Reward;
-                }
-                return value;
+                return Timesheet.Select(x => x.Reward ?? 0).Sum();
             }
-        }
-        [Display(Name = "Daň", Description = "Daň")]
-        [DataType(DataType.Currency)]
-        public decimal Tax
-        {
-            get
-            {
-                decimal value = 0;
-                foreach (var item in Timesheet)
-                {
-                    value += item.Tax;
-                }
-                return value;
-            }
-        }
-        [Display(Name = "K vyplacení", Description = "Odměna k vyplacení")]
-        [DataType(DataType.Currency)]
-        public decimal RewardToPay
-        {
-            get
-            {
-                decimal value = 0;
-                foreach (var item in Timesheet)
-                {
-                    value += item.ToPay;
-                }
-                return value;
-            }
-        }
-
-        public bool TryCreatePaymentOrder(string accountFrom)
-        {
-            if (!IsPaid && Timesheet != null && Timesheet.Count > 0)
-            {
-                var result = from t in Timesheet
-                             group t by t.Person into g
-                             select new TimesheetGroup { Person = g.Key, ToPay = g.ToArray().Select(x => x.ToPay).Sum() };
-
-                StringBuilder sb = new StringBuilder();
-                //header
-                sb.AppendLine(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
-                sb.AppendLine(@"<Import xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""");
-                sb.AppendLine(@"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">");
-                sb.AppendLine("<Orders>");
-                var today = DateTime.Now;
-                foreach (var ts in result)
-                {
-                    string ss = "0";
-                    if (ts.Person.PaidFrom.Name == "MŠMT")
-                        ss = "10";
-                    sb.AppendLine("<DomesticTransaction>");
-                    sb.AppendLine($"<accountFrom>{accountFrom}</accountFrom>");
-                    sb.AppendLine("<currency>CZK</currency>");
-                    sb.AppendLine($"<amount>{ts.ToPay}</amount>");
-                    sb.AppendLine($"<accountTo>{ts.Person.BankAccount}</accountTo>");
-                    sb.AppendLine($"<bankCode>{ts.Person.BankCode}</bankCode>");
-                    sb.AppendLine($"<ss>{ss}</ss>");
-                    sb.AppendLine($"<date>{today.ToString("yyyy-MM-dd")}</date>");
-                    sb.AppendLine($"<messageForRecipient>Trenérská odměna {ts.Person.FullName}-{today.AddMonths(-1).Year}/{today.AddMonths(-1).Month}</messageForRecipient>");
-                    sb.AppendLine("<paymentType>431001</paymentType>");
-                    sb.AppendLine("</DomesticTransaction>");
-                }
-                sb.AppendLine("</Orders>");
-                sb.AppendLine("</Import>");
-
-                PaymentXml = sb.ToString();
-                PaymentDateTime = today;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        private class TimesheetGroup
-        {
-            public Person Person { get; set; }
-            public decimal ToPay { get; set; }
         }
     }
 }

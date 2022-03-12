@@ -20,7 +20,8 @@ namespace Timesheet.Business
         {
             return await _context.Timesheet
                 .Include(t => t.Job)
-                .Include(t => t.Payment)
+                .Include(t => t.PaymentItem)
+                    .ThenInclude(p => p.Payment)
                 .Include(t => t.Person)
                 .Include(t => t.Person.Section)
                 .Include(t => t.Person.PaidFrom)
@@ -32,14 +33,16 @@ namespace Timesheet.Business
             return asNoTracking
                 ? await _context.Timesheet
                     .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
                     .AsNoTracking().ToListAsync()
                 : await _context.Timesheet
                     .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
@@ -51,47 +54,51 @@ namespace Timesheet.Business
             return asNoTracking
                 ? await _context.Timesheet
                     .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
-                    .Where(x => (x.PaymentId == 0 || x.PaymentId == null))
+                    .Where(x => x.PaymentItemId == 0 || x.PaymentItemId == null)
                     .AsNoTracking().ToListAsync()
                 : await _context.Timesheet
                     .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
-                    .Where(x => (x.PaymentId == 0 || x.PaymentId == null))
-                    .AsNoTracking().ToListAsync();
+                    .Where(x => (x.PaymentItemId == 0 || x.PaymentItemId == null))
+                    .ToListAsync();
         }
 
-        public async Task<List<Common.Timesheet>> GetPaymentTimesheets(int paymentId, bool asNoTracking = true)
+        public async Task<List<Common.Timesheet>> GetPaymentTimesheetsAsync(int paymentId, bool asNoTracking = true)
         {
             return asNoTracking
                 ? await _context.Timesheet
                     .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
-                    .Where(x => x.PaymentId == paymentId)
+                    .Where(x => x.PaymentItem.PaymentId == paymentId)
                     .AsNoTracking().ToListAsync()
                 : await _context.Timesheet
                     .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
-                    .Where(x => x.PaymentId == paymentId)
-                    .AsNoTracking().ToListAsync();
+                    .Where(x => x.PaymentItem.PaymentId == paymentId)
+                    .ToListAsync();
         }
 
         public override Task SaveAsync(Common.Timesheet entity)
         {
             if (entity.DateTimeFrom > entity.DateTimeTo) throw new InvalidOperationException("Začátek výkazu nemůže být později než konec výkazu");
-            entity.CalculateReward((_options.Tax / 100) ?? null, _context.Job.Find(entity.JobId)?.HourReward, _context.Person.Find(entity.PersonId)?.HasTax);
+            CalculateReward(entity);
             return base.SaveAsync(entity);
         }
 
@@ -99,17 +106,19 @@ namespace Timesheet.Business
         {
             return _context.Timesheet
                 .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
-                .Where(t => t.Payment == null || t.Payment.PaymentDateTime == null).Count();
+                .Where(t => t.PaymentItem == null || t.PaymentItem.Payment.PaymentDateTime == null).Count();
         }
         public decimal GetHoursThisMonth()
         {
             return _context.Timesheet
                 .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
@@ -119,11 +128,23 @@ namespace Timesheet.Business
         {
             return _context.Timesheet.AsNoTracking()
                 .Include(t => t.Job)
-                    .Include(t => t.Payment)
+                    .Include(t => t.PaymentItem)
+                        .ThenInclude(p => p.Payment)
                     .Include(t => t.Person)
                     .Include(t => t.Person.Section)
                     .Include(t => t.Person.PaidFrom)
                     .Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5).ToList();
+        }
+        public void CalculateReward(Common.Timesheet timesheet)
+        {
+            if (timesheet == null) return;
+
+            var hourReward = _context.Job.Where(x => x.Id == timesheet.JobId).Select(x => x.HourReward).FirstOrDefault() ?? 0;
+
+            if (!timesheet.Hours.HasValue && timesheet.DateTimeFrom != null && timesheet.DateTimeTo != null)
+                timesheet.Hours = (decimal)(timesheet.DateTimeTo - timesheet.DateTimeFrom)?.TotalHours;
+            if (!timesheet.Reward.HasValue)
+                timesheet.Reward = timesheet.Hours * hourReward;
         }
     }
 }

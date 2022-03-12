@@ -87,6 +87,7 @@ namespace Timesheet.Common
         public virtual Finance PaidFrom { get; set; }
         public virtual Section Section { get; set; }
         public virtual ICollection<Timesheet> Timesheet { get; set; }
+        public virtual ICollection<PaymentItem> PaymentItem { get; set; }
 
         //Ručně přidáno
         [Display(Name = "Jméno")]

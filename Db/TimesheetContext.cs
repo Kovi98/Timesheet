@@ -29,6 +29,7 @@ namespace Timesheet.Db
         public virtual DbSet<Common.Timesheet> Timesheet { get; set; }
         public virtual DbSet<RewardSummary> RewardSummary { get; set; }
         public virtual DbSet<DocumentStorage> DocumentStorage { get; set; }
+        public virtual DbSet<PaymentItem> PaymentItem { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -182,18 +183,16 @@ namespace Timesheet.Db
                     .IsRowVersion()
                     .IsConcurrencyToken();
 
-                entity.Property(e => e.Tax).HasColumnType("decimal(19, 2)");
-
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Timesheet)
                     .HasForeignKey(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Timesheet_Job");
 
-                entity.HasOne(d => d.Payment)
+                entity.HasOne(d => d.PaymentItem)
                     .WithMany(p => p.Timesheet)
-                    .HasForeignKey(d => d.PaymentId)
-                    .HasConstraintName("FK_Timesheet_Payment");
+                    .HasForeignKey(d => d.PaymentItemId)
+                    .HasConstraintName("FK_Timesheet_PaymentItem");
 
                 entity.HasOne(d => d.Person)
                     .WithMany(p => p.Timesheet)
@@ -218,6 +217,34 @@ namespace Timesheet.Db
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.Property(e => e.RowVersion)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+            });
+            modelBuilder.Entity<PaymentItem>(entity =>
+            {
+                entity.Property(e => e.Hours).HasColumnType("decimal(6, 2)");
+
+                entity.Property(e => e.Reward).HasColumnType("decimal(19, 2)");
+
+                entity.Property(e => e.Tax).HasColumnType("decimal(19, 2)");
+
+                entity.Property(e => e.RewardToPay).HasColumnType("decimal(19, 2)");
+
+                entity.HasOne(d => d.Payment)
+                    .WithMany(p => p.PaymentItem)
+                    .HasForeignKey(d => d.PaymentId)
+                    .HasConstraintName("FK_PaymentItem_Payment");
+
+                entity.HasOne(d => d.Person)
+                    .WithMany(p => p.PaymentItem)
+                    .HasForeignKey(d => d.PersonId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PaymentItem_Person");
+
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.RowVersion)
                     .IsRequired()

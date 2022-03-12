@@ -97,14 +97,14 @@
                                 </td>
                                 <td class="project-state">
                                     @{
-                                        if (item.Payment != null && item.Payment.IsPaid)
+                                        if (item.PaymentItem != null && item.PaymentItem.Payment.IsPaid)
                                         {
-                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
+                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentItem.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.PaymentItem.Payment.PaymentDateTime)</a>
 
                                         }
-                                        else if (item.Payment != null)
+                                        else if (item.PaymentItem != null)
                                         {
-                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
+                                            <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentItem.PaymentId" class="badge badge-warning">Nezaplaceno</a>
                                         }
                                         else
                                         {
@@ -231,7 +231,7 @@
                                     <p class="text-sm">
                                         @{
                                             string paymentInfo = "Platba";
-                                            if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
+                                            if (Model.TimesheetDetail.PaymentItem != null && Model.TimesheetDetail.PaymentItem.Payment.IsPaid)
                                             {
                                                 paymentInfo = "Zaplaceno";
                                             }
@@ -239,9 +239,9 @@
                                         @paymentInfo
                                         <b class="d-block">
                                             @{
-                                                if (Model.TimesheetDetail.Payment != null && Model.TimesheetDetail.Payment.IsPaid)
+                                                if (Model.TimesheetDetail.PaymentItem != null && Model.TimesheetDetail.PaymentItem.Payment.IsPaid)
                                                 {
-                                                    <a asp-page="Index" asp-area="Payment" asp-route-id="@Model.TimesheetDetail.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.Payment.PaymentDateTime)</a>
+                                                    <a asp-page="Index" asp-area="Payment" asp-route-id="@Model.TimesheetDetail.PaymentItem.Payment.Id" class="badge badge-success">@Html.DisplayFor(model => model.TimesheetDetail.PaymentItem.Payment.PaymentDateTime)</a>
 
                                                 }
                                                 else
@@ -294,8 +294,7 @@
                                     <input type="hidden" asp-for="TimesheetDetail.Id" />
                                     <input type="hidden" asp-for="TimesheetDetail.CreateTime" />
                                     <input type="hidden" asp-for="TimesheetDetail.RowVersion" />
-                                    <input type="hidden" asp-for="TimesheetDetail.PaymentId" />
-                                    <input type="hidden" asp-for="TimesheetDetail.Tax" />
+                                    <input type="hidden" asp-for="TimesheetDetail.PaymentItemId" />
                                 }
                             }
                             <div class="row">
@@ -415,7 +414,7 @@
 @section Scripts {
     @foreach (var item in Model.Timesheet)
     {
-        @if (item.PaymentId.HasValue || (item.PaymentId.HasValue && item.PaymentId.Value != 0))
+        @if (item.PaymentItemId.HasValue && item.PaymentItemId.Value != 0)
         {
             <script>
             $(document).ready(function () {
@@ -423,7 +422,7 @@
             });
             </script>
         }
-        @if (item.Payment?.IsPaid ?? false)
+        @if (item.PaymentItem?.Payment.IsPaid ?? false)
         {
             <script>
             $(document).ready(function () {

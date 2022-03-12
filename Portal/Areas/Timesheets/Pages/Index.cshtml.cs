@@ -50,7 +50,7 @@ namespace Portal.Areas.Timesheets.Pages
         {
             await LoadData();
             var timesheet = await _timesheetService.GetAsync(id);
-            if ((id > 0 && timesheet != null && !(timesheet.Payment?.IsPaid ?? false)) || (id == 0))
+            if ((id > 0 && timesheet != null && !(timesheet.PaymentItem?.Payment?.IsPaid ?? false)) || (id == 0))
             {
                 TimesheetDetail = timesheet;
                 IsEditable = true;
@@ -64,7 +64,7 @@ namespace Portal.Areas.Timesheets.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || (TimesheetDetail?.Payment?.IsPaid ?? false))
+            if (!ModelState.IsValid || (TimesheetDetail?.PaymentItem?.Payment?.IsPaid ?? false))
             {
                 return RedirectToPage("./Index", new { id = TimesheetDetail?.Id, area = "Timesheets" });
             }
@@ -106,7 +106,7 @@ namespace Portal.Areas.Timesheets.Pages
 
             var timesheetToDelete = await _timesheetService.GetAsync(id);
 
-            if (timesheetToDelete != null && timesheetToDelete.PaymentId.HasValue && timesheetToDelete.PaymentId > 0)
+            if (timesheetToDelete != null && timesheetToDelete.PaymentItemId.HasValue && timesheetToDelete.PaymentItemId > 0)
             {
                 return await this.PageWithError("Nelze smazat výkaz s existující platbou.");
             }

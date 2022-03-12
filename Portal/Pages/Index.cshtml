@@ -113,14 +113,14 @@
                                         </td>
                                         <td>
                                             @{
-                                                if (item.Payment != null && item.Payment.IsPaid)
+                                                if (item.PaymentItem != null && item.PaymentItem.Payment.IsPaid)
                                                 {
-                                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.Payment.PaymentDateTime)</a>
+                                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentItem.PaymentId" class="badge badge-success">@Html.DisplayFor(modelItem => item.PaymentItem.Payment.PaymentDateTime)</a>
 
                                                 }
-                                                else if (item.Payment != null)
+                                                else if (item.PaymentItem != null)
                                                 {
-                                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentId" class="badge badge-warning">Nezaplaceno</a>
+                                                    <a asp-area="Payments" asp-page="Index" asp-route-id="@item.PaymentItem.PaymentId" class="badge badge-warning">Nezaplaceno</a>
                                                 }
                                                 else
                                                 {

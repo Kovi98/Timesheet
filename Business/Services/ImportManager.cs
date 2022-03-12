@@ -21,10 +21,12 @@ namespace Timesheet.Business
     {
         private TimesheetContext _context;
         private PaymentOptions _options;
-        public ImportManager(TimesheetContext context, IOptions<PaymentOptions> options)
+        private readonly TimesheetService _timesheetService;
+        public ImportManager(TimesheetContext context, IOptions<PaymentOptions> options, TimesheetService timesheetService)
         {
             _context = context;
             _options = options.Value;
+            _timesheetService = timesheetService;
         }
         public List<TimesheetImport> ConvertTimesheets(byte[] source)
         {
@@ -121,7 +123,7 @@ namespace Timesheet.Business
                             if (!IsUnique(timesheet))
                                 timesheetImport.AddError(TimesheetImportError.TimesheetNotUnique);
 
-                            timesheet.CalculateReward(_options.Tax / 100);
+                            _timesheetService.CalculateReward(timesheet);
                             import.Add(timesheetImport);
                         }
 
