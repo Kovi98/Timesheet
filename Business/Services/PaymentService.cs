@@ -95,16 +95,20 @@ namespace Timesheet.Business
 
                         if (!anyTimesheetsInPaymentItem)
                         {
-                            _context.PaymentItem.Remove(await paymentItemQuery.FirstOrDefaultAsync());
+                            var paymentItem = await paymentItemQuery.FirstOrDefaultAsync();
+                            _context.PaymentItem.Remove(paymentItem);
                             await _context.SaveChangesAsync();
+                            _context.Entry(paymentItem).State = EntityState.Detached;
                         }
                         //recalculate
                         else
                         {
                             var paymentItem = await paymentItemQuery.FirstOrDefaultAsync();
                             CalculateRewards(paymentItem);
+                            var tracked = _context.ChangeTracker.Entries();
                             _context.Entry(paymentItem).State = EntityState.Modified;
                             await _context.SaveChangesAsync();
+                            _context.Entry(paymentItem).State = EntityState.Detached;
                         }
                     }
                     //Add
@@ -167,7 +171,7 @@ namespace Timesheet.Business
                 await SaveAsync(payment);
                 await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 throw;
