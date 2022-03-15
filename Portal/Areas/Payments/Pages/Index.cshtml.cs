@@ -25,7 +25,6 @@ namespace Portal.Areas.Payments.Pages
         }
 
         public List<Payment> Payment { get; set; }
-        public PaymentSummary PaymentSummary { get; set; }
         [BindProperty]
         public Payment PaymentDetail { get; set; }
         public bool IsEditable { get; set; }
@@ -41,7 +40,6 @@ namespace Portal.Areas.Payments.Pages
             if (id > 0 && payment != null)
             {
                 PaymentDetail = payment;
-                PaymentSummary = _paymentService.GenerateSummary(PaymentDetail);
             }
             IsEditable = false;
         }
@@ -61,8 +59,8 @@ namespace Portal.Areas.Payments.Pages
             if (id > 0)
             {
                 PaymentDetail = payment;
-                TimesheetsSelected = payment.Timesheet.Select(x => x.Id).ToArray();
-                freeTimesheets.AddRange(payment.Timesheet);
+                TimesheetsSelected = payment.PaymentItem.SelectMany(x => x.Timesheet).Select(x => x.Id).ToArray();
+                freeTimesheets.AddRange(payment.PaymentItem.SelectMany(x => x.Timesheet));
             }
             else
             {
@@ -91,7 +89,7 @@ namespace Portal.Areas.Payments.Pages
 
             try
             {
-                _paymentService.GenerateItemsAsync(PaymentDetail, TimesheetsSelected);
+                await _paymentService.GenerateItemsAsync(PaymentDetail, TimesheetsSelected);
                 await _paymentService.SaveAsync(PaymentDetail);
             }
             catch (DbUpdateConcurrencyException)

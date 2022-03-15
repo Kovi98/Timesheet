@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Timesheet.Common;
 using Timesheet.Db;
@@ -44,6 +45,7 @@ namespace Timesheet.Business
     }
     public abstract class EntityReadonlyServiceBase<T> : IEntityReadonlyService<T> where T : class, IEntityView
     {
+        protected virtual IQueryable<T> DefaultQuery => _context.Set<T>().AsQueryable();
         protected readonly TimesheetContext _context;
         public EntityReadonlyServiceBase(TimesheetContext context)
         {
@@ -51,7 +53,7 @@ namespace Timesheet.Business
         }
         public virtual async Task<bool> ExistsAsync(int id)
         {
-            return await _context.Set<T>().AnyAsync(x => x.Id == id);
+            return await DefaultQuery.AnyAsync(x => x.Id == id);
         }
 
         public virtual async Task<T> GetAsync(int id)
@@ -62,8 +64,8 @@ namespace Timesheet.Business
         public virtual async Task<List<T>> GetAsync(bool asNoTracking = true)
         {
             return asNoTracking
-                ? await _context.Set<T>().AsNoTracking().ToListAsync()
-                : await _context.Set<T>().ToListAsync();
+                ? await DefaultQuery.AsNoTracking().ToListAsync()
+                : await DefaultQuery.ToListAsync();
         }
     }
 }

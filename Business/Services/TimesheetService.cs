@@ -10,6 +10,13 @@ namespace Timesheet.Business
 {
     public class TimesheetService : EntityServiceBase<Common.Timesheet>
     {
+        protected override IQueryable<Common.Timesheet> DefaultQuery => _context.Timesheet
+                                                                            .Include(t => t.Job)
+                                                                            .Include(t => t.PaymentItem)
+                                                                                .ThenInclude(p => p.Payment)
+                                                                            .Include(t => t.Person)
+                                                                            .Include(t => t.Person.Section)
+                                                                            .Include(t => t.Person.PaidFrom);
         private readonly PaymentOptions _options;
         public TimesheetService(IOptions<PaymentOptions> options, TimesheetContext context) : base(context)
         {
@@ -18,80 +25,41 @@ namespace Timesheet.Business
 
         public override async Task<Common.Timesheet> GetAsync(int id)
         {
-            return await _context.Timesheet
-                .Include(t => t.Job)
-                .Include(t => t.PaymentItem)
-                    .ThenInclude(p => p.Payment)
-                .Include(t => t.Person)
-                .Include(t => t.Person.Section)
-                .Include(t => t.Person.PaidFrom)
+            return await DefaultQuery
                 .Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Common.Timesheet>> GetMultipleAsync(IEnumerable<int> ids)
+        {
+            return await DefaultQuery
+                .Where(x => ids.Any(y => y == x.Id))
+                .ToListAsync();
         }
 
         public override async Task<List<Common.Timesheet>> GetAsync(bool asNoTracking = true)
         {
             return asNoTracking
-                ? await _context.Timesheet
-                    .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+                ? await DefaultQuery
                     .AsNoTracking().ToListAsync()
-                : await _context.Timesheet
-                    .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+                : await DefaultQuery
                     .ToListAsync();
         }
 
         public async Task<List<Common.Timesheet>> GetFreesAsync(bool asNoTracking = true)
         {
             return asNoTracking
-                ? await _context.Timesheet
-                    .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+                ? await DefaultQuery
                     .Where(x => x.PaymentItemId == 0 || x.PaymentItemId == null)
                     .AsNoTracking().ToListAsync()
-                : await _context.Timesheet
-                    .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+                : await DefaultQuery
                     .Where(x => (x.PaymentItemId == 0 || x.PaymentItemId == null))
                     .ToListAsync();
         }
 
-        public async Task<List<Common.Timesheet>> GetPaymentTimesheetsAsync(int paymentId, bool asNoTracking = true)
+        public async Task<List<int>> GetPaymentTimesheetIdsAsync(int paymentId)
         {
-            return asNoTracking
-                ? await _context.Timesheet
-                    .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
-                    .Where(x => x.PaymentItem.PaymentId == paymentId)
-                    .AsNoTracking().ToListAsync()
-                : await _context.Timesheet
-                    .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
-                    .Where(x => x.PaymentItem.PaymentId == paymentId)
+            return await DefaultQuery.Where(x => x.PaymentItem.PaymentId == paymentId)
+                    .Select(x => x.Id)
                     .ToListAsync();
         }
 
@@ -104,35 +72,18 @@ namespace Timesheet.Business
 
         public int GetNumberOfNotPayed()
         {
-            return _context.Timesheet
-                .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+            return DefaultQuery
                 .Where(t => t.PaymentItem == null || t.PaymentItem.Payment.PaymentDateTime == null).Count();
         }
         public decimal GetHoursThisMonth()
         {
-            return _context.Timesheet
-                .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+            return DefaultQuery
                     .Where(t => t.DateTimeTo.HasValue && t.DateTimeTo.Value.Year == DateTime.Now.Year && t.DateTimeTo.Value.Month == DateTime.Now.Month && t.Hours.HasValue).Select(t => t.Hours.Value).Sum();
         }
         public List<Timesheet.Common.Timesheet> GetLastFive()
         {
-            return _context.Timesheet.AsNoTracking()
-                .Include(t => t.Job)
-                    .Include(t => t.PaymentItem)
-                        .ThenInclude(p => p.Payment)
-                    .Include(t => t.Person)
-                    .Include(t => t.Person.Section)
-                    .Include(t => t.Person.PaidFrom)
+            return DefaultQuery
+                    .AsNoTracking()
                     .Where(t => t.DateTimeTo.HasValue).OrderByDescending(t => t.DateTimeTo).Take(5).ToList();
         }
         public void CalculateReward(Common.Timesheet timesheet)

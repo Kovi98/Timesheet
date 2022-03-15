@@ -12,6 +12,13 @@ namespace Timesheet.Business
 {
     public class PaymentService : EntityServiceBase<Payment>
     {
+        protected override IQueryable<Payment> DefaultQuery => _context.Payment
+                                                                .Include(x => x.PaymentItem)
+                                                                    .ThenInclude(x => x.Person)
+                                                                        .ThenInclude(x => x.PaidFrom)
+                                                                .Include(x => x.PaymentItem)
+                                                                    .ThenInclude(x => x.Timesheet)
+                                                                        .ThenInclude(x => x.Person);
         private readonly PaymentOptions _paymentOptions;
         private readonly TimesheetService _timesheetService;
         public PaymentService(IOptions<PaymentOptions> paymentOptions, TimesheetContext context, TimesheetService timesheetService) : base(context)
@@ -22,54 +29,78 @@ namespace Timesheet.Business
 
         public override async Task<Payment> GetAsync(int id)
         {
-            return await _context.Payment
-                .Include(x => x.PaymentItem)
-                    .ThenInclude(x => x.Person)
-                    .ThenInclude(x => x.PaidFrom)
+            return await DefaultQuery
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public override async Task<List<Payment>> GetAsync(bool asNoTracking = true)
         {
-            var payments = _context
-                .Payment
-                .Include(x => x.Timesheet)
-                .ThenInclude(x => x.Person)
-                .ThenInclude(x => x.PaidFrom);
+            var payments = DefaultQuery;
             return await (asNoTracking ? payments.AsNoTracking().ToListAsync() : payments.ToListAsync());
+        }
+
+        public override async Task SaveAsync(Payment entity)
+        {
+            if (entity.Id > 0)
+            {
+                var tracked = _context.ChangeTracker.Entries();
+                SetModified(entity);
+            }
+            else
+            {
+                entity.CreateTime = DateTime.Now;
+                foreach (var item in entity.PaymentItem)
+                {
+                    item.CreateTime = DateTime.Now;
+                }
+                _context.Set<Payment>().Add(entity);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task GenerateItemsAsync(Payment payment, IEnumerable<int> selectedTimesheetIds)
         {
             if (payment.Id > 0)
             {
-                var oldTimesheets = await _timesheetService.GetPaymentTimesheetsAsync(payment.Id, false);
-                var timesheetsToRemove = new List<Timesheet.Common.Timesheet>();
-                var timesheetsToAdd = new List<Timesheet.Common.Timesheet>();
-                foreach (var timesheet in oldTimesheets)
+                var oldTimesheets = await _timesheetService.GetPaymentTimesheetIdsAsync(payment.Id);
+                var timesheetsToRemove = new List<int>();
+                var timesheetsToAdd = new List<int>();
+                foreach (var timesheetId in oldTimesheets)
                 {
-                    if (!selectedTimesheetIds.Any(x => x == timesheet.Id))
+                    if (!selectedTimesheetIds.Any(x => x == timesheetId))
                     {
-                        timesheetsToRemove.Add(timesheet);
+                        timesheetsToRemove.Add(timesheetId);
                     }
                 }
 
-                foreach (var id in selectedTimesheetIds)
+                foreach (var timesheetId in selectedTimesheetIds)
                 {
-                    if (oldTimesheets.Any(x => x.Id != id))
-                        timesheetsToAdd.Add(await _timesheetService.GetAsync(id));
+                    if (!oldTimesheets.Any(x => x == timesheetId))
+                        timesheetsToAdd.Add(timesheetId);
                 }
 
                 //Remove
-                foreach (var timesheet in timesheetsToRemove)
+                foreach (var timesheetId in timesheetsToRemove)
                 {
-                    timesheet.PaymentItem = null;
+                    var timesheet = await _context.Timesheet.AsNoTracking().Where(x => x.Id == timesheetId).FirstOrDefaultAsync();
+                    var paymentItemId = timesheet.PaymentItemId;
                     timesheet.PaymentItemId = null;
                     await _timesheetService.SaveAsync(timesheet);
+
+                    var paymentItemQuery = _context.PaymentItem.Include(x => x.Timesheet).Where(x => x.Id == paymentItemId);
+                    var anyTimesheetsInPaymentItem = await paymentItemQuery.Select(x => x.Timesheet.Any()).FirstAsync();
+
+                    if (!anyTimesheetsInPaymentItem)
+                    {
+                        _context.PaymentItem.Remove(await paymentItemQuery.FirstOrDefaultAsync());
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 //Add
-                foreach (var timesheet in timesheetsToAdd)
+                foreach (var timesheetId in timesheetsToAdd)
                 {
+                    var timesheet = await _context.Timesheet.AsNoTracking().Where(x => x.Id == timesheetId).FirstOrDefaultAsync();
+                    _context.Entry(timesheet).State = EntityState.Detached;
                     var paymentItemQuery = _context.PaymentItem.Include(x => x.Timesheet).AsNoTracking().Where(x => x.PaymentId == payment.Id && x.PersonId == timesheet.PersonId && x.Year == timesheet.Year && x.Month == timesheet.Month);
                     //create new one
                     if (!paymentItemQuery.Any())
@@ -79,7 +110,8 @@ namespace Timesheet.Business
                             PaymentId = payment.Id,
                             PersonId = timesheet.PersonId,
                             Year = timesheet.Year,
-                            Month = timesheet.Month
+                            Month = timesheet.Month,
+                            CreateTime = DateTime.Now
                         };
                         _context.PaymentItem.Add(item);
                         await _context.SaveChangesAsync();
@@ -87,13 +119,13 @@ namespace Timesheet.Business
                     var paymentItem = paymentItemQuery.First();
                     paymentItem.Timesheet.Add(timesheet);
                     timesheet.PaymentItemId = paymentItem.Id;
-                    timesheet.PaymentItem = paymentItem;
                     await _timesheetService.SaveAsync(timesheet);
                 }
             }
             else
             {
-                var timesheets = selectedTimesheetIds.Select(async x => await _timesheetService.GetAsync(x)).Select(x => x.GetAwaiter().GetResult());
+                var timesheets = await _timesheetService.GetMultipleAsync(selectedTimesheetIds);
+
                 var group = timesheets
                     .GroupBy(x => new { x.PersonId, x.Month, x.Year })
                     ;
@@ -105,16 +137,34 @@ namespace Timesheet.Business
                         Month = x.Key.Month,
                         Year = x.Key.Year,
                         Timesheet = x.ToList(),
-                        Person = _context.Person.AsNoTracking().Where(y => y.Id == x.Key.PersonId).FirstOrDefault()
+                        Reward = x.Select(x => x.Reward ?? 0).Sum()
                     })
                     .ToList();
+                foreach (var item in payment.PaymentItem)
+                {
+                    CalculateRewards(item);
+                }
             }
+        }
+
+        public override async Task RemoveAsync(Payment entity)
+        {
+            _context.Set<PaymentItem>().RemoveRange(entity.PaymentItem);
+            await _context.SaveChangesAsync();
+            await base.RemoveAsync(entity);
+        }
+
+        private void CalculateRewards(PaymentItem paymentItem)
+        {
+            var hasTax = _context.Person.Where(x => x.Id == paymentItem.Id).Select(x => x.HasTax).FirstOrDefault();
+            paymentItem.Tax = hasTax ? Math.Truncate(paymentItem.Reward * (_paymentOptions.Tax / 100)) : 0;
+            paymentItem.RewardToPay = paymentItem.Reward - paymentItem.Tax;
         }
 
         public bool TryPay(Payment payment)
         {
             var accountFrom = _paymentOptions.BankAccount;
-            if (!payment.IsPaid && payment.Timesheet != null && payment.Timesheet.Count > 0)
+            if (!payment.IsPaid && payment.PaymentItem != null && payment.PaymentItem.Count() > 0)
             {
                 var result = GenerateSummary(payment);
 
@@ -156,10 +206,7 @@ namespace Timesheet.Business
 
         public decimal GetPayedAmountInCurrentMonth()
         {
-            return _context.Payment
-                .Include(x => x.Timesheet)
-                    .ThenInclude(x => x.Person)
-                    .ThenInclude(x => x.PaidFrom)
+            return DefaultQuery
                     .Where(p => p.PaymentDateTime != null && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Month == DateTime.Now.Month)
                     .AsEnumerable()
                     .Select(p => GenerateSummary(p))

@@ -30,9 +30,6 @@ namespace Timesheet.Common
         [Display(Name = "Platební příkaz")]
         public string PaymentXml { get; set; }
         public byte[] RowVersion { get; set; }
-
-        [Display(Name = "Výkazy práce")]
-        public virtual ICollection<Timesheet> Timesheet => PaymentItem.SelectMany(x => x.Timesheet).ToList();
         [Display(Name = "Položky platby")]
         public virtual ICollection<PaymentItem> PaymentItem { get; set; }
 
@@ -42,11 +39,29 @@ namespace Timesheet.Common
 
         [Display(Name = "Odměna", Description = "Hrubá odměna")]
         [DataType(DataType.Currency)]
-        public decimal? Reward
+        public decimal Reward
         {
             get
             {
-                return Timesheet.Select(x => x.Reward ?? 0).Sum();
+                return PaymentItem.Select(x => x.Reward).Sum();
+            }
+        }
+        [Display(Name = "Daň", Description = "Daň")]
+        [DataType(DataType.Currency)]
+        public decimal Tax
+        {
+            get
+            {
+                return PaymentItem.Select(x => x.Tax).Sum();
+            }
+        }
+        [Display(Name = "K vyplacení", Description = "Odměna k vyplacení")]
+        [DataType(DataType.Currency)]
+        public decimal RewardToPay
+        {
+            get
+            {
+                return PaymentItem.Select(x => x.RewardToPay).Sum();
             }
         }
     }

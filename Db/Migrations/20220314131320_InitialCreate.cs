@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Db.Migrations
 {
@@ -137,6 +137,40 @@ namespace Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaymentItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: false),
+                    PersonId = table.Column<int>(nullable: false),
+                    Reward = table.Column<decimal>(type: "decimal(19, 2)", nullable: false),
+                    Tax = table.Column<decimal>(type: "decimal(19, 2)", nullable: false),
+                    RewardToPay = table.Column<decimal>(type: "decimal(19, 2)", nullable: false),
+                    Hours = table.Column<decimal>(type: "decimal(6, 2)", nullable: false),
+                    PaymentId = table.Column<int>(nullable: false),
+                    Month = table.Column<int>(nullable: true),
+                    Year = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaymentItem_Payment",
+                        column: x => x.PaymentId,
+                        principalTable: "Payment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PaymentItem_Person",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Timesheet",
                 columns: table => new
                 {
@@ -150,9 +184,8 @@ namespace Db.Migrations
                     DateTimeFrom = table.Column<DateTime>(type: "datetime", nullable: true),
                     DateTimeTo = table.Column<DateTime>(type: "datetime", nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    PaymentId = table.Column<int>(nullable: true),
                     Reward = table.Column<decimal>(type: "decimal(19, 2)", nullable: true),
-                    Tax = table.Column<decimal>(type: "decimal(19, 2)", nullable: false)
+                    PaymentItemId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -164,9 +197,9 @@ namespace Db.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Timesheet_Payment",
-                        column: x => x.PaymentId,
-                        principalTable: "Payment",
+                        name: "FK_Timesheet_PaymentItem",
+                        column: x => x.PaymentItemId,
+                        principalTable: "PaymentItem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -176,6 +209,16 @@ namespace Db.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentItem_PaymentId",
+                table: "PaymentItem",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentItem_PersonId",
+                table: "PaymentItem",
+                column: "PersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Person_JobId",
@@ -198,29 +241,14 @@ namespace Db.Migrations
                 column: "JobId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Timesheet_PaymentId",
+                name: "IX_Timesheet_PaymentItemId",
                 table: "Timesheet",
-                column: "PaymentId");
+                column: "PaymentItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Timesheet_PersonId",
                 table: "Timesheet",
                 column: "PersonId");
-
-            migrationBuilder.Sql(@"
-                CREATE OR ALTER VIEW [dbo].[RewardSummary]
-                AS
-                SELECT        dbo.Person.Id AS PersonId, SUM(dbo.Timesheet.Hours) AS Hours, SUM(dbo.Timesheet.Reward) AS Reward, dbo.Person.HasTax, SUM(dbo.Timesheet.Tax) AS Tax, YEAR(dbo.Timesheet.DateTimeTo) AS CreateDateTimeYear, 
-                                         MONTH(dbo.Timesheet.DateTimeTo) AS CreateDateTimeMonth, CAST(ROW_NUMBER() OVER (ORDER BY 
-                                             (SELECT        1)) AS INT) AS Id
-                FROM            dbo.Timesheet INNER JOIN
-                                         dbo.Person ON dbo.Timesheet.PersonId = dbo.Person.Id INNER JOIN
-                                         dbo.Job ON dbo.Job.Id = dbo.Timesheet.JobId LEFT OUTER JOIN
-                                         dbo.Payment ON dbo.Timesheet.PaymentId = dbo.Payment.Id
-                WHERE dbo.Payment.PaymentDateTime IS NOT NULL
-                GROUP BY dbo.Person.Id, YEAR(dbo.Timesheet.DateTimeTo), MONTH(dbo.Timesheet.DateTimeTo), dbo.Person.HasTax
-                GO
-            ");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -230,6 +258,9 @@ namespace Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "Timesheet");
+
+            migrationBuilder.DropTable(
+                name: "PaymentItem");
 
             migrationBuilder.DropTable(
                 name: "Payment");
@@ -245,10 +276,6 @@ namespace Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "Section");
-
-            migrationBuilder.Sql(@"
-                DROP VIEW [dbo].[RewardSummary];
-            ");
         }
     }
 }

@@ -27,9 +27,7 @@ namespace Db.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2021, 10, 15, 5, 19, 29, 239, DateTimeKind.Local).AddTicks(3604));
+                        .HasColumnType("datetime");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("nvarchar(50)")
@@ -142,6 +140,55 @@ namespace Db.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("Timesheet.Common.PaymentItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal>("Hours")
+                        .HasColumnType("decimal(6, 2)");
+
+                    b.Property<int?>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Reward")
+                        .HasColumnType("decimal(19, 2)");
+
+                    b.Property<decimal>("RewardToPay")
+                        .HasColumnType("decimal(19, 2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<decimal>("Tax")
+                        .HasColumnType("decimal(19, 2)");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("PaymentItem");
                 });
 
             modelBuilder.Entity("Timesheet.Common.Person", b =>
@@ -285,7 +332,7 @@ namespace Db.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("PaymentId")
+                    b.Property<int?>("PaymentItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("PersonId")
@@ -300,18 +347,31 @@ namespace Db.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<decimal>("Tax")
-                        .HasColumnType("decimal(19, 2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");
 
-                    b.HasIndex("PaymentId");
+                    b.HasIndex("PaymentItemId");
 
                     b.HasIndex("PersonId");
 
                     b.ToTable("Timesheet");
+                });
+
+            modelBuilder.Entity("Timesheet.Common.PaymentItem", b =>
+                {
+                    b.HasOne("Timesheet.Common.Payment", "Payment")
+                        .WithMany("PaymentItem")
+                        .HasForeignKey("PaymentId")
+                        .HasConstraintName("FK_PaymentItem_Payment")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Timesheet.Common.Person", "Person")
+                        .WithMany("PaymentItem")
+                        .HasForeignKey("PersonId")
+                        .HasConstraintName("FK_PaymentItem_Person")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Timesheet.Common.Person", b =>
@@ -343,10 +403,10 @@ namespace Db.Migrations
                         .HasConstraintName("FK_Timesheet_Job")
                         .IsRequired();
 
-                    b.HasOne("Timesheet.Common.Payment", "Payment")
+                    b.HasOne("Timesheet.Common.PaymentItem", "PaymentItem")
                         .WithMany("Timesheet")
-                        .HasForeignKey("PaymentId")
-                        .HasConstraintName("FK_Timesheet_Payment");
+                        .HasForeignKey("PaymentItemId")
+                        .HasConstraintName("FK_Timesheet_PaymentItem");
 
                     b.HasOne("Timesheet.Common.Person", "Person")
                         .WithMany("Timesheet")

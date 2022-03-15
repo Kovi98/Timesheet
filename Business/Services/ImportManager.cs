@@ -112,6 +112,7 @@ namespace Timesheet.Business
                                         if (job == null)
                                             timesheetImport.AddError(TimesheetImportError.JobUndefined);
                                         timesheet.Job = job ?? new Job { Name = ws.Cells[i, col.Key].Value.ToString(), CreateTime = DateTime.Now };
+                                        timesheet.JobId = job?.Id ?? 0;
                                         break;
                                     case "Odměna":
                                         value = ws.Cells[i, col.Key].Value?.ToString().Trim();
