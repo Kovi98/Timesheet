@@ -5,6 +5,10 @@ namespace Timesheet.Common
 {
     public class PaymentItem
     {
+        public PaymentItem()
+        {
+            Timesheet = new HashSet<Timesheet>();
+        }
         public int Id { get; set; }
         public byte[] RowVersion { get; set; }
         public DateTime CreateTime { get; set; }

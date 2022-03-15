@@ -89,8 +89,7 @@ namespace Portal.Areas.Payments.Pages
 
             try
             {
-                await _paymentService.GenerateItemsAsync(PaymentDetail, TimesheetsSelected);
-                await _paymentService.SaveAsync(PaymentDetail);
+                await _paymentService.GenerateItemsAndSaveAsync(PaymentDetail, TimesheetsSelected);
             }
             catch (DbUpdateConcurrencyException)
             {

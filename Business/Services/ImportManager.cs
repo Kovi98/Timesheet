@@ -137,7 +137,7 @@ namespace Timesheet.Business
         public async Task<int> Import(List<TimesheetImport> imports, bool overrideErrors)
         {
             var defaultList = imports;
-            var transaction = _context.Database.BeginTransaction();
+            using var transaction = _context.Database.BeginTransaction();
             try
             {
                 if (!overrideErrors)
