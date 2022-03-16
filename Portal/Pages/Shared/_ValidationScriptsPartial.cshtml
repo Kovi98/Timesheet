@@ -26,3 +26,16 @@
         return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
     }
 </script>
+    <script>
+(function ($) {
+  $.validator.addMethod("datetimerange", function (value, element, params) {
+      var otherProp = $('#' + params).val();
+      var isNotNull = value !== "" && otherProp !== "";
+      if (isNotNull && value < otherProp)
+        return false;
+      return true;
+  });
+  $.validator.unobtrusive.adapters.addSingleVal("datetimerange", "otherproperty");
+
+} (jQuery));
+</script>

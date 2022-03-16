@@ -501,6 +501,10 @@
                 var cell = dataTableTimesheets.cell($(this).closest('td'));
                 cell.checkboxes.select(this.checked);
             });
+
+            $('#TimesheetDetail_DateTimeFrom').change(function (){
+                $('#TimesheetDetail_DateTimeTo').focusout();
+            })
         });
     </script>
 
