@@ -187,7 +187,8 @@ namespace Timesheet.Business
 
         private void CalculateRewards(PaymentItem paymentItem)
         {
-            var hasTax = _context.Person.Where(x => x.Id == paymentItem.Id).Select(x => x.HasTax).FirstOrDefault();
+            var hasTax = _context.Person.Where(x => x.Id == paymentItem.PersonId).Select(x => x.HasTax).FirstOrDefault();
+            paymentItem.Hours = paymentItem.Timesheet.Select(x => x.Hours ?? 0).Sum();
             paymentItem.Reward = paymentItem.Timesheet.Select(x => x.Reward ?? 0).Sum();
             paymentItem.Tax = hasTax ? Math.Truncate(paymentItem.Reward * (_paymentOptions.Tax / 100)) : 0;
             paymentItem.RewardToPay = paymentItem.Reward - paymentItem.Tax;
@@ -198,7 +199,7 @@ namespace Timesheet.Business
             var accountFrom = _paymentOptions.BankAccount;
             if (!payment.IsPaid && payment.PaymentItem != null && payment.PaymentItem.Count() > 0)
             {
-                var result = GenerateSummary(payment);
+                var items = payment.PaymentItem;
 
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
@@ -206,7 +207,7 @@ namespace Timesheet.Business
                 sb.AppendLine(@"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">");
                 sb.AppendLine("<Orders>");
                 var today = DateTime.Now;
-                foreach (var ts in result.Summaries)
+                foreach (var ts in items)
                 {
                     string ss = "0";
                     if (ts.Person.PaidFrom.Name == "MŠMT")
@@ -219,7 +220,7 @@ namespace Timesheet.Business
                     sb.AppendLine($"<bankCode>{ts.Person.BankCode}</bankCode>");
                     sb.AppendLine($"<ss>{ss}</ss>");
                     sb.AppendLine($"<date>{today.ToString("yyyy-MM-dd")}</date>");
-                    sb.AppendLine($"<messageForRecipient>Trenérská odměna {ts.Person.FullName}-{today.AddMonths(-1).Year}/{today.AddMonths(-1).Month}</messageForRecipient>");
+                    sb.AppendLine($"<messageForRecipient>Trenérská odměna {ts.Person.FullName}-{ts.Year}/{ts.Month}</messageForRecipient>");
                     sb.AppendLine("<paymentType>431001</paymentType>");
                     sb.AppendLine("</DomesticTransaction>");
                 }
@@ -241,28 +242,8 @@ namespace Timesheet.Business
             return DefaultQuery
                     .Where(p => p.PaymentDateTime != null && p.PaymentDateTime.Value.Year == DateTime.Now.Year && p.PaymentDateTime.Value.Month == DateTime.Now.Month)
                     .AsEnumerable()
-                    .Select(p => GenerateSummary(p))
                     .Select(p => p.RewardToPay)
                     .Sum();
-        }
-
-        public PaymentSummary GenerateSummary(Payment payment)
-        {
-            var summaries = payment.PaymentItem
-                    .Select(t =>
-                    {
-                        return new RewardSummary()
-                        {
-                            Person = t.Person,
-                            PersonId = t.PersonId,
-                            HasTax = t.Person.HasTax,
-                            Hours = t.Hours,
-                            Reward = t.Reward,
-                            Tax = t.Tax,
-                        };
-                    })
-                    .ToList();
-            return new PaymentSummary(summaries);
         }
     }
 
@@ -271,17 +252,5 @@ namespace Timesheet.Business
         public const string CONFIG_SECTION_NAME = "Payments";
         public string BankAccount { get; set; }
         public decimal Tax { get; set; }
-    }
-    public class PaymentSummary
-    {
-        public List<RewardSummary> Summaries { get; set; }
-        public decimal Tax { get; private set; }
-        public decimal RewardToPay { get; private set; }
-        public PaymentSummary(List<RewardSummary> summaries)
-        {
-            Summaries = summaries ?? new List<RewardSummary>();
-            Tax = summaries?.Select(x => x.Tax ?? 0).Sum() ?? 0;
-            RewardToPay = summaries?.Select(x => x.RewardToPay ?? 0).Sum() ?? 0;
-        }
     }
 }

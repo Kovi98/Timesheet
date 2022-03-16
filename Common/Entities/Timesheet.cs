@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Timesheet.Common.Attributes;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -31,6 +32,7 @@ namespace Timesheet.Common
         public DateTime? DateTimeFrom { get; set; }
 
         [Display(Name = "Do", Description = "Konec")]
+        [TimesheetDateTimeRange(nameof(DateTimeFrom))]
         public DateTime? DateTimeTo { get; set; }
 
         [Required(ErrorMessage = "Název je povinný")]
@@ -73,8 +75,6 @@ namespace Timesheet.Common
         {
             return (this.Person?.FullName ?? "Nevyplněno") + " (" + (this.DateTimeFrom?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + " - " + (this.DateTimeTo?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + ")";
         }
-        public decimal Tax => 0;
-        public decimal ToPay => 0;
         public int? Year => DateTimeTo?.Year;
         public int? Month => DateTimeTo?.Month;
     }

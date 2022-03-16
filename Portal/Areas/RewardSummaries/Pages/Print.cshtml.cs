@@ -23,30 +23,18 @@ namespace Portal.Areas.RewardSummaries.Pages
 
         public async Task OnGetAsync(int year, int month, int personId)
         {
-            var lines = await _rewardSummaryService.GetAsync(year, month, personId);
-            Lines = lines
-                    .GroupBy(x => x.PersonId)
-                    .Select(x =>
-                    {
-                        return new RewardSummary()
-                        {
-                            Hours = x.Select(x => x.Hours).Sum(),
-                            Reward = x.Select(x => x.Reward).Sum(),
-                            Tax = x.Select(x => x.Tax).Sum(),
-                            PersonId = x.Key,
-                            Person = _personService.GetAsync(x.Key).GetAwaiter().GetResult()
-                        };
-                    })
-                    .ToList();
+            Lines = await _rewardSummaryService.GetAsync(year, month, personId);
+
             RewardSummaryDetail = new RewardSummary
             {
                 Hours = Lines.Select(x => x.Hours).Sum(),
                 Reward = Lines.Select(x => x.Reward).Sum(),
                 Tax = Lines.Select(x => x.Tax).Sum(),
-                CreateDateTimeYear = year,
-                CreateDateTimeMonth = month,
+                RewardToPay = Lines.Select(x => x.RewardToPay).Sum(),
+                Year = year,
+                Month = month,
                 PersonId = personId,
-                Person = await _personService.GetAsync(personId)
+                Person = personId == 0 ? null : await _personService.GetAsync(personId)
             };
         }
     }

@@ -40,25 +40,25 @@
                 Rok: 
                 @{
                     string empty = "Neuvedeno";
-                    if (Model.RewardSummaryDetail.CreateDateTimeYear == 0)
+                    if (Model.RewardSummaryDetail.Year == 0)
                     {
                         @empty;
                     }
                     else
                     {
-                        @Html.DisplayFor(model => model.RewardSummaryDetail.CreateDateTimeYear);
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.Year);
                     }
                 }
                 <br />
                 Měsíc: 
                 @{
-                    if (Model.RewardSummaryDetail.CreateDateTimeMonth == 0)
+                    if (Model.RewardSummaryDetail.Month == 0)
                     {
                         @empty;
                     }
                     else
                     {
-                        @Html.DisplayFor(model => model.RewardSummaryDetail.CreateDateTimeMonth);
+                        @Html.DisplayFor(model => model.RewardSummaryDetail.Month);
                     }
                 }
                 <br />

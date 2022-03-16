@@ -46,10 +46,10 @@
                                     @Html.DisplayFor(modelItem => item.Person.FullName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.CreateDateTimeYear)
+                                    @Html.DisplayFor(modelItem => item.Year)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.CreateDateTimeMonth)
+                                    @Html.DisplayFor(modelItem => item.Month)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Reward)
@@ -61,7 +61,7 @@
                                     @Html.DisplayFor(modelItem => item.RewardToPay)
                                 </td>
                                 <td class="project-actions text-right">
-                                    <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.CreateDateTimeYear" asp-route-month="@item.CreateDateTimeMonth" asp-route-personId="@item.PersonId">
+                                    <a target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" asp-area="RewardSummaries" asp-page="Print" asp-route-year="@item.Year" asp-route-month="@item.Month" asp-route-personId="@item.PersonId">
                                         <i class="fas fa-print">
                                         </i>
                                     </a>

@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Db.Migrations
 {
@@ -249,6 +249,19 @@ namespace Db.Migrations
                 name: "IX_Timesheet_PersonId",
                 table: "Timesheet",
                 column: "PersonId");
+
+            migrationBuilder.Sql(@"
+            CREATE OR ALTER VIEW [dbo].[RewardSummary]
+            AS
+            SELECT dbo.Person.Id AS PersonId, SUM(dbo.PaymentItem.Hours) AS Hours, SUM(dbo.PaymentItem.Reward) AS Reward, SUM(dbo.PaymentItem.Tax) AS Tax, SUM(dbo.PaymentItem.RewardToPay) AS RewardToPay, dbo.PaymentItem.Year AS Year, 
+                              dbo.PaymentItem.Month AS Month, CAST(ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS INT) AS Id
+            FROM     dbo.PaymentItem INNER JOIN
+                              dbo.Payment ON dbo.PaymentItem.PaymentId = dbo.Payment.Id INNER JOIN
+                              dbo.Person ON dbo.PaymentItem.PersonId = dbo.Person.Id
+            WHERE  dbo.Payment.PaymentDateTime IS NOT NULL
+            GROUP BY dbo.Person.Id, dbo.PaymentItem.Year, dbo.PaymentItem.Month
+            GO
+");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -276,6 +289,10 @@ namespace Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "Section");
+
+            migrationBuilder.Sql(@"
+                DROP VIEW [dbo].[RewardSummary];
+            ");
         }
     }
 }

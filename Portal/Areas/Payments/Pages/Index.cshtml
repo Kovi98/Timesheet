@@ -161,6 +161,8 @@
                                                         <th>Měsíc</th>
                                                         <th>Trenér</th>
                                                         <th>Odměna</th>
+                                                        <th>Daň</th>
+                                                        <th>K výplatě</th>
                                                         <th>Počet výkazů práce</th>
                                                     </tr>
                                                 </thead>
@@ -180,6 +182,12 @@
                                                                 </td>
                                                                 <td>
                                                                     @Html.DisplayFor(modelItem => item.Reward)
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DisplayFor(modelItem => item.Tax)
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DisplayFor(modelItem => item.RewardToPay)
                                                                 </td>
                                                                 <td>
                                                                     @item.Timesheet.Count()
