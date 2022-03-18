@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Portal.Areas.Identity;
 using Portal.Data;
 using System;
+using System.Globalization;
 using Timesheet.Business.Extensions;
 
 namespace Portal
@@ -24,11 +24,21 @@ namespace Portal
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var cultureInfo = new CultureInfo("cs-CZ");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             //CultureInfo - cs-CZ
+            /*
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture("cs-CZ");
+                var culture = "cs-CZ";
+                //options.DefaultRequestCulture = new RequestCulture("cs-CZ");
+                options.AddSupportedCultures(culture);
+                options.AddSupportedUICultures(culture);
+                options.SetDefaultCulture(culture);
             });
+            */
 
             //Identity
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -119,7 +129,7 @@ namespace Portal
             app.UseAuthorization();
 
             //Localization - CultureInfo
-            app.UseRequestLocalization();
+            //app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {
