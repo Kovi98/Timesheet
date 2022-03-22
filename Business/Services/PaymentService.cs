@@ -105,7 +105,6 @@ namespace Timesheet.Business
                         {
                             var paymentItem = await paymentItemQuery.FirstOrDefaultAsync();
                             CalculateRewards(paymentItem);
-                            var tracked = _context.ChangeTracker.Entries();
                             _context.Entry(paymentItem).State = EntityState.Modified;
                             await _context.SaveChangesAsync();
                             _context.Entry(paymentItem).State = EntityState.Detached;
@@ -207,20 +206,26 @@ namespace Timesheet.Business
                 sb.AppendLine(@"xsi:noNamespaceSchemaLocation=""http://www.fio.cz/schema/importIB.xsd"">");
                 sb.AppendLine("<Orders>");
                 var today = DateTime.Now;
-                foreach (var ts in items)
+                foreach (var item in items)
                 {
+                    //recalculate rewards to make sure..
+                    CalculateRewards(item);
+                    _context.Entry(item).State = EntityState.Modified;
+                    _context.SaveChanges();
+                    _context.Entry(item).State = EntityState.Detached;
+
                     string ss = "0";
-                    if (ts.Person.PaidFrom.Name == "MŠMT")
+                    if (item.Person.PaidFrom.Name == "MŠMT")
                         ss = "10";
                     sb.AppendLine("<DomesticTransaction>");
                     sb.AppendLine($"<accountFrom>{accountFrom}</accountFrom>");
                     sb.AppendLine("<currency>CZK</currency>");
-                    sb.AppendLine($"<amount>{ts.RewardToPay}</amount>");
-                    sb.AppendLine($"<accountTo>{ts.Person.BankAccount}</accountTo>");
-                    sb.AppendLine($"<bankCode>{ts.Person.BankCode}</bankCode>");
+                    sb.AppendLine($"<amount>{item.RewardToPay}</amount>");
+                    sb.AppendLine($"<accountTo>{item.Person.BankAccount}</accountTo>");
+                    sb.AppendLine($"<bankCode>{item.Person.BankCode}</bankCode>");
                     sb.AppendLine($"<ss>{ss}</ss>");
                     sb.AppendLine($"<date>{today.ToString("yyyy-MM-dd")}</date>");
-                    sb.AppendLine($"<messageForRecipient>Trenérská odměna {ts.Person.FullName}-{ts.Year}/{ts.Month}</messageForRecipient>");
+                    sb.AppendLine($"<messageForRecipient>Trenérská odměna {item.Person.FullName}-{item.Year}/{item.Month}</messageForRecipient>");
                     sb.AppendLine("<paymentType>431001</paymentType>");
                     sb.AppendLine("</DomesticTransaction>");
                 }
