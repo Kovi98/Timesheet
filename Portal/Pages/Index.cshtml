@@ -71,7 +71,6 @@
 <div class="row">
     <!-- Left col -->
     <section class="col-lg-7 connectedSortable">
-        <!-- TABLE: LATEST ORDERS -->
         <div class="card">
             <div class="card-header border-transparent">
                 <h3 class="card-title">Nové výkazy</h3>
@@ -144,12 +143,58 @@
             <!-- /.card-footer -->
         </div>
         <!-- /.card -->
-        <!-- ANOTHER 2 CARDS -->
     </section>
     <!-- /.Left col -->
     <!-- right col (We are only adding the ID to make the widgets sortable)-->
     <section class="col-lg-5 connectedSortable">
-        <!-- ANOTHER 2 CARDS -->
+        <div class="card">
+            <div class="card-header border-transparent">
+                <h3 class="card-title">Zaplacené platby</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table m-0">
+                        <thead>
+                            <tr>
+                                <th>Datum platby</th>
+                                <th>Vyplaceno</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ 
+                                foreach (var item in Model.LastFivePayments)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PaymentDateTime)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.RewardToPay)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <a asp-area="Payments"asp-page="/Index" asp-page-handler="Edit" asp-route-id="0" asp-fragment="card-edit"  class="btn btn-sm btn-info float-left">Založit novou platbu</a>
+                <a asp-area="Payments"asp-page="/Index" class="btn btn-sm btn-secondary float-right">Zobrazit všechno</a>
+            </div>
+            <!-- /.card-footer -->
     </section>
     <!-- right col -->
 </div>

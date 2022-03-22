@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Timesheet.Business;
+using Timesheet.Common;
 
 namespace Portal.Pages
 {
@@ -28,6 +29,7 @@ namespace Portal.Pages
         public int TimesheetsWithoutPayedPayment { get; set; }
         public decimal TimesheetsHoursInCurrentMonth { get; set; }
         public List<Timesheet.Common.Timesheet> LastFiveTimesheets { get; set; }
+        public List<Payment> LastFivePayments { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -41,6 +43,7 @@ namespace Portal.Pages
             TimesheetsWithoutPayedPayment = _timesheetService.GetNumberOfNotPayed();
             TimesheetsHoursInCurrentMonth = _timesheetService.GetHoursThisMonth();
             LastFiveTimesheets = _timesheetService.GetLastFive();
+            LastFivePayments = _paymentService.GetLastFive();
         }
     }
 }

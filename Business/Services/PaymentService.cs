@@ -250,6 +250,13 @@ namespace Timesheet.Business
                     .Select(p => p.RewardToPay)
                     .Sum();
         }
+
+        public List<Payment> GetLastFive()
+        {
+            return DefaultQuery
+                    .AsNoTracking()
+                    .Where(t => t.PaymentDateTime.HasValue).OrderByDescending(t => t.PaymentDateTime).Take(5).ToList();
+        }
     }
 
     public class PaymentOptions
