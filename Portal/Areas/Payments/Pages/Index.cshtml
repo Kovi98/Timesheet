@@ -209,12 +209,14 @@
                     <!--Tlačítka dole-->
                     <div class="row mt-2">
                         <div class="col-12">
-                            <a id="href-detail-edit" asp-page="" asp-page-handler="Edit" asp-route-id="@Model.PaymentDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
-                                <i class="fas fa-pencil-alt"></i> Upravit
-                            </a>
                             @{
                                 if (Model.PaymentDetail.IsPaid)
                                 {
+                                    <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="CancelPayment">
+                                        <button class="btn btn-info" type="submit">
+                                            <i class="fas fa-pencil-alt"></i> Odvolat platbu
+                                        </button>
+                                    </form>
                                     <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="DownloadPayment">
                                         <button class="btn btn-success" type="submit">
                                             <i class="fas fa-file-download"></i> Stáhnout platební příkaz
@@ -223,6 +225,9 @@
                                 }
                                 else
                                 {
+                                    <a id="href-detail-edit" asp-page="" asp-page-handler="Edit" asp-route-id="@Model.PaymentDetail.Id" type="button" class="btn btn-info float-right" style="margin-right: 5px;">
+                                        <i class="fas fa-pencil-alt"></i> Upravit
+                                    </a>
                                     <form method="post" class="float-right mr-2" asp-route-id="@Model.PaymentDetail.Id" asp-page-handler="Pay">
                                         
                                         @{

@@ -147,15 +147,41 @@ namespace Portal.Areas.Payments.Pages
             return RedirectToPage("Index", new { id = PaymentDetail.Id, area = "Payments" });
         }
 
-        public async Task<IActionResult> OnPostDownloadPayment(int id, string returnUrl = null)
+        public async Task<IActionResult> OnPostDownloadPayment(int id)
         {
             var payment = await _paymentService.GetAsync(id);
-            if (payment is null)
+            if (payment == null)
             {
-                return await this.PageWithError();
+                return await this.PageWithError("Platba neexistuje");
             }
 
             return File(Encoding.UTF8.GetBytes(payment.PaymentXml), "application/xml", payment.PaymentDateTime.Value.ToString("ddMMyyyy") + ".xml");
+        }
+
+        public async Task<IActionResult> OnPostCancelPayment(int id)
+        {
+            var payment = await _paymentService.GetAsync(id);
+            if (payment == null)
+                return await this.PageWithError("Platba neexistuje");
+
+            try
+            {
+                if (payment.PaymentDateTime.HasValue)
+                {
+                    payment.PaymentDateTime = null;
+                    payment.PaymentXml = null;
+                    await _paymentService.SaveAsync(payment);
+                    return RedirectToPage("Index", new { id = PaymentDetail.Id, area = "Payments" });
+                }
+                else
+                {
+                    return await this.PageWithError("Nelze zrušit platbu, která nemá vygenerovaný platební příkaz");
+                }
+            }
+            catch
+            {
+                return await this.PageWithError();
+            }
         }
 
         /// <summary>
