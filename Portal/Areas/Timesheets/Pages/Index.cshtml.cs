@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Portal.Extensions;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,15 @@ namespace Portal.Areas.Timesheets.Pages
         private readonly JobService _jobService;
         private readonly FinanceService _financeService;
         private readonly PersonService _personService;
+        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(TimesheetService timesheetService, JobService jobService, FinanceService financeService, PersonService personService)
+        public IndexModel(TimesheetService timesheetService, JobService jobService, FinanceService financeService, PersonService personService, ILogger<IndexModel> logger)
         {
             _timesheetService = timesheetService;
             _jobService = jobService;
             _financeService = financeService;
             _personService = personService;
+            _logger = logger;
         }
 
         public List<Timesheet.Common.Timesheet> Timesheet { get; set; }
@@ -99,28 +102,47 @@ namespace Portal.Areas.Timesheets.Pages
         /// <returns>404 - NotFound / OkResult</returns>
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            if (!await _timesheetService.ExistsAsync(id))
-            {
-                return NotFound();
-            }
-
             var timesheetToDelete = await _timesheetService.GetAsync(id);
 
-            if (timesheetToDelete != null && timesheetToDelete.PaymentItemId.HasValue && timesheetToDelete.PaymentItemId > 0)
-            {
-                return await this.PageWithError("Nelze smazat výkaz s existující platbou.");
-            }
-
-            if (timesheetToDelete != null)
-            {
-                await _timesheetService.RemoveAsync(timesheetToDelete);
-            }
-            else
+            if (timesheetToDelete == null)
             {
                 return NotFound();
             }
 
+            if (timesheetToDelete.PaymentItemId.HasValue && timesheetToDelete.PaymentItemId > 0)
+            {
+                return BadRequest("Nelze smazat výkaz s existující platbou.");
+            }
+
+            await _timesheetService.RemoveAsync(timesheetToDelete);
+
             return new OkResult();
+        }
+
+        public async Task<IActionResult> OnPostDeleteManyAsync(int[] ids)
+        {
+            List<int> deletedIds = new();
+
+            foreach (var id in ids)
+            {
+                try
+                {
+                    var timesheetToDelete = await _timesheetService.GetAsync(id);
+
+                    if (timesheetToDelete == null || (timesheetToDelete.PaymentItemId.HasValue && timesheetToDelete.PaymentItemId > 0))
+                        continue;
+
+                    await _timesheetService.RemoveAsync(timesheetToDelete);
+                    deletedIds.Add(id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    return BadRequest("Při odstraňování výkazů nastala chyba");
+                }
+            }
+
+            return new OkObjectResult(new { Message = $"Bylo smazáno {deletedIds.Count} výkazů práce", DeletedIds = deletedIds });
         }
         public async Task LoadData()
         {

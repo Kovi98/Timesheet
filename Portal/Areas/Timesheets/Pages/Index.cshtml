@@ -485,7 +485,7 @@
                     }],
                 "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
                 "initComplete": function (settings, json) {
-                    $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                    $("div.toolbar").html('<a href="/Timesheets?id=0&amp;handler=Edit#card-edit" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-edit"></i> Nový výkaz</a><button class="btn btn-sm btn-success float-left ml-2" onclick="generatePayment()"><i class="nav-icon fas fa-hand-holding-usd"></i> Vygenerovat platbu</button><button class="btn btn-sm btn-danger float-left ml-2" onclick="deleteMany()"><i class="nav-icon fas fa-trash"></i> Odstranit výkazy</button><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
 
                 }
             });
@@ -544,7 +544,6 @@
             var timesheetIds = dataTableTimesheets.rows({ selected: true }).ids();
             var params = '';
             timesheetIds.each(function (index, element) {
-                debugger
                 var idSliced = index.slice(6);
                 params += 'ids='.concat(idSliced).concat('&');
             });
@@ -552,6 +551,40 @@
         }
         else {
             toastr.warning("Není označen žádný záznam pro vygenerování platby.");
+        }
+    }
+    function deleteMany() {
+        if (dataTableTimesheets.rows({ selected: true }).count() > 0) {
+            debugger;
+            var rowIds = dataTableTimesheets.rows({ selected: true }).ids();
+            var timesheetIds = [];
+            rowIds.each(function (index, element) {
+                timesheetIds.push(parseInt(index.slice(6)));
+            });
+            $.ajax({
+                type: "POST",
+                url: "Timesheets/Index?handler=DeleteMany",
+                data: { ids: timesheetIds },
+                headers: {
+                    "RequestVerificationToken": '@GetAntiXsrfRequestToken()'
+                },
+                statusCode: {
+                    400: function (response) {
+                        toastr.error(response.responseText);
+                    }
+                },
+                success: function (response) {
+                    debugger;
+                    response.deletedIds.forEach(function (value){
+                        var inputText = "#rowId-".concat(String(value));
+                        dataTableTimesheets.row(inputText).remove().draw();
+                    });
+                    toastr.success(response.message);
+                },
+            });
+        }
+        else {
+            toastr.warning("Není označen žádný záznam pro odstranění.");
         }
     }
     </script>
