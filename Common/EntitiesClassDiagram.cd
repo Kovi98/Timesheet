@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Timesheet.Common.DocumentStorage" BaseTypeListCollapsed="true">
-    <Position X="5" Y="15.5" Width="2.75" />
+    <Position X="21.25" Y="5.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAACAQAAAAAAAAAAAAAABAQAAAEAAAAAAAAACAAAAgA=</HashCode>
       <FileName>Entities\DocumentStorage.cs</FileName>
@@ -9,7 +9,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Finance" BaseTypeListCollapsed="true">
-    <Position X="5" Y="9.75" Width="2.5" />
+    <Position X="5" Y="9.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AIACAAAAAAAAAAAAAAAABAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Finance.cs</FileName>
@@ -17,7 +17,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Job" BaseTypeListCollapsed="true">
-    <Position X="9" Y="14" Width="3.25" />
+    <Position X="14.25" Y="11.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AIACAAAAAAAAAgAAAAAABAQAAAEAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Job.cs</FileName>
@@ -25,24 +25,24 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Payment" BaseTypeListCollapsed="true">
-    <Position X="5" Y="0.75" Width="3.5" />
-    <NestedTypes>
-      <Class Name="Timesheet.Common.Payment.TimesheetGroup" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Entities\Payment.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
+    <Position X="13.75" Y="14.5" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAACAAACAgAgAAAAAAAABAAAAAEAQQgACAAAAAAAAQI=</HashCode>
+      <HashCode>AAACAAACAgAkAAAAAAAABAAAAAEAQQAACAAAAAAAAQA=</HashCode>
       <FileName>Entities\Payment.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Person" BaseTypeListCollapsed="true">
     <Position X="9.25" Y="6.25" Width="3.25" />
+    <AssociationLine Name="Section" Type="Timesheet.Common.Section" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="12.228" />
+        <Point X="9.5" Y="13.276" />
+        <Point X="8" Y="13.276" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAASAAAAAQAgAYAIMAAEBARABEECAAgAAAIABKAQgAA=</HashCode>
+      <HashCode>AAASAAAAAQAkAYAIMAAEBARABEECAAgAAAIABKAQgAA=</HashCode>
       <FileName>Entities\Person.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -53,19 +53,18 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.RewardSummary" BaseTypeListCollapsed="true">
-    <Position X="5" Y="6" Width="3.25" />
+    <Position X="5" Y="6.25" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AIACAAACAAAwAQAEAIAEIAAAAAAAQBAAAAAAAAAAAQA=</HashCode>
+      <HashCode>AIACAAACBAAwAAAEAAAAAAAAAAAAAAAEAAAAAAAAAQA=</HashCode>
       <FileName>Entities\RewardSummary.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Person" />
-      <Property Name="Payment" />
     </ShowAsAssociation>
     <Lollipop Position="0.118" />
   </Class>
   <Class Name="Timesheet.Common.Section" BaseTypeListCollapsed="true">
-    <Position X="5" Y="12.5" Width="3" />
+    <Position X="5" Y="12" Width="3" />
     <TypeIdentifier>
       <HashCode>AIACAAAAAAAAAAAAAAAABAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Section.cs</FileName>
@@ -73,17 +72,34 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Common.Timesheet" BaseTypeListCollapsed="true">
-    <Position X="9.5" Y="0.75" Width="4.25" />
+    <Position X="13.25" Y="6.25" Width="4.25" />
     <TypeIdentifier>
-      <HashCode>AIASAACAAgAwAAAEAIAABAQAAAECABAAAAAQAAAAASQ=</HashCode>
+      <HashCode>AIASAAAABAQUAAAEAAAABAQAAAECAAAEAAAQAAAAASQ=</HashCode>
       <FileName>Entities\Timesheet.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Job" />
-      <Property Name="Payment" />
       <Property Name="Person" />
+      <Property Name="PaymentItem" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Timesheet.Common.PaymentItem">
+    <Position X="8.5" Y="14.25" Width="3.25" />
+    <AssociationLine Name="Person" Type="Timesheet.Common.Person" FixedToPoint="true">
+      <Path>
+        <Point X="11.125" Y="14.25" />
+        <Point X="11.125" Y="12.228" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AIACAAACBAAwAAAEAIAABAAAAAEAABgEAAAAAAAAAQA=</HashCode>
+      <FileName>Entities\PaymentItem.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Person" />
+      <Property Name="Payment" />
+    </ShowAsAssociation>
   </Class>
   <Interface Name="Timesheet.Common.IEntity">
     <Position X="19.75" Y="2.75" Width="2.25" />

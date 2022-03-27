@@ -161,6 +161,14 @@
                                     <div class="col-12 col-sm-4">
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
+                                                <span class="info-box-text text-center text-muted">Čas</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.HoursTime)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
                                                 <span class="info-box-text text-center text-muted">Odměna</span>
                                                 <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.Reward)</span>
                                             </div>
@@ -169,16 +177,8 @@
                                     <div class="col-12 col-sm-4">
                                         <div class="info-box bg-light">
                                             <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">NIC</span>
-                                                <span class="info-box-number text-center text-muted mb-0">NIC NIC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-4">
-                                        <div class="info-box bg-light">
-                                            <div class="info-box-content">
-                                                <span class="info-box-text text-center text-muted">NIC</span>
-                                                <span class="info-box-number text-center text-muted mb-0">NIC NIC</span>
+                                                <span class="info-box-text text-center text-muted">Popis</span>
+                                                <span class="info-box-number text-center text-muted mb-0">@Html.DisplayFor(model => model.TimesheetDetail.Name)</span>
                                             </div>
                                         </div>
                                     </div>

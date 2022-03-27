@@ -71,10 +71,8 @@ namespace Timesheet.Common
             }
         }
 
-        public override string ToString()
-        {
-            return (this.Person?.FullName ?? "Nevyplněno") + " (" + (this.DateTimeFrom?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + " - " + (this.DateTimeTo?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno") + ")";
-        }
+        public override string ToString() => $"{Person?.FullName ?? "Nevyplněno"} ({DateTimeFrom?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno"} - {DateTimeTo?.ToString("dd.MM.yyyy HH:mm") ?? "Nevyplněno"})";
+
         public int? Year => DateTimeTo?.Year;
         public int? Month => DateTimeTo?.Month;
     }
