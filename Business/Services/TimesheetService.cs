@@ -90,9 +90,9 @@ namespace Timesheet.Business
         {
             if (timesheet == null) return;
 
-            var hourReward = _context.Job.Where(x => x.Id == timesheet.JobId).Select(x => x.HourReward).FirstOrDefault() ?? 0;
+            var hourReward = timesheet.Job?.HourReward ?? _context.Job.Where(x => x.Id == timesheet.JobId).Select(x => x.HourReward).FirstOrDefault() ?? 0;
 
-            if (!timesheet.Hours.HasValue && timesheet.DateTimeFrom != null && timesheet.DateTimeTo != null)
+            if (!timesheet.Hours.HasValue && timesheet.DateTimeFrom.HasValue && timesheet.DateTimeTo.HasValue)
                 timesheet.Hours = (decimal)(timesheet.DateTimeTo - timesheet.DateTimeFrom)?.TotalHours;
             if (!timesheet.Reward.HasValue)
                 timesheet.Reward = timesheet.Hours * hourReward;
