@@ -130,10 +130,9 @@
 
                         return $('<tr/>')
                             .append('<td colspan="4">' + group + '</td>')
-                            .append('<td>' + rewardSum + '</td>')
-                            .append('<td>' + taxSum + '</td>')
-                            .append('<td>' + rewardToPaySum + '</td>')
-                            .append('<td/>')
+                            .append('<td>' + rewardSum + ' Kč</td>')
+                            .append('<td>' + taxSum + ' Kč</td>')
+                            .append('<td>' + rewardToPaySum + ' Kč</td>')
                             .append('<td class="project-actions text-right"><a href="/RewardSummaries/Print?year=' + year + '&amp;month=' + month + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" ><i class="fas fa-print"></i></a></td>');
                     },
                     "endRender": null,
@@ -152,7 +151,7 @@
                     }],
                 "dom": '<"top"<"toolbar">f>rt<"bottom"<"row"<"col-md-6"l><"col-md-6"p>>>',
                 "initComplete": function (settings, json) {
-                    $("div.toolbar").html('<a href="/RewardSummaries/Print" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-print"></i> Všechny výkazy</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
+                    $("div.toolbar").html('<a href="/RewardSummaries/Print" class="btn btn-sm btn-info float-left"><i class="nav-icon fas fa-print"></i> Všechny odměny</a><button class="btn btn-sm btn-default float-left ml-2" onclick="resetTable()"><i class="nav-icon fas fa-filter"></i> Obnovit výchozí filtrování</button>');
 
                 }
             });
