@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Timesheet.Business.DocumentManager">
-    <Position X="8.75" Y="3.5" Width="6" />
+    <Position X="6.75" Y="7.5" Width="6" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAIAAQAAAAAAgAAAAAAA=</HashCode>
       <FileName>Services\DocumentManager.cs</FileName>
@@ -16,57 +16,74 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Timesheet.Business.FinanceService">
-    <Position X="15.5" Y="6" Width="4" />
+    <Position X="21.25" Y="3.25" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\FinanceService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Timesheet.Business.JobService">
-    <Position X="15.75" Y="10" Width="3.75" />
+    <Position X="13.25" Y="8" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\JobService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Timesheet.Business.PaymentService">
-    <Position X="8.75" Y="6.5" Width="5.75" />
+    <Position X="6.75" Y="3.25" Width="8" />
+    <AssociationLine Name="_timesheetService" Type="Timesheet.Business.TimesheetService" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.25" Y="7.117" />
+        <Point X="14.25" Y="7.429" />
+        <Point X="15" Y="7.429" />
+        <Point X="15" Y="7.188" />
+        <Point X="15.042" Y="7.187" Type="JumpStart" />
+        <Point X="15.208" Y="7.188" Type="JumpEnd" />
+        <Point X="15.5" Y="7.188" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.514" Y="-0.52" Height="0.182" Width="1.283" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAQAAAgAAAAAAAIAAAAAA=</HashCode>
+      <HashCode>AAAAAAEAAgAABAAAAAgAQAAAQIAAgAAAAAAAIAAAAMA=</HashCode>
       <FileName>Services\PaymentService.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_timesheetService" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="Timesheet.Business.PersonService">
-    <Position X="15.25" Y="3.5" Width="4.25" />
+    <Position X="21" Y="5.25" Width="4.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAABAAAAAACAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\PersonService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Timesheet.Business.SectionService">
-    <Position X="15.5" Y="8" Width="4" />
+    <Position X="17.5" Y="8" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\SectionService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Timesheet.Business.TimesheetService">
-    <Position X="8.75" Y="9.5" Width="6" />
+    <Position X="15.5" Y="3.25" Width="5.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAQAABIAAAEAAAAAAAIAAAAAAAAAAIAgAAAA=</HashCode>
+      <HashCode>AAAAAACAAQAABIAABEAAAAAAAIAAAAAAgAAAIAgAAIA=</HashCode>
       <FileName>Services\TimesheetService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Timesheet.Business.ImportManager">
-    <Position X="22.5" Y="6.75" Width="4.75" />
+    <Position X="21.75" Y="12.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAAAoAAAAAAAAAAIAAAAgAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAgAABAAAoAAAAAAAAAAIAAAAgAAAAAAAAAA=</HashCode>
       <FileName>Services\ImportManager.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Timesheet.Common.Interfaces.IImportManager">
-    <Position X="23" Y="2.25" Width="3" />
+    <Position X="27.5" Y="11.75" Width="3" />
     <TypeIdentifier />
   </Interface>
   <Font Name="Segoe UI" Size="9" />
