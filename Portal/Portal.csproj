@@ -57,4 +57,10 @@
     <Folder Include="Properties\ServiceDependencies\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="App_Data\default_contract.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
