@@ -21,7 +21,7 @@ namespace Timesheet.Business
                 {
                     using (DocX doc = DocX.Load(streamLoad))
                     {
-                        doc.ReplaceText("%Name%", person.FullName);
+                        doc.ReplaceText("%Name%", person.Name + " " + person.Surname);
                         doc.ReplaceText("%Job%", person.Job.Name);
                         doc.ReplaceText("%DateBirth%", person.DateBirth.ToString("dd.MM.yyyy"));
                         doc.ReplaceText("%Address%", person.FullAddress);
